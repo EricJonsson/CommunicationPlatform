@@ -161,12 +161,11 @@ def sendPacket(packet, id):
                         elif connectionstatus.decode() == 'ConnectionEstablished':
                             s.sendall(id.encode())
                             connectionstatus = s.recv(1024)
+                            print(connectionstatus.decode())
                             if connectionstatus.decode() == 'IDInUse':
                                 print('ID Already in Use: Connection Refused')
                                 break
                             connected = True
-
-
 
                     response = input('Message: ')
                     s.sendall(response.encode())
