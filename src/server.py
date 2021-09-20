@@ -1,35 +1,37 @@
 # Communication Platform - Server
-from flask import Flask, render_template
-from flask_socketio import SocketIO
-
-
+from flask import Flask
+import socketio
 
 # Object Created by developers to start a server that listen for clients to connect
-class CommunicationServer:  # External
+class CommunicationServer():  # External
   Clients = []
   MaxConcurrentClients = 8
-  _socketio = None
+  SIO = socketio.Server()
+  app = None
 
-  def __init__(self, debug=False):
-    app = Flask(__name__)
-#    self._debug = debug
-    @_socketio.on('message')
-    def handle_message(data):
-      print('received message: ' + data)
+  def callbacks(self):
 
+    @self.SIO.event
+    def connect(sid, environ, auth):
+      self.Clients.append(sid)
+      print(self.Clients)
+    @self.SIO.event
+    def disconnect(sid):
+      self.Clients.remove(sid)
+      print(self.Clients)
 
-  #Maybe we cou
+    @self.SIO.event
+    def message(sid, data):
+      print('received message: ' + data + ' from ' + sid)
+
   def CreateServer(self):
-    app.config['SECRET_KEY'] = 'secret!'
-    self._socketio = SocketIO(app)
-    self._socketio.run(app, '127.0.0.1', 17432)
+    self.app = Flask(__name__)
+    self.app.wsgi_app = socketio.WSGIApp(self.SIO, self.app.wsgi_app)
+    self.callbacks()
+    self.app.run('127.0.0.1', 5000)
 
-
-
-  
 class ClientConnectionInfo:
   port = 1
-
 
 class Client:
   Socket = None
