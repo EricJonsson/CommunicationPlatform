@@ -70,5 +70,5 @@ class PlayerInfo:
     pass
 
 
-cs = CommunicationServer(0)
+cs = CommunicationServer(8)
 cs.CreateServer('127.0.0.1', 5000)
