@@ -150,9 +150,9 @@ class Client:
 
 class PlayerInfo:
   def __init__(self):
-    GamesPlayed = 0
-    GamesLeft = 0
-    NumberOfWins = 0
+    self.GamesPlayed = 0
+    self.GamesLeft = 0
+    self.NumberOfWins = 0
 
   # Send the PlayerInfo to the player via the Socket
   def SendStatistics():
@@ -174,4 +174,4 @@ class Game:
 
 if __name__ == "__main__":
   cs = CommunicationServer(8)
-  cs.CreateServer('127.0.0.1', 5000)
+  cs.CreateServer('127.0.0.1', '5000')
