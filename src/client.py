@@ -4,9 +4,35 @@ import time
 
 # Method for sending a file to your opponent during a game.
 class Player:
-  sio = socketio.Client()
+  def __init__(self):
+    self.sio = socketio.Client()
+    self.__callbacks()
 
   def __callbacks(self):
+
+    @self.sio.event
+    def msg_to_opponent(data):
+      print('msg_to_opponent: ' + data)
+
+    @self.sio.event
+    def msg_from_opponent(data):
+      print('msg_from_opponent: ' + data)
+
+    @self.sio.event
+    def game_info(data):
+      print('game_info: ' + data)
+
+    @self.sio.event
+    def start_game_request(data):
+      print('start_game_request: ' + data)
+      if int(data) == 0:
+        print("Request granted, started a new game!")
+      elif int(data) == -1:
+        print("Requested denied, didn't start a new game.")
+
+    @self.sio.event
+    def ready(data):
+      print('ready: ' + data)
 
     @self.sio.on('server_full')
     def full():
@@ -21,12 +47,6 @@ class Player:
     def catch_all():
       print('Error')
 
-  def __init__(self):
-    self.__callbacks()
-
-  def SendInformationToOpponent(self, information):
-    return 0
-
   def ConnectToServer(self, ipAddress='127.0.0.1', port=5000):
     self.sio.connect('http://' + ipAddress + ':' + str(port))
     print('Connected to ' + ipAddress + ':' +str(port))
@@ -34,8 +54,39 @@ class Player:
   def Disconnect(self):
     self.sio.disconnect()
 
+  def SendInformationToOpponent(self, information):
+    print('SendInformationToOpponent("' + information + '")')
+    self.sio.emit('msg_to_opponent', information)
 
-player = Player()
-player.ConnectToServer('127.0.0.1', 5000)
-time.sleep(2)
-player.Disconnect()
+  def RequestStartGame(self):
+    print("RequestStartGame")
+    self.sio.emit('start_game_request')
+
+  def Ready(self):
+    print("Ready")
+    self.sio.emit('ready')
+
+if __name__ == "__main__":
+
+  val = int(input("Choose player 1 or 2: "))
+
+  if val == 1:
+    player = Player()
+    player.ConnectToServer('127.0.0.1', 5000)
+    time.sleep(10)
+    player.Ready()
+    time.sleep(1000)
+    player.Disconnect()
+  elif val == 2:
+    player = Player()
+    player.ConnectToServer('127.0.0.1', 5000)
+    time.sleep(2)
+    player.SendInformationToOpponent("Hello dear opponent!")
+    time.sleep(2)
+    player.Ready()
+    time.sleep(6)
+    player.SendInformationToOpponent("Hello dear opponent!")
+    time.sleep(1000)
+    player.Disconnect()
+  else: # do whatever you want here :)
+    pass
