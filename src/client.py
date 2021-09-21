@@ -4,7 +4,9 @@ import time
 
 # Method for sending a file to your opponent during a game.
 class Player:
-  sio = socketio.Client()
+  def __init__(self):
+    self.sio = socketio.Client()
+    self.__callbacks()
 
   def __callbacks(self):
 
@@ -21,12 +23,6 @@ class Player:
     def catch_all():
       print('Error')
 
-  def __init__(self):
-    self.__callbacks()
-
-  def SendInformationToOpponent(self, information):
-    return 0
-
   def ConnectToServer(self, ipAddress='127.0.0.1', port=5000):
     self.sio.connect('http://' + ipAddress + ':' + str(port))
     print('Connected to ' + ipAddress + ':' +str(port))
@@ -34,8 +30,14 @@ class Player:
   def Disconnect(self):
     self.sio.disconnect()
 
+  def SendInformationToOpponent(self, information):
+    self.sio.emit('msg_opponent', information)
+    return 0
 
-player = Player()
-player.ConnectToServer('127.0.0.1', 5000)
-time.sleep(2)
-player.Disconnect()
+if __name__ == "__main__":
+  player = Player()
+  player.ConnectToServer('127.0.0.1', 5000)
+  time.sleep(2)
+  player.SendInformationToOpponent("Hello dear opponent!")
+  time.sleep(2)
+  player.Disconnect()
