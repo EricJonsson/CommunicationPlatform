@@ -1,8 +1,6 @@
 ###### Requirements without Version Specifiers ######
-# Examples: 
-# nose
-# nose-cov
-# beautifulsoup4
+Flask
+python-socketio
 
 ###### Requirements with Version Specifiers ######
 # Examples: 
