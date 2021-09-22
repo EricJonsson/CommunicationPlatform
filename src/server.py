@@ -216,6 +216,12 @@ class Client:
   def get_id(self):
     return self.ID
 
+  def lose(self):
+    self.PlayerInfo.lose()
+
+  def win(self):
+    self.PlayerInfo.win()
+
 
 class PlayerInfo:
   def __init__(self):
@@ -223,7 +229,7 @@ class PlayerInfo:
     ### TODO: init `GamesLeft`
     self.GamesLeft = 0
     self.NumberOfWins = 0
-
+      
   def lose(self):
     self.GamesPlayed += 1
     self.GamesLeft -= 1
@@ -233,7 +239,8 @@ class PlayerInfo:
     self.GamesLeft -= 1
     self.NumberOfWins += 1
 
-  # Send the PlayerInfo to the player via the Socket
+
+   # Send the PlayerInfo to the player via the Socket
   def SendStatistics():
     pass
 
