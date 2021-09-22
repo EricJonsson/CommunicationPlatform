@@ -5,6 +5,7 @@ import socketio
 import time
 import itertools
 import random
+import json
 
 
 # Object Created by developers to start a server that listen for clients to connect
@@ -109,6 +110,18 @@ class CommunicationServer():  # External
       print('start_game_request: from ' + sid)
       code = self.StartGame()
       self.sio.emit('start_game_request', str(code), to=sid)
+
+    @self.sio.on('player_data_request')
+    def player_data_request(sid):
+      playerData = None
+      for client in self.Clients:
+        if client == sid:
+          playerData = client.PlayerInfo
+
+      if playerData is not None:
+        print('sending')
+        self.sio.emit('player_info', data=json.dumps(playerData.__dict__), to=sid)
+
 
     @self.sio.event
     def ready(sid):
@@ -222,11 +235,13 @@ class Client:
   def win(self):
     self.PlayerInfo.win()
 
+  def addGameLeft(self):
+    self.PlayerInfo.addGameLeft()
+
 
 class PlayerInfo:
   def __init__(self):
     self.GamesPlayed = 0
-    ### TODO: init `GamesLeft`
     self.GamesLeft = 0
     self.NumberOfWins = 0
       
@@ -239,10 +254,8 @@ class PlayerInfo:
     self.GamesLeft -= 1
     self.NumberOfWins += 1
 
-
-   # Send the PlayerInfo to the player via the Socket
-  def SendStatistics():
-    pass
+  def addGameLeft(self):
+    self.GamesLeft += 1
 
 class Game:
   def __init__(self, PlayerA=None, PlayerB=None, Active=False, Winner=None):
@@ -250,6 +263,9 @@ class Game:
     self.PlayerB = PlayerB
     self.Active = Active
     self.Winner = Winner
+
+    self.PlayerA.addGameLeft()
+    self.PlayerB.addGameLeft()
 
   def __str__(self):
     return 'PlayerA: ' + str(self.PlayerA) + '\n' \
