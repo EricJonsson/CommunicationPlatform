@@ -181,7 +181,7 @@ class CommunicationServer():  # External
   def GetOpponent(self, sid):
     # Searches through all games and finds an opponent for the given player (sid) if one exists.
     opponent = None
-    for game in self.Games:
+    for game in self.ActiveGames:
       if (sid == game.PlayerA.get_id() or sid == game.PlayerB.get_id()) and game.Active: # the player 'sid' is playing in the game and the game is still going on
         if sid == game.PlayerA.get_id():
           opponent = game.PlayerB.get_id()
