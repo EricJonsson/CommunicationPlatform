@@ -45,19 +45,9 @@ class CommunicationServer():  # External
       #print('Clients: ' + str(len(self.Clients)))
       #print(self.Clients[0].get_id())
 
-      player_in_game = False
-      opponent = None
-      for game in self.Games:
-        if (sid == game.PlayerA.get_id() or sid == game.PlayerB.get_id()) and game.Active: # the player 'sid' is playing in the game and the game is still going on
-          player_in_game = True
-          if sid == game.PlayerA.get_id():
-            opponent = game.PlayerB.get_id()
-          else:
-            opponent = game.PlayerA.get_id()
-          break
+      opponent = self.GetOpponent(sid)
 
-      print('player_in_game: ' + str(player_in_game) + ' opponent: ' + str(opponent))
-      if player_in_game:
+      if opponent is not None: # if opponent is not None an opponent exists, meaning the player is in an active game
         #self.sio.emit('msg_to_opponent', 'Your message got sent to opponent ' + opponent + '.', to=sid) # response to the one calling
         self.sio.emit('msg_to_opponent', '0', to=sid) # response to the one calling
         self.sio.emit('msg_from_opponent', 'Opponent ' + sid + ' sent "' + data + '".', to=opponent)
@@ -100,11 +90,12 @@ class CommunicationServer():  # External
     @self.sio.event
     def game_data(sid, data):
       print('game_data: ' + data + ' from ' + sid)
-
-      
-      # Received updated game state from one Player, relay to opponent!
-
-      self.sio.emit('game_data', str(0), to=sid)
+      opponent = self.GetOpponent(sid)
+      if opponent is not None: # An opponent exists, the player is currently playing
+        self.sio.emit('game_data', data, to=opponent) # relay to opponent!
+        self.sio.emit('game_data', str(0), to=sid) # succesfully sent response
+      else:
+        self.sio.emit('game_data', str(-1), to=sid) # error code response
 
 
   def CreateServer(self, ip, port):
@@ -139,6 +130,19 @@ class CommunicationServer():  # External
 
     self.Games.append(game)
     return 0
+
+  def GetOpponent(self, sid):
+    # Searches through all games and finds an opponent for the given player (sid) if one exists.
+    opponent = None
+    for game in self.Games:
+      if (sid == game.PlayerA.get_id() or sid == game.PlayerB.get_id()) and game.Active: # the player 'sid' is playing in the game and the game is still going on
+        if sid == game.PlayerA.get_id():
+          opponent = game.PlayerB.get_id()
+        else:
+          opponent = game.PlayerA.get_id()
+        break
+    return opponent
+
 
 
 class Client:

@@ -23,6 +23,14 @@ class Player:
       print('game_info: ' + data)
 
     @self.sio.event
+    def game_data(data):
+      if data == "0" or data == "-1":
+        print("game_data: " + data)
+      else: # this is actually game data and not some success/fail code
+        print("game_data: recieved a new game state " + data)
+
+
+    @self.sio.event
     def start_game_request(data):
       print('start_game_request: ' + data)
       if int(data) == 0:
@@ -78,11 +86,13 @@ if __name__ == "__main__":
     player = Player()
     player.ConnectToServer('127.0.0.1', 5000)
     time.sleep(2)
-    GameState = "representation of game: [1,0,1] etc"
+    GameState = "[1,0,1] or sth"
     player.SendGameData(GameState)
     time.sleep(2)
-    #player.Ready()
-    #time.sleep(1000)
+    player.Ready()
+    time.sleep(4)
+    player.SendGameData(GameState)
+    time.sleep(1000)
     player.Disconnect()
   elif val == 2:
     player = Player()
