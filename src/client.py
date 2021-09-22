@@ -66,6 +66,10 @@ class Player:
     print("Ready")
     self.sio.emit('ready')
 
+  def SendGameData(self, GameState):
+    print("SendGameData")
+    self.sio.emit('game_data', GameState)
+
 if __name__ == "__main__":
 
   val = int(input("Choose player 1 or 2: "))
@@ -73,9 +77,12 @@ if __name__ == "__main__":
   if val == 1:
     player = Player()
     player.ConnectToServer('127.0.0.1', 5000)
-    time.sleep(10)
-    player.Ready()
-    time.sleep(1000)
+    time.sleep(2)
+    GameState = "representation of game: [1,0,1] etc"
+    player.SendGameData(GameState)
+    time.sleep(2)
+    #player.Ready()
+    #time.sleep(1000)
     player.Disconnect()
   elif val == 2:
     player = Player()

@@ -97,6 +97,15 @@ class CommunicationServer():  # External
       else:
         print('Players Ready: ' + str(ready_counter) + '/' + str(len(self.Clients)) + ', waiting for all.')
 
+    @self.sio.event
+    def game_data(sid, data):
+      print('game_data: ' + data + ' from ' + sid)
+
+      
+      # Received updated game state from one Player, relay to opponent!
+
+      self.sio.emit('game_data', str(0), to=sid)
+
 
   def CreateServer(self, ip, port):
     self.app = Flask(__name__)
