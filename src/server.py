@@ -179,9 +179,9 @@ class CommunicationServer():  # External
 
         if len(self.TournamentGames) > 0: #there's an ongoing tournament, since a game is over we can try to start new games!
           code = self.generateRound()
-          print("###### GENERATE ROUND: " + str(code))
-          print("Active Games: " + str(len(self.ActiveGames)))
-          print("Tournament Games: " + str(len(self.TournamentGames)))
+          #print("###### GENERATE ROUND: " + str(code))
+          #print("Active Games: " + str(len(self.ActiveGames)))
+          #print("Tournament Games: " + str(len(self.TournamentGames)))
 
           if code == 0:
             print('Started Game: ' + str(game.PlayerA) + ' vs ' + str(game.PlayerB) + '.')
