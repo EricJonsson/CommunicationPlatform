@@ -94,8 +94,7 @@ class CommunicationServer():  # External
             opponent = game.PlayerA.get_id()
           break
 
-      print('player_in_game: ' + str(player_in_game) + ' opponent: ' + str(opponent))
-      if player_in_game:
+      if opponent is not None: # if opponent is not None an opponent exists, meaning the player is in an active game
         #self.sio.emit('msg_to_opponent', 'Your message got sent to opponent ' + opponent + '.', to=sid) # response to the one calling
         self.sio.emit('msg_to_opponent', '0', to=sid) # response to the one calling
         self.sio.emit('msg_from_opponent', 'Opponent ' + sid + ' sent "' + data + '".', to=opponent)
@@ -135,6 +134,16 @@ class CommunicationServer():  # External
       else:
         print('Players Ready: ' + str(ready_counter) + '/' + str(len(self.Clients)) + ', waiting for all.')
 
+    @self.sio.event
+    def game_data(sid, data):
+      print('game_data: ' + data + ' from ' + sid)
+      opponent = self.GetOpponent(sid)
+      if opponent is not None: # An opponent exists, the player is currently playing
+        self.sio.emit('game_data', data, to=opponent) # relay to opponent!
+        self.sio.emit('game_data', str(0), to=sid) # succesfully sent response
+      else:
+        self.sio.emit('game_data', str(-1), to=sid) # error code response
+
 
   def CreateServer(self, ip, port):
     self.app = Flask(__name__)
@@ -169,6 +178,19 @@ class CommunicationServer():  # External
     self.ActiveGames.append(game)
     return 0
 
+  def GetOpponent(self, sid):
+    # Searches through all games and finds an opponent for the given player (sid) if one exists.
+    opponent = None
+    for game in self.Games:
+      if (sid == game.PlayerA.get_id() or sid == game.PlayerB.get_id()) and game.Active: # the player 'sid' is playing in the game and the game is still going on
+        if sid == game.PlayerA.get_id():
+          opponent = game.PlayerB.get_id()
+        else:
+          opponent = game.PlayerA.get_id()
+        break
+    return opponent
+
+
 
 class Client:
   def __init__(self, ID):
@@ -193,9 +215,9 @@ class Client:
 
 class PlayerInfo:
   def __init__(self):
-    GamesPlayed = 0
-    GamesLeft = 0
-    NumberOfWins = 0
+    self.GamesPlayed = 0
+    self.GamesLeft = 0
+    self.NumberOfWins = 0
 
   # Send the PlayerInfo to the player via the Socket
   def SendStatistics():
@@ -234,4 +256,3 @@ if __name__ == "__main__":
     #print('===========================================================================')
     #for game in cs.ActiveGames:
       #print(game)
-  
