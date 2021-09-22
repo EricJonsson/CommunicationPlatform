@@ -144,6 +144,15 @@ class CommunicationServer():  # External
       else:
         self.sio.emit('game_data', str(-1), to=sid) # error code response
 
+    @self.sio.event
+    def gameover(sid):
+      if game := self.FindActiveGameBySid(sid):
+        game.ConcludeGame(sid)
+        self.sio.emit('waiting', game.PlayerA)
+        self.sio.emit('waiting', game.PlayerB)
+      else:
+        print(f'ERROR: Event sent by inactive player `{sid}`.')
+
   def FindActiveGameBySid(self, sid: str) -> Optional[TypeVar("Game")]:
     for game in self.ActiveGames:
       if (sid == game.PlayerA.get_id() or sid == game.PlayerB.get_id()) and game.Active: # the player 'sid' is playing in the game and the game is still going on
@@ -229,7 +238,7 @@ class PlayerInfo:
     ### TODO: init `GamesLeft`
     self.GamesLeft = 0
     self.NumberOfWins = 0
-      
+
   def lose(self):
     self.GamesPlayed += 1
     self.GamesLeft -= 1

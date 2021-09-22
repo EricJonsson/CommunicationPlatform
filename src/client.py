@@ -46,7 +46,7 @@ class Player:
     def full():
       print('Server is full :(')
       self.sio.disconnect()
-    
+
     @self.sio.on('disconnect')
     def disconnect():
       print('Disconnected')
@@ -54,6 +54,10 @@ class Player:
     @self.sio.on('*')
     def catch_all():
       print('Error')
+
+    @self.sio.event
+    def waiting():
+      print("Waiting")
 
   def ConnectToServer(self, ipAddress='127.0.0.1', port=5000):
     self.sio.connect('http://' + ipAddress + ':' + str(port))
@@ -77,6 +81,10 @@ class Player:
   def SendGameData(self, GameState):
     print("SendGameData")
     self.sio.emit('game_data', GameState)
+
+  def SignalVictory(self):
+    print("Game over")
+    self.sio.emit('gameover')
 
 if __name__ == "__main__":
 
