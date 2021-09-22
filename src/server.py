@@ -83,16 +83,7 @@ class CommunicationServer():  # External
       #print('Clients: ' + str(len(self.Clients)))
       #print(self.Clients[0].get_id())
 
-      player_in_game = False
-      opponent = None
-      for game in self.ActiveGames:
-        if (sid == game.PlayerA or sid == game.PlayerB) and game.Active: # the player 'sid' is playing in the game and the game is still going on
-          player_in_game = True
-          if sid == game.PlayerA:
-            opponent = game.PlayerB.get_id()
-          else:
-            opponent = game.PlayerA.get_id()
-          break
+      opponent = self.GetOpponent(sid)
 
       if opponent is not None: # if opponent is not None an opponent exists, meaning the player is in an active game
         #self.sio.emit('msg_to_opponent', 'Your message got sent to opponent ' + opponent + '.', to=sid) # response to the one calling
