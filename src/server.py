@@ -14,7 +14,7 @@ class CommunicationServer():  # External
 
   def __removeClientById(self, sid):
     for client in self.Clients:
-      if client.compare(sid):
+      if client == sid:
         self.Clients.remove(client)
 
   #All socketIO callbacks
@@ -48,9 +48,9 @@ class CommunicationServer():  # External
       player_in_game = False
       opponent = None
       for game in self.Games:
-        if (sid == game.PlayerA.get_id() or sid == game.PlayerB.get_id()) and game.Active: # the player 'sid' is playing in the game and the game is still going on
+        if (sid == game.PlayerA or sid == game.PlayerB) and game.Active: # the player 'sid' is playing in the game and the game is still going on
           player_in_game = True
-          if sid == game.PlayerA.get_id():
+          if sid == game.PlayerA:
             opponent = game.PlayerB.get_id()
           else:
             opponent = game.PlayerA.get_id()
@@ -79,7 +79,7 @@ class CommunicationServer():  # External
 
       # Sets client.Ready to true
       for client in self.Clients:
-        if client.compare(sid):
+        if client == sid:
           client.Ready = True
           self.sio.emit('ready', str(0), to=sid)
           break
@@ -141,8 +141,11 @@ class Client:
   def __str__(self):
     return '[SID: ' + self.ID + ']' # might want to add playerinfo here later on
 
-  def compare(self, sid):
-    return sid == self.ID
+  def __eq__(self, other):
+    if isinstance(other, str):
+      return self.ID == other
+    else:
+      return other.ID== self.ID
 
   def get_id(self):
     return self.ID
