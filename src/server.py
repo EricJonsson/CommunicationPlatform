@@ -2,6 +2,9 @@
 from flask import Flask
 import socketio
 import time
+import itertools
+import random
+
 
 # Object Created by developers to start a server that listen for clients to connect
 class CommunicationServer():  # External
@@ -10,11 +13,46 @@ class CommunicationServer():  # External
     self.Clients = []
     self.sio = socketio.Server()
     self.app = None
-    self.Games = []
+    self.ActiveGames = []
+    self.TournamentGames = []
+
+  # Generates the next round. i.e. moves as many games as 
+  # possible from TournamentGames to ActiveGames without overlap
+  def generateRound(self):
+    if len(self.ActiveGames) > 0:
+      print('Error couldn\'t generate round - Round still in progress')
+      return -1
+
+    for t_game in self.TournamentGames:
+      contains = False
+      for a_game in self.ActiveGames:
+        contains = a_game.checkOverlap(t_game) or contains
+      if not contains:
+        self.ActiveGames.append(t_game)
+
+    #Remove Active games from tournament-list
+    for game in self.ActiveGames:
+      self.TournamentGames.remove(game)
+
+    return 0
+
+  #Fills TournamentGames with all matches for the tournament
+  def generateTournament(self):
+    if len(self.TournamentGames) != 0:
+      print('ERROR: couldn\'t generate tournament')
+      return -1
+    combinations = list(itertools.combinations(self.Clients, 2))
+
+    for combination in combinations:
+      game = Game(PlayerA = combination[0], PlayerB= combination[1])
+      self.TournamentGames.append(game)
+
+    random.shuffle(self.TournamentGames)
+    return 0
 
   def __removeClientById(self, sid):
     for client in self.Clients:
-      if client.compare(sid):
+      if client == sid:
         self.Clients.remove(client)
 
   #All socketIO callbacks
@@ -45,7 +83,16 @@ class CommunicationServer():  # External
       #print('Clients: ' + str(len(self.Clients)))
       #print(self.Clients[0].get_id())
 
-      opponent = self.GetOpponent(sid)
+      player_in_game = False
+      opponent = None
+      for game in self.ActiveGames:
+        if (sid == game.PlayerA or sid == game.PlayerB) and game.Active: # the player 'sid' is playing in the game and the game is still going on
+          player_in_game = True
+          if sid == game.PlayerA:
+            opponent = game.PlayerB.get_id()
+          else:
+            opponent = game.PlayerA.get_id()
+          break
 
       if opponent is not None: # if opponent is not None an opponent exists, meaning the player is in an active game
         #self.sio.emit('msg_to_opponent', 'Your message got sent to opponent ' + opponent + '.', to=sid) # response to the one calling
@@ -69,7 +116,7 @@ class CommunicationServer():  # External
 
       # Sets client.Ready to true
       for client in self.Clients:
-        if client.compare(sid):
+        if client == sid:
           client.Ready = True
           self.sio.emit('ready', str(0), to=sid)
           break
@@ -105,7 +152,7 @@ class CommunicationServer():  # External
     self.app.run(ip, port)
 
   def StartGame(self):
-    if len(self.Games) != 0:
+    if len(self.ActiveGames) != 0:
       print("Cannot start a new game, a game is already going on.")
       return -1
 
@@ -128,7 +175,7 @@ class CommunicationServer():  # External
       print("Starting a game and putting players in a queue (not implemented)")
       return -1
 
-    self.Games.append(game)
+    self.ActiveGames.append(game)
     return 0
 
   def GetOpponent(self, sid):
@@ -152,10 +199,15 @@ class Client:
     self.PlayerInfo = PlayerInfo()
 
   def __str__(self):
-    return '[SID: ' + self.ID + ']' # might want to add playerinfo here later on
+    return '[SID: ' + str(self.ID) + ']' # might want to add playerinfo here later on
 
-  def compare(self, sid):
-    return sid == self.ID
+  def __eq__(self, other):
+    if isinstance(other, Client):
+      return self.ID == other.ID
+    elif isinstance(other, str):
+      return self.ID == other
+    else:
+      return self == other
 
   def get_id(self):
     return self.ID
@@ -184,7 +236,23 @@ class Game:
     + 'Active: ' + str(self.Active) + '\n' \
     + 'Winner: ' + str(self.Winner) + '\n' \
     + '----------------------------'
+  
+  #Checks if any of the players occur in both games
+  def checkOverlap(self, other):
+    overlap = (self.PlayerA == other.PlayerA) or (self.PlayerA == other.PlayerB) or (self.PlayerB == other.PlayerA) or(self.PlayerB == other.PlayerB)
+    return overlap
+
 
 if __name__ == "__main__":
   cs = CommunicationServer(8)
-  cs.CreateServer('127.0.0.1', '5000')
+  cs.CreateServer('127.0.0.1', 5000)
+
+  #TEST by hand for the tournament and round generation
+  #cs.Clients = [Client(0), Client(1), Client(2), Client(3)]
+  #cs.generateTournament()
+  #while(len(cs.TournamentGames) > 0):
+    #cs.ActiveGames = []
+    #cs.generateRound()
+    #print('===========================================================================')
+    #for game in cs.ActiveGames:
+      #print(game)
