@@ -8,6 +8,7 @@ from server import PlayerInfo
 # Method for sending a file to your opponent during a game.
 class Player:
   PlayerInfo = None
+
   def __init__(self):
     self.sio = socketio.Client()
     self.__callbacks()
@@ -87,9 +88,10 @@ class Player:
     print("SendGameData")
     self.sio.emit('game_data', GameState)
 
-  def GetPlayerData(self):
+  def GetPlayerInfo(self):
     self.sio.call('player_data_request')
     print(self.PlayerInfo)
+    return self.PlayerInfo
 
 if __name__ == "__main__":
 
