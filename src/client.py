@@ -1,9 +1,14 @@
 # Communication Platform - Client
 import socketio
 import time
+import json
+
+from server import PlayerInfo
 
 # Method for sending a file to your opponent during a game.
 class Player:
+  PlayerInfo = None
+
   def __init__(self):
     self.sio = socketio.Client()
     self.__callbacks()
@@ -21,6 +26,11 @@ class Player:
     @self.sio.event
     def game_info(data):
       print('game_info: ' + data)
+
+    @self.sio.event
+    def player_info(data):
+      print('player_info: ' + data)
+      self.PlayerInfo = json.loads(data)
 
     @self.sio.event
     def game_data(data):
@@ -86,6 +96,11 @@ class Player:
     print("Game over")
     self.sio.emit('gameover')
 
+  def GetPlayerInfo(self):
+    self.sio.call('player_data_request')
+    print(self.PlayerInfo)
+    return self.PlayerInfo
+
 if __name__ == "__main__":
 
   val = int(input("Choose player 1 or 2: "))
@@ -99,6 +114,8 @@ if __name__ == "__main__":
     time.sleep(2)
     player.Ready()
     time.sleep(4)
+    player.GetPlayerData()
+    time.sleep(2)
     player.SendGameData(GameState)
     time.sleep(1000)
     player.Disconnect()
