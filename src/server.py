@@ -17,10 +17,12 @@ class CommunicationServer():  # External
     self.app = None
     self.ActiveGames = []
     self.TournamentGames = []
+    self.ConcludedGames = []
 
   # Generates the next round. i.e. moves as many games as
   # possible from TournamentGames to ActiveGames without overlap
   def generateRound(self):
+
     if len(self.ActiveGames) > 0:
       print('Error couldn\'t generate round - Round still in progress')
       return -1
@@ -29,8 +31,11 @@ class CommunicationServer():  # External
       contains = False
       for a_game in self.ActiveGames:
         contains = a_game.checkOverlap(t_game) or contains
-      if not contains:
+      if not contains: # start the game
         self.ActiveGames.append(t_game)
+        self.sio.emit('game_info', 'you are now in a game vs ' + t_game.PlayerB.get_id(), to=t_game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
+        self.sio.emit('game_info', 'you are now in a game vs ' + t_game.PlayerA.get_id(), to=t_game.PlayerB.get_id()) # vice-versa
+
 
     #Remove Active games from tournament-list
     for game in self.ActiveGames:
@@ -161,8 +166,27 @@ class CommunicationServer():  # External
     def gameover(sid):
       if game := self.FindActiveGameBySid(sid):
         game.ConcludeGame(sid)
-        self.sio.emit('waiting', game.PlayerA)
-        self.sio.emit('waiting', game.PlayerB)
+        self.ConcludedGames.append(game)
+        
+        # remove the game from active games
+        for a_game in self.ActiveGames:
+          if a_game.PlayerA == game.PlayerA and a_game.PlayerB == game.PlayerB:
+            self.ActiveGames.remove(game)
+
+
+        self.sio.emit('waiting', to=game.PlayerA.get_id())
+        self.sio.emit('waiting', to=game.PlayerB.get_id())
+
+        if len(self.TournamentGames) > 0: #there's an ongoing tournament, since a game is over we can try to start new games!
+          code = self.generateRound()
+          #print("###### GENERATE ROUND: " + str(code))
+          #print("Active Games: " + str(len(self.ActiveGames)))
+          #print("Tournament Games: " + str(len(self.TournamentGames)))
+
+          if code == 0:
+            print('Started Game: ' + str(game.PlayerA) + ' vs ' + str(game.PlayerB) + '.')
+          else:
+            print("Couldn't start any new games at this point.")
       else:
         print(f'ERROR: Event sent by inactive player `{sid}`.')
 
@@ -190,18 +214,30 @@ class CommunicationServer():  # External
       return -1
     if len(self.Clients) == 2:
       # 2 players, match them up for a game
-      game = Game(self.Clients[0], self.Clients[1], True)
+      game = Game(self.Clients[0], self.Clients[1])
+      self.ActiveGames.append(game)
       print(game)
       print('Started Game: ' + str(game.PlayerA) + ' vs ' + str(game.PlayerB) + '.')
       self.sio.emit('game_info', 'you are now in a game vs ' + game.PlayerB.get_id(), to=game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
       self.sio.emit('game_info', 'you are now in a game vs ' + game.PlayerA.get_id(), to=game.PlayerB.get_id()) # vice-versa
 
-    if len(self.Clients) > 2:
-      # more than 2 players, match 2 up and put the rest in a queue
-      print("Starting a game and putting players in a queue (not implemented)")
-      return -1
 
-    self.ActiveGames.append(game)
+    if len(self.Clients) > 2:
+      # tournament
+      print("------TOURNAMENT MODE------")
+      if len(self.ActiveGames) != 0: # already exists ongoing games for some reason, error
+        return -1
+
+      self.generateTournament() # generate all games to be played into self.TournamentGames
+      print("generated tournament :)")
+      if len(self.TournamentGames) <= 0:
+        return -1
+
+      code = self.generateRound()
+      if code == -1: #
+        print("Error: Couldn't generate a new round")
+        return -1
+
     return 0
 
   def GetOpponent(self, sid):
@@ -267,7 +303,7 @@ class PlayerInfo:
     self.GamesLeft += 1
 
 class Game:
-  def __init__(self, PlayerA=None, PlayerB=None, Active=False, Winner=None):
+  def __init__(self, PlayerA=None, PlayerB=None, Active=True, Winner=None):
     self.PlayerA = PlayerA
     self.PlayerB = PlayerB
     self.Active = Active

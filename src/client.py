@@ -67,7 +67,7 @@ class Player:
 
     @self.sio.event
     def waiting():
-      print("Waiting")
+      print("Waiting for your next game.")
 
   def ConnectToServer(self, ipAddress='127.0.0.1', port=5000):
     self.sio.connect('http://' + ipAddress + ':' + str(port))
@@ -113,10 +113,13 @@ if __name__ == "__main__":
     player.SendGameData(GameState)
     time.sleep(2)
     player.Ready()
-    time.sleep(4)
-    player.GetPlayerData()
-    time.sleep(2)
+    time.sleep(5)
+
+    #player.GetPlayerInfo()
+    #time.sleep(2)
     player.SendGameData(GameState)
+    time.sleep(3)
+    player.SignalVictory()
     time.sleep(1000)
     player.Disconnect()
   elif val == 2:
@@ -128,6 +131,14 @@ if __name__ == "__main__":
     player.Ready()
     time.sleep(6)
     player.SendInformationToOpponent("Hello dear opponent!")
+    time.sleep(1000)
+    player.Disconnect()
+  elif val == 3:
+    player = Player()
+    player.ConnectToServer('127.0.0.1', 5000)
+    time.sleep(2)
+    time.sleep(2)
+    player.Ready()
     time.sleep(1000)
     player.Disconnect()
   else: # do whatever you want here :)
