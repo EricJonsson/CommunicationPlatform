@@ -196,11 +196,14 @@ class CommunicationServer():  # External
         return game
 
   def CreateServer(self, ip, port):
+    # Create new Process with target _InternalCreateServer
     process = multiprocessing.Process(target=self._InternalCreateServer, args=[ip,port])
+    # Set Process to daemon to destroy when main thread finishes
     process.daemon = True
     process.start()
     return process
-  
+
+  # Original Create Server Implementation
   def _InternalCreateServer(self,ip,port):
     self.app = Flask(__name__)
     self.app.wsgi_app = socketio.WSGIApp(self.sio, self.app.wsgi_app)
