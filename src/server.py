@@ -6,7 +6,7 @@ import time
 import itertools
 import random
 import json
-
+import multiprocessing
 
 # Object Created by developers to start a server that listen for clients to connect
 class CommunicationServer():  # External
@@ -196,6 +196,12 @@ class CommunicationServer():  # External
         return game
 
   def CreateServer(self, ip, port):
+    process = multiprocessing.Process(target=self._InternalCreateServer, args=[ip,port])
+    process.daemon = True
+    process.start()
+    return process
+  
+  def _InternalCreateServer(self,ip,port):
     self.app = Flask(__name__)
     self.app.wsgi_app = socketio.WSGIApp(self.sio, self.app.wsgi_app)
     self.__callbacks()
@@ -338,8 +344,11 @@ class Game:
 
 if __name__ == "__main__":
   cs = CommunicationServer(8)
-  cs.CreateServer('127.0.0.1', 5000)
-
+  process = cs.CreateServer('127.0.0.1', 5000)
+  time.sleep(10)
+  print(process)
+  time.sleep(10)
+  
   #TEST by hand for the tournament and round generation
   #cs.Clients = [Client(0), Client(1), Client(2), Client(3)]
   #cs.generateTournament()
