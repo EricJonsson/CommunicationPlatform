@@ -336,9 +336,7 @@ class Game:
       self.PlayerB.win()
     return 0
 
-if __name__ == "__main__":
-  cs = CommunicationServer(8)
-  cs.CreateServer('127.0.0.1', 5000)
+#if __name__ == "__main__":
 
   #TEST by hand for the tournament and round generation
   #cs.Clients = [Client(0), Client(1), Client(2), Client(3)]
