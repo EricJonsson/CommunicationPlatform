@@ -33,6 +33,7 @@ class DictHandlerInterface(object):
             event: str,
             dict_handler: Optional[Callable[[str, Dict], None]]=None,
             *, logging=False, # whether to log `event: data`
+            # many events currently just call `logger.debug`, added this to make it easier
             is_dict_handler=False, # whether the `handler` handles dict
             data_arg_pos=None, # position of `data` in `handler` (starts from `0`). `None` if `data` is not passed, `None` also dismisses arg:`dict_handler`
             **kwargs
@@ -71,8 +72,19 @@ class DictHandlerInterface(object):
 
 
 class JsonClient(DictHandlerInterface, Client):
+    """
+    `sio.on` and `sio.event` can be used as before, with 3 added **optional** arguments documented above.
+    custom events of a client looks like
+        @sio.event
+        def custom_event(data): # note that `data` is at pos `0`
+            pass
+    so `DEFAULT_DATA_ARG_POS = 0`
+    """
     DEFAULT_DATA_ARG_POS = 0
 
 
 class JsonServer(DictHandlerInterface, Server):
+    """
+    similar to `JsonClient`
+    """
     DEFAULT_DATA_ARG_POS = 1
