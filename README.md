@@ -34,6 +34,18 @@ Class used to run a server / host games. This class is instantiated once, and wi
   
         Param1: Desc
         Param2: Desc
+
+## Player
+  ### Attributes:
+    attribute1
+  ### Methods: 
+* Method1
+  - Returns: None
+  - Parameters: | param1 | param2 |
+  
+        Param1: Desc
+        Param2: Desc
+
 * _Player_
   - Attributes:
   - Methods: 
@@ -48,6 +60,18 @@ Class used to run a server / host games. This class is instantiated once, and wi
       
       Keeps track of number of played games, games left in a tournament and number of wins. 
   - Methods: 
+
+## Game
+  ### Attributes:
+    attribute1
+  ### Methods: 
+* Method1
+  - Returns: None
+  - Parameters: | param1 | param2 |
+  
+        Param1: Desc
+        Param2: Desc
+
 * _Game_
   - Attributes:
   - Methods: 
