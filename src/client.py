@@ -101,45 +101,5 @@ class Player:
     print(self.PlayerInfo)
     return self.PlayerInfo
 
-if __name__ == "__main__":
+#if __name__ == "__main__":
 
-  val = int(input("Choose player 1 or 2: "))
-
-  if val == 1:
-    player = Player()
-    player.ConnectToServer('127.0.0.1', 5000)
-    time.sleep(2)
-    GameState = "[1,0,1] or sth"
-    player.SendGameData(GameState)
-    time.sleep(2)
-    player.Ready()
-    time.sleep(5)
-
-    #player.GetPlayerInfo()
-    #time.sleep(2)
-    player.SendGameData(GameState)
-    time.sleep(3)
-    player.SignalVictory()
-    time.sleep(1000)
-    player.Disconnect()
-  elif val == 2:
-    player = Player()
-    player.ConnectToServer('127.0.0.1', 5000)
-    time.sleep(2)
-    player.SendInformationToOpponent("Hello dear opponent!")
-    time.sleep(2)
-    player.Ready()
-    time.sleep(6)
-    player.SendInformationToOpponent("Hello dear opponent!")
-    time.sleep(1000)
-    player.Disconnect()
-  elif val == 3:
-    player = Player()
-    player.ConnectToServer('127.0.0.1', 5000)
-    time.sleep(2)
-    time.sleep(2)
-    player.Ready()
-    time.sleep(1000)
-    player.Disconnect()
-  else: # do whatever you want here :)
-    pass
