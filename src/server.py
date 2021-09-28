@@ -7,6 +7,7 @@ import itertools
 import random
 import json
 import multiprocessing
+from loggers import server_logger as logger
 
 # Object Created by developers to start a server that listen for clients to connect
 class CommunicationServer():  # External
@@ -24,7 +25,7 @@ class CommunicationServer():  # External
   def generateRound(self):
 
     if len(self.ActiveGames) > 0:
-      print('Error couldn\'t generate round - Round still in progress')
+      logger.debug('Error couldn\'t generate round - Round still in progress')
       return -1
 
     for t_game in self.TournamentGames:
@@ -46,7 +47,7 @@ class CommunicationServer():  # External
   #Fills TournamentGames with all matches for the tournament
   def generateTournament(self):
     if len(self.TournamentGames) != 0:
-      print('ERROR: couldn\'t generate tournament')
+      logger.debug('ERROR: couldn\'t generate tournament')
       return -1
     combinations = list(itertools.combinations(self.Clients, 2))
 
@@ -73,7 +74,7 @@ class CommunicationServer():  # External
       else:
         new_client = Client(sid)
         self.Clients.append(new_client)
-        print('Clients connected: ' + str(len(self.Clients))) # Ugly print
+        logger.debug('Clients connected: ' + str(len(self.Clients))) # Ugly print
 
     @self.sio.event
     def disconnect(sid):
@@ -82,17 +83,17 @@ class CommunicationServer():  # External
       if game:
         opponent = (game.PlayerA if game.PlayerA != sid else game.PlayerB).get_id()
         game.ConcludeGame(winner=opponent)
-      print('Clients connected: ' + str(len(self.Clients)))
+      logger.debug('Clients connected: ' + str(len(self.Clients)))
 
     @self.sio.event
     def message(sid, data):
-      print('received message: ' + data + ' from ' + sid)
+      logger.debug('received message: ' + data + ' from ' + sid)
 
     @self.sio.event
     def msg_to_opponent(sid, data):
-      print('msg_to_opponent: ' + data + ' from ' + sid)
-      #print('Clients: ' + str(len(self.Clients)))
-      #print(self.Clients[0].get_id())
+      logger.debug('msg_to_opponent: ' + data + ' from ' + sid)
+      #logger.debug('Clients: ' + str(len(self.Clients)))
+      #logger.debug(self.Clients[0].get_id())
 
       if game := self.FindActiveGameBySid(sid):
         if sid == game.PlayerA:
@@ -104,15 +105,15 @@ class CommunicationServer():  # External
           #self.sio.emit('msg_to_opponent', 'Your message got sent to opponent ' + opponent + '.', to=sid) # response to the one calling
           self.sio.emit('msg_to_opponent', '0', to=sid) # response to the one calling
           self.sio.emit('msg_from_opponent', 'Opponent ' + sid + ' sent "' + data + '".', to=opponent)
-          print('message sent to from ' + sid + ' to opponent ' + opponent)
+          logger.debug('message sent to from ' + sid + ' to opponent ' + opponent)
         else:
           #self.sio.emit('msg_to_opponent', 'You are not in a game, no opponent exists.', to=sid)
           self.sio.emit('msg_to_opponent', '-1', to=sid)
-          print('Player: ' + sid + ' is not in game, msg_to_opponent.')
+          logger.debug('Player: ' + sid + ' is not in game, msg_to_opponent.')
 
     @self.sio.event
     def start_game_request(sid):
-      print('start_game_request: from ' + sid)
+      logger.debug('start_game_request: from ' + sid)
       code = self.StartGame()
       self.sio.emit('start_game_request', str(code), to=sid)
 
@@ -124,13 +125,13 @@ class CommunicationServer():  # External
           playerData = client.PlayerInfo
 
       if playerData is not None:
-        print('sending')
+        logger.debug('sending')
         self.sio.emit('player_info', data=json.dumps(playerData.__dict__), to=sid)
 
 
     @self.sio.event
     def ready(sid):
-      print('ready: from ' + sid)
+      logger.debug('ready: from ' + sid)
 
       # Sets client.Ready to true
       for client in self.Clients:
@@ -150,11 +151,11 @@ class CommunicationServer():  # External
       if ready_counter == len(self.Clients): # everyone is ready
         code = self.StartGame()
       else:
-        print('Players Ready: ' + str(ready_counter) + '/' + str(len(self.Clients)) + ', waiting for all.')
+        logger.debug('Players Ready: ' + str(ready_counter) + '/' + str(len(self.Clients)) + ', waiting for all.')
 
     @self.sio.event
     def game_data(sid, data):
-      print('game_data: ' + data + ' from ' + sid)
+      logger.debug('game_data: ' + data + ' from ' + sid)
       opponent = self.GetOpponent(sid)
       if opponent is not None: # An opponent exists, the player is currently playing
         self.sio.emit('game_data', data, to=opponent) # relay to opponent!
@@ -167,7 +168,7 @@ class CommunicationServer():  # External
       if game := self.FindActiveGameBySid(sid):
         game.ConcludeGame(sid)
         self.ConcludedGames.append(game)
-        
+
         # remove the game from active games
         for a_game in self.ActiveGames:
           if a_game.PlayerA == game.PlayerA and a_game.PlayerB == game.PlayerB:
@@ -179,16 +180,16 @@ class CommunicationServer():  # External
 
         if len(self.TournamentGames) > 0: #there's an ongoing tournament, since a game is over we can try to start new games!
           code = self.generateRound()
-          #print("###### GENERATE ROUND: " + str(code))
-          #print("Active Games: " + str(len(self.ActiveGames)))
-          #print("Tournament Games: " + str(len(self.TournamentGames)))
+          #logger.debug("###### GENERATE ROUND: " + str(code))
+          #logger.debug("Active Games: " + str(len(self.ActiveGames)))
+          #logger.debug("Tournament Games: " + str(len(self.TournamentGames)))
 
           if code == 0:
-            print('Started Game: ' + str(game.PlayerA) + ' vs ' + str(game.PlayerB) + '.')
+            logger.debug('Started Game: ' + str(game.PlayerA) + ' vs ' + str(game.PlayerB) + '.')
           else:
-            print("Couldn't start any new games at this point.")
+            logger.debug("Couldn't start any new games at this point.")
       else:
-        print(f'ERROR: Event sent by inactive player `{sid}`.')
+        logger.debug(f'ERROR: Event sent by inactive player `{sid}`.')
 
   def FindActiveGameBySid(self, sid: str) -> Optional[TypeVar("Game")]:
     for game in self.ActiveGames:
@@ -212,39 +213,39 @@ class CommunicationServer():  # External
 
   def StartGame(self):
     if len(self.ActiveGames) != 0:
-      print("Cannot start a new game, a game is already going on.")
+      logger.debug("Cannot start a new game, a game is already going on.")
       return -1
 
-    print("------STARTING A GAME------")
+    logger.debug("------STARTING A GAME------")
     # Starts a game, different cases based on number of players
     if len(self.Clients) == 1:
       # only 1 player, start AI match
-      print("Starting AI Game (not implemented)")
+      logger.debug("Starting AI Game (not implemented)")
       return -1
     if len(self.Clients) == 2:
       # 2 players, match them up for a game
       game = Game(self.Clients[0], self.Clients[1])
       self.ActiveGames.append(game)
-      print(game)
-      print('Started Game: ' + str(game.PlayerA) + ' vs ' + str(game.PlayerB) + '.')
+      logger.debug(game)
+      logger.debug('Started Game: ' + str(game.PlayerA) + ' vs ' + str(game.PlayerB) + '.')
       self.sio.emit('game_info', 'you are now in a game vs ' + game.PlayerB.get_id(), to=game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
       self.sio.emit('game_info', 'you are now in a game vs ' + game.PlayerA.get_id(), to=game.PlayerB.get_id()) # vice-versa
 
 
     if len(self.Clients) > 2:
       # tournament
-      print("------TOURNAMENT MODE------")
+      logger.debug("------TOURNAMENT MODE------")
       if len(self.ActiveGames) != 0: # already exists ongoing games for some reason, error
         return -1
 
       self.generateTournament() # generate all games to be played into self.TournamentGames
-      print("generated tournament :)")
+      logger.debug("generated tournament :)")
       if len(self.TournamentGames) <= 0:
         return -1
 
       code = self.generateRound()
       if code == -1: #
-        print("Error: Couldn't generate a new round")
+        logger.debug("Error: Couldn't generate a new round")
         return -1
 
     return 0
@@ -345,19 +346,12 @@ class Game:
       self.PlayerB.win()
     return 0
 
-if __name__ == "__main__":
-  cs = CommunicationServer(8)
-  process = cs.CreateServer('127.0.0.1', 5000)
-  time.sleep(10)
-  print(process)
-  time.sleep(10)
-  
   #TEST by hand for the tournament and round generation
   #cs.Clients = [Client(0), Client(1), Client(2), Client(3)]
   #cs.generateTournament()
   #while(len(cs.TournamentGames) > 0):
     #cs.ActiveGames = []
     #cs.generateRound()
-    #print('===========================================================================')
+    #logger.debug('===========================================================================')
     #for game in cs.ActiveGames:
-      #print(game)
+      #logger.debug(game)
