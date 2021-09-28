@@ -1,7 +1,6 @@
 ###### Requirements without Version Specifiers ######
 Flask
 python-socketio
-multiprocess
 
 ###### Requirements with Version Specifiers ######
 # Examples: 
