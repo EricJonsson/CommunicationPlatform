@@ -55,7 +55,11 @@ def test_CreateServer():
     assert connection_status == 0
 
 # Test Client
-@pytest.mark.parametrize('NoClients', [16])
+@pytest.mark.parametrize('NoClients', [8])
 def test_Client(ClientInstances, NoClients):
     for client in ClientInstances:
         client.ConnectToServer(HOST,PORT)
+    time.sleep(2)
+    for client in ClientInstances:
+        client.Disconnect()
+    
