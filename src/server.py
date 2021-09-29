@@ -8,7 +8,7 @@ import random
 import json
 import multiprocessing
 
-from .loggers import server_logger as logger
+from loggers import server_logger as logger
 
 # Object Created by developers to start a server that listen for clients to connect
 class CommunicationServer():  # External

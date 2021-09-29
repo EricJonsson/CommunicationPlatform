@@ -42,5 +42,6 @@ elif val == 3:
 elif val == 4:
     cs = server.CommunicationServer(8)
     cs.CreateServer('127.0.0.1', 5000)
+    input('Press Any Key to Shut down')
 else: # do whatever you want here :)
     pass
