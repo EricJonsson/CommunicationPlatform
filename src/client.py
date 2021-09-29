@@ -53,11 +53,6 @@ class Player:
     def ready(data):
       logger.debug('ready: ' + data)
 
-    @self.sio.on('server_full')
-    def full():
-      logger.debug('Server is full :(')
-      self.sio.disconnect()
-
     @self.sio.on('disconnect')
     def disconnect():
       logger.debug('Disconnected')
