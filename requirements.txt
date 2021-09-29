@@ -2,6 +2,9 @@
 Flask
 python-socketio
 
+# Testing
+pytest
+
 ###### Requirements with Version Specifiers ######
 # Examples: 
 # docopt == 0.6.1             # Version Matching. Must be version 0.6.1
