@@ -77,7 +77,6 @@ Class used to run a server / host games. This class is instantiated once, and wi
   - Methods: 
 
 ## Tests
-    cd tests
     run: pytest
 Flags:
 
