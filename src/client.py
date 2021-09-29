@@ -3,8 +3,8 @@ import socketio
 import time
 import json
 
-from .server import PlayerInfo
-from .loggers import client_logger as logger
+#from server import PlayerInfo
+from loggers import client_logger as logger
 
 # Method for sending a file to your opponent during a game.
 class Player:
@@ -71,8 +71,13 @@ class Player:
       logger.debug("Waiting for your next game.")
 
   def ConnectToServer(self, ipAddress='127.0.0.1', port=5000):
-    self.sio.connect('http://' + ipAddress + ':' + str(port))
-    logger.debug('Connected to ' + ipAddress + ':' +str(port))
+    try:
+      self.sio.connect('http://' + ipAddress + ':' + str(port))
+      logger.debug('Connected to ' + ipAddress + ':' +str(port))
+      return 0
+    except socketio.exceptions.ConnectionError as e:
+      logger.debug('Failed to connect to server')
+      return -1
 
   def Disconnect(self):
     self.sio.disconnect()
@@ -103,4 +108,3 @@ class Player:
     return self.PlayerInfo
 
 #if __name__ == "__main__":
-

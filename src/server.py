@@ -7,7 +7,9 @@ import itertools
 import random
 import json
 
-from .loggers import server_logger as logger
+from socketio.server import Server
+
+from loggers import server_logger as logger
 
 # Object Created by developers to start a server that listen for clients to connect
 class CommunicationServer():  # External
@@ -69,8 +71,7 @@ class CommunicationServer():  # External
     @self.sio.event
     def connect(sid, environ, auth):
       if len(self.Clients) >= self.MaxConcurrentClients:
-        self.sio.emit('server_full', to=sid)
-        self.sio.disconnect(sid)
+        raise socketio.exceptions.ConnectionRefusedError('Server is full')
       else:
         new_client = Client(sid)
         self.Clients.append(new_client)
