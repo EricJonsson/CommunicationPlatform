@@ -51,11 +51,24 @@ def test_CreateServer():
     assert connection_status == 0
 
 # Test Client
-@pytest.mark.parametrize('NoClients', [8])
+@pytest.mark.parametrize('NoClients', [12])
 def test_Client(ClientInstances, NoClients):
-    for client in ClientInstances:
-        client.ConnectToServer(HOST,PORT)
-    time.sleep(2)
-    for client in ClientInstances:
+    Connected = []
+    Disconnected = ClientInstances
+    
+    for i in range(8):
+        assert ClientInstances[i].ConnectToServer(HOST,PORT) == 0
+        Connected.append(ClientInstances[i])
+        time.sleep(1)
+    Disconnected = ClientInstances[:8]
+    assert len(SERVER.Clients) == 8
+
+
+    for i in range(4):
+        assert Disconnected[i].ConnectToServer(HOST,PORT) == -1
+        time.sleep(1)
+
+    
+    for client in Connected:
         client.Disconnect()
     

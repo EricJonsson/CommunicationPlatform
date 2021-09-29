@@ -9,7 +9,7 @@ import json
 import textwrap
 from loggers import server_logger as logger
 from common import JsonServer as Server
-import multiprocessing
+import threading
 
 #from socketio.server import Server
 
@@ -209,12 +209,12 @@ class CommunicationServer():  # External
         return game
 
   def CreateServer(self, ip, port):
-    # Create new Process with target _InternalCreateServer
-    process = multiprocessing.Process(target=self._InternalCreateServer, args=[ip,port])
+    # Create new thread with target _InternalCreateServer
+    thread = threading.Thread(target=self._InternalCreateServer, args=[ip,port])
     # Set Process to daemon to destroy when main thread finishes
-    process.daemon = True
-    process.start()
-    return process
+    thread.daemon = True
+    thread.start()
+    return thread
 
   # Original Create Server Implementation
   def _InternalCreateServer(self,ip,port):

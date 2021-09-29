@@ -5,6 +5,7 @@ import json
 from server import PlayerInfo
 from loggers import client_logger as logger
 from common import JsonClient as Client
+import socketio
 
 # Method for sending a file to your opponent during a game.
 class Player:
