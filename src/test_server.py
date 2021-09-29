@@ -3,7 +3,7 @@
 import pytest, time, multiprocessing, socket
 import server, client
 
-#### Variables and global Server object ###
+##### Variables and global Server object #####
 HOST = '127.0.0.1'
 PORT = 5000
 # Server object is instantiated outside of test scope as there is no shutdown feature
@@ -11,19 +11,8 @@ SERVER = server.CommunicationServer(8)
 SERVER.CreateServer(HOST,PORT)
 time.sleep(1)
 
-### Fixtures ### 
 
-# Server Instances Fixture
-# Argument: Maximum number of concurrent users
-# Return: List of instantiated CommunicationServer objects
-
-
-#@pytest.fixture
-#def ServerInstances(MaxConcurrent):
-#    Instances = []
-#    for element in MaxConcurrent:
-#        Instances.append(server.CommunicationServer(element))
-#    return Instances
+##### FIXTURES #####
 
 # Client Instances Fixture
 # Argument: Number of Clients to create
@@ -35,40 +24,71 @@ def ClientInstances(NoClients):
         Instances.append(client.Player())
     return Instances
 
-# Test Server Capacity
-#@pytest.mark.parametrize('MaxConcurrent', [[-50,-10,-5,-1,0,1,5,10,50]])
-#def test_ServerCapacity(ServerInstances, MaxConcurrent):
-#    print('\nOutput: ')
-#    for i in range(len(MaxConcurrent)):
-#        assert ServerInstances[i].MaxConcurrentClients == MaxConcurrent[i]
-#        print('Server | Actual: ', str(ServerInstances[i].MaxConcurrentClients), " | ", str(MaxConcurrent[i]))
 
-# Test CreateServer() 
-def test_CreateServer():    
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    addr = ('127.0.0.1', 5000)
-    connection_status = sock.connect_ex(addr)
-    assert connection_status == 0
+##### TESTS #####
 
-# Test Client
-@pytest.mark.parametrize('NoClients', [12])
-def test_Client(ClientInstances, NoClients):
-    Connected = []
-    Disconnected = ClientInstances
-    
-    for i in range(8):
+# Test Client Connections and Server Capacity
+@pytest.mark.parametrize('NoClients', [16])
+def test_ClientConnect(ClientInstances, NoClients):
+
+    # List of indices in ClientInstances list
+    Set = [0,1,2,3,4,5,6,7]
+    for i in Set:
+        # Assert that client connection attempt returns 0
         assert ClientInstances[i].ConnectToServer(HOST,PORT) == 0
-        Connected.append(ClientInstances[i])
-        time.sleep(1)
-    Disconnected = ClientInstances[:8]
+    time.sleep(1)
+    # Check that server has 8 clients connected
     assert len(SERVER.Clients) == 8
 
+    Set = [8,9,10,11]
+    for i in Set:
+        # Assert that client connection attempt returns -1
+        assert ClientInstances[i].ConnectToServer(HOST,PORT) == -1
+    time.sleep(1)
+    # Check that server did not connect any more clients
+    assert len(SERVER.Clients) == 8
 
-    for i in range(4):
-        assert Disconnected[i].ConnectToServer(HOST,PORT) == -1
-        time.sleep(1)
+    Set = [0,1,2,3]
+    for i in Set:
+        ClientInstances[i].Disconnect()
+    time.sleep(1)
+    # Check that server registered 4 client disconnects
+    assert len(SERVER.Clients) == 4
 
-    
-    for client in Connected:
+    Set = [8,9,10,11]
+    for i in Set:
+        assert ClientInstances[i].ConnectToServer(HOST,PORT) == 0
+    time.sleep(1)
+    assert len(SERVER.Clients) == 8
+
+    # Assert client connection failed & capacity = 8
+    assert ClientInstances[12].ConnectToServer(HOST,PORT) == -1
+    assert SERVER.MaxConcurrentClients == 8
+    # Increment server capacity by 2
+    SERVER.MaxConcurrentClients += 2
+    time.sleep(1)
+    # Check that capacity was incremented
+    assert SERVER.MaxConcurrentClients == 10
+    # Assert that two more clients can connect, but fail on third
+    assert ClientInstances[12].ConnectToServer(HOST,PORT) == 0
+    assert ClientInstances[13].ConnectToServer(HOST,PORT) == 0
+    assert ClientInstances[14].ConnectToServer(HOST,PORT) == -1
+    time.sleep(1)
+    # Check that server has 10 clients connected
+    assert len(SERVER.Clients) == 10
+    # Disconnect 2 Clients
+    ClientInstances[12].Disconnect()
+    ClientInstances[13].Disconnect()
+    # Decrement server capacity
+    SERVER.MaxConcurrentClients -= 2
+    time.sleep(1)
+    assert SERVER.MaxConcurrentClients == 8
+    time.sleep(1)
+    assert len(SERVER.Clients) == 8
+
+    # Disconnect all clients
+    for client in ClientInstances:
         client.Disconnect()
-    
+    # Final Sleep to allow disconnections to finalize
+    time.sleep(2)
+
