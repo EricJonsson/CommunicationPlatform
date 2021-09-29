@@ -6,16 +6,18 @@ import time
 import itertools
 import random
 import json
+import textwrap
+from loggers import server_logger as logger
+from common import JsonServer as Server
 import multiprocessing
 
-from .loggers import server_logger as logger
 
 # Object Created by developers to start a server that listen for clients to connect
 class CommunicationServer():  # External
   def __init__(self, maxConcurr=8):
     self.MaxConcurrentClients = maxConcurr
     self.Clients = []
-    self.sio = socketio.Server()
+    self.sio = Server()
     self.app = None
     self.ActiveGames = []
     self.TournamentGames = []
@@ -35,8 +37,12 @@ class CommunicationServer():  # External
         contains = a_game.checkOverlap(t_game) or contains
       if not contains: # start the game
         self.ActiveGames.append(t_game)
-        self.sio.emit('game_info', 'you are now in a game vs ' + t_game.PlayerB.get_id(), to=t_game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
-        self.sio.emit('game_info', 'you are now in a game vs ' + t_game.PlayerA.get_id(), to=t_game.PlayerB.get_id()) # vice-versa
+        self.sio.emit('game_info', {
+            'data': 'you are now in a game vs {}'.format(t_game.PlayerB)
+        }, to=t_game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
+        self.sio.emit('game_info', {
+            'data': 'you are now in a game vs {}'.format(t_game.PlayerA)
+        }, to=t_game.PlayerB.get_id()) # vice-versa
 
 
     #Remove Active games from tournament-list
@@ -75,7 +81,7 @@ class CommunicationServer():  # External
       else:
         new_client = Client(sid)
         self.Clients.append(new_client)
-        logger.debug('Clients connected: ' + str(len(self.Clients))) # Ugly print
+        logger.debug('Clients connected: {}'.format(len(self.Clients))) # Ugly print
 
     @self.sio.event
     def disconnect(sid):
@@ -84,17 +90,17 @@ class CommunicationServer():  # External
       if game:
         opponent = (game.PlayerA if game.PlayerA != sid else game.PlayerB).get_id()
         game.ConcludeGame(winner=opponent)
-      logger.debug('Clients connected: ' + str(len(self.Clients)))
+      logger.debug('Clients connected: {}'.format(len(self.Clients)))
 
-    @self.sio.event
-    def message(sid, data):
-      logger.debug('received message: ' + data + ' from ' + sid)
+    # @self.sio.event # not used currently
+    # def message(sid, data):
+    #   logger.debug('received message: ' + data + ' from ' + sid)
 
-    @self.sio.event
+    @self.sio.json_event
     def msg_to_opponent(sid, data):
-      logger.debug('msg_to_opponent: ' + data + ' from ' + sid)
-      #logger.debug('Clients: ' + str(len(self.Clients)))
-      #logger.debug(self.Clients[0].get_id())
+      logger.debug(f'msg_to_opponent: {data} from {sid}')
+      #logger.debug('Clients: {}'.format(len(self.Clients)))
+      #logger.debug(self.Clients[0])
 
       if game := self.FindActiveGameBySid(sid):
         if sid == game.PlayerA:
@@ -103,20 +109,25 @@ class CommunicationServer():  # External
           opponent = game.PlayerA.get_id()
 
         if opponent is not None: # if opponent is not None an opponent exists, meaning the player is in an active game
-          #self.sio.emit('msg_to_opponent', 'Your message got sent to opponent ' + opponent + '.', to=sid) # response to the one calling
-          self.sio.emit('msg_to_opponent', '0', to=sid) # response to the one calling
-          self.sio.emit('msg_from_opponent', 'Opponent ' + sid + ' sent "' + data + '".', to=opponent)
-          logger.debug('message sent to from ' + sid + ' to opponent ' + opponent)
+          self.sio.emit('msg_to_opponent', {
+              'opponent': '0'
+          }, to=sid) # response to the one calling
+          self.sio.emit('msg_from_opponent', {
+              'data': f'Opponent {sid} sent "{data}".'
+          }, to=opponent)
+          logger.debug(f'message sent to from {sid} to opponent {opponent}')
         else:
           #self.sio.emit('msg_to_opponent', 'You are not in a game, no opponent exists.', to=sid)
-          self.sio.emit('msg_to_opponent', '-1', to=sid)
-          logger.debug('Player: ' + sid + ' is not in game, msg_to_opponent.')
+          self.sio.emit('msg_to_opponent', {
+              'opponent': '-1'
+          }, to=sid)
+          logger.debug(f'Player: {sid} is not in game, msg_to_opponent.')
 
     @self.sio.event
     def start_game_request(sid):
-      logger.debug('start_game_request: from ' + sid)
+      logger.debug(f'start_game_request: from {sid}')
       code = self.StartGame()
-      self.sio.emit('start_game_request', str(code), to=sid)
+      self.sio.emit('start_game_request', {"code": str(code)}, to=sid)
 
     @self.sio.on('player_data_request')
     def player_data_request(sid):
@@ -127,8 +138,7 @@ class CommunicationServer():  # External
 
       if playerData is not None:
         logger.debug('sending')
-        self.sio.emit('player_info', data=json.dumps(playerData.__dict__), to=sid)
-
+        self.sio.emit('player_info', data=playerData.__dict__, to=sid)
 
     @self.sio.event
     def ready(sid):
@@ -138,7 +148,7 @@ class CommunicationServer():  # External
       for client in self.Clients:
         if client == sid:
           client.Ready = True
-          self.sio.emit('ready', str(0), to=sid)
+          self.sio.emit('ready', {"code": 0}, to=sid)
           break
       # NOTE: Currently does not have the case if sending -1 (fail) for a ready() call
 
@@ -152,17 +162,17 @@ class CommunicationServer():  # External
       if ready_counter == len(self.Clients): # everyone is ready
         code = self.StartGame()
       else:
-        logger.debug('Players Ready: ' + str(ready_counter) + '/' + str(len(self.Clients)) + ', waiting for all.')
+        logger.debug(f'Players Ready: {ready_counter}/{len(self.Clients)}, waiting for all.')
 
-    @self.sio.event
+    @self.sio.json_event
     def game_data(sid, data):
-      logger.debug('game_data: ' + data + ' from ' + sid)
+      logger.debug(f'game_data: {data} from {sid}')
       opponent = self.GetOpponent(sid)
       if opponent is not None: # An opponent exists, the player is currently playing
         self.sio.emit('game_data', data, to=opponent) # relay to opponent!
-        self.sio.emit('game_data', str(0), to=sid) # succesfully sent response
+        self.sio.emit('game_data', {"data": 0}, to=sid) # succesfully sent response
       else:
-        self.sio.emit('game_data', str(-1), to=sid) # error code response
+        self.sio.emit('game_data', {"data": -1}, to=sid) # error code response
 
     @self.sio.event
     def gameover(sid):
@@ -229,8 +239,12 @@ class CommunicationServer():  # External
       self.ActiveGames.append(game)
       logger.debug(game)
       logger.debug('Started Game: ' + str(game.PlayerA) + ' vs ' + str(game.PlayerB) + '.')
-      self.sio.emit('game_info', 'you are now in a game vs ' + game.PlayerB.get_id(), to=game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
-      self.sio.emit('game_info', 'you are now in a game vs ' + game.PlayerA.get_id(), to=game.PlayerB.get_id()) # vice-versa
+      self.sio.emit('game_info', {
+          'data': 'you are now in a game vs {game.PlayerB}'
+      }, to=game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
+      self.sio.emit('game_info', {
+          'data': 'you are now in a game vs {game.PlayerA}'
+      }, to=game.PlayerB.get_id()) # vice-versa
 
 
     if len(self.Clients) > 2:
@@ -272,7 +286,7 @@ class Client:
     self.PlayerInfo = PlayerInfo()
 
   def __str__(self):
-    return '[SID: ' + str(self.ID) + ']' # might want to add playerinfo here later on
+    return f'[SID: {self.ID}]' # might want to add playerinfo here later on
 
   def __eq__(self, other):
     if isinstance(other, Client):
@@ -324,11 +338,13 @@ class Game:
     self.PlayerB.addGameLeft()
 
   def __str__(self):
-    return 'PlayerA: ' + str(self.PlayerA) + '\n' \
-    + 'PlayerB: ' + str(self.PlayerB) + '\n' \
-    + 'Active: ' + str(self.Active) + '\n' \
-    + 'Winner: ' + str(self.Winner) + '\n' \
-    + '----------------------------'
+    return textwrap.dedent(f'''\
+        PlayerA: {self.PlayerA}
+        PlayerB: {self.PlayerB}
+        Active: {self.Active}
+        Winner: {self.Winner}
+        ----------------------------\
+    ''')
 
   #Checks if any of the players occur in both games
   def checkOverlap(self, other):

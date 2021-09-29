@@ -1,57 +1,55 @@
 # Communication Platform - Client
-import socketio
 import time
 import json
 
-from .server import PlayerInfo
-from .loggers import client_logger as logger
+
+from server import PlayerInfo
+from loggers import client_logger as logger
+from common import JsonClient as Client
 
 # Method for sending a file to your opponent during a game.
 class Player:
   PlayerInfo = None
 
   def __init__(self):
-    self.sio = socketio.Client()
+    self.sio = Client(logger=logger)
     self.__callbacks()
 
   def __callbacks(self):
 
-    @self.sio.event
+    @self.sio.json_event(logging=True)
     def msg_to_opponent(data):
-      logger.debug('msg_to_opponent: ' + data)
+      pass
 
-    @self.sio.event
+    @self.sio.json_event(logging=True)
     def msg_from_opponent(data):
-      logger.debug('msg_from_opponent: ' + data)
+      pass
 
-    @self.sio.event
+    @self.sio.json_event(logging=True)
     def game_info(data):
-      logger.debug('game_info: ' + data)
+      pass
 
-    @self.sio.event
+    @self.sio.json_event(logging=True)
     def player_info(data):
-      logger.debug('player_info: ' + data)
-      self.PlayerInfo = json.loads(data)
+      self.PlayerInfo = data
 
-    @self.sio.event
+    @self.sio.json_event(logging=True)
     def game_data(data):
-      if data == "0" or data == "-1":
-        logger.debug("game_data: " + data)
-      else: # this is actually game data and not some success/fail code
-        logger.debug("game_data: recieved a new game state " + data)
+      if not (data == "0" or data == "-1"):
+        # this is actually game data and not some success/fail code
+        logger.debug(f"game_data: recieved a new game state {data}")
 
-
-    @self.sio.event
+    @self.sio.json_event(logging=True)
     def start_game_request(data):
-      logger.debug('start_game_request: ' + data)
-      if int(data) == 0:
+      code = data["code"]
+      if code == 0:
         logger.debug("Request granted, started a new game!")
-      elif int(data) == -1:
+      elif code == -1:
         logger.debug("Requested denied, didn't start a new game.")
 
-    @self.sio.event
+    @self.sio.json_event(logging=True)
     def ready(data):
-      logger.debug('ready: ' + data)
+      pass
 
     @self.sio.on('server_full')
     def full():
@@ -78,7 +76,7 @@ class Player:
     self.sio.disconnect()
 
   def SendInformationToOpponent(self, information):
-    logger.debug('SendInformationToOpponent("' + information + '")')
+    logger.debug(f'SendInformationToOpponent("{information}")')
     self.sio.emit('msg_to_opponent', information)
 
   def RequestStartGame(self):
@@ -103,4 +101,3 @@ class Player:
     return self.PlayerInfo
 
 #if __name__ == "__main__":
-
