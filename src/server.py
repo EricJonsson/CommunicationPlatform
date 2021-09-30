@@ -173,7 +173,6 @@ class CommunicationServer():  # External
           break
       # NOTE: Currently does not have the case if sending -1 (fail) for a ready() call
 
-
       # Check if all players are ready, if they are we start a game!
       ready_counter = 0
       for client in self.Clients:
@@ -184,16 +183,6 @@ class CommunicationServer():  # External
         code = self.StartGame()
       else:
         logger.debug(f'Players Ready: {ready_counter}/{len(self.Clients)}, waiting for all.')
-
-    @self.sio.json_event
-    def game_data(sid, data):
-      logger.debug(f'game_data: {data} from {sid}')
-      opponent = self.GetOpponent(sid)
-      if opponent is not None: # An opponent exists, the player is currently playing
-        self.sio.emit('game_data', data, to=opponent) # relay to opponent!
-        self.sio.emit('game_data', {"data": 0}, to=sid) # succesfully sent response
-      else:
-        self.sio.emit('game_data', {"data": -1}, to=sid) # error code response
 
     @self.sio.event
     def gameover(sid):

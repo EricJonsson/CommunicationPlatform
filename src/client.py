@@ -16,7 +16,6 @@ class Player:
     self.__callbacks()
 
   def __callbacks(self):
-
    # @self.sio.json_event(logging=True)
    # def msg_to_opponent(data):
    #   self.MessageQue.append(data)
@@ -33,13 +32,6 @@ class Player:
     def player_info(data):
       self.PlayerInfo = data
 
-    @self.sio.json_event(logging=True)
-    def game_data(data):
-      if not (data == "0" or data == "-1"):
-        # this is actually game data and not some success/fail code
-        logger.debug(f"game_data: recieved a new game state {data}")
-        self.MessageQue.append(data)
-        
     @self.sio.json_event(logging=True)
     def start_game_request(data):
       code = data["code"]
@@ -87,10 +79,6 @@ class Player:
   def Ready(self):
     logger.debug("Ready")
     self.sio.emit('ready')
-
-  def SendGameData(self, GameState):
-    logger.debug("SendGameData")
-    self.sio.emit('game_data', GameState)
 
   def SignalVictory(self):
     logger.debug("Game over")
