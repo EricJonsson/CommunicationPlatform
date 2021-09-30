@@ -9,12 +9,12 @@ import socketio
 
 # Method for sending a file to your opponent during a game.
 class Player:
-  PlayerInfo = None
-  MessageQue = []
   def __init__(self):
+    self.MessageQue = []
+    self.PlayerInfo = None
     self.sio = Client(logger=logger)
     self.__callbacks()
-
+    
   def __callbacks(self):
 
    # @self.sio.json_event(logging=True)
@@ -24,7 +24,7 @@ class Player:
     @self.sio.json_event(logging=True)
     def msg_from_opponent(data):
       self.MessageQue.append(data)
-
+      
     @self.sio.json_event(logging=True)
     def game_info(data):
       pass
@@ -38,7 +38,7 @@ class Player:
       if not (data == "0" or data == "-1"):
         # this is actually game data and not some success/fail code
         logger.debug(f"game_data: recieved a new game state {data}")
-        self.MessageQue.append(data)
+        #self.MessageQue.append(data)
         
     @self.sio.json_event(logging=True)
     def start_game_request(data):
@@ -104,10 +104,13 @@ class Player:
   # Get Messages from Opponent
   # If Blocking, wait until there are messages available, specify timeout to break wait after timeout
   def GetMessageFromOpponent(self,blocking=False,timeout=None):
-
     if blocking:
       self.WaitForMessage(timeout=timeout)
-    return self.MessageQue
+
+    Messages = self.MessageQue
+    self.MessageQue = []
+    
+    return Messages
 
   # Wait until there are messages in MessageQue
   def WaitForMessage(self,timeout):

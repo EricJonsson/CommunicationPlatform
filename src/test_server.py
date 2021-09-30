@@ -43,21 +43,23 @@ def test_ClientMatching(ClientInstances, NoClients):
     Client_2.Ready()
     time.sleep(2)
     
-    Client_1.SendInformationToOpponent(GameState)
-    time.sleep(2)
 
+    data_2 = Client_2.GetMessageFromOpponent(blocking = True, timeout = 60)
 
-    data_2 = Client_2.GetMessageFromOpponent()
-    print('*** Data Recieved on client 2 ***')
-    print(data_2)
-    print('****************************')
-    data_1 = Client_1.GetMessageFromOpponent()
-    print('*** Data Recieved on client 1 ***')
-    print(data_1)
-    print('****************************')
     
-    assert data['Data'] == 'Message'
-    assert data['Error'] == None
+
+    thread = threading.Thread(target=Client_2.SendInformationToOpponent({"data": "Hello dear opponent!"}))
+    # Set Process to daemon to destroy when main thread finishes
+    thread.daemon = True
+    thread.start()
+
+    
+    #assert len(data_1) == 0
+    assert len(data_2) > 0
+
+    
+    #assert data['Data'] == 'Message'
+    #assert data['Error'] == None
 
     for client in ClientInstances:
         client.Disconnect()
