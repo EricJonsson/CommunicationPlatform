@@ -1,6 +1,6 @@
 # Test Server / Client Communication
 
-import pytest, time, multiprocessing, socket
+import pytest, time, threading, socket
 import server, client
 
 ##### Variables and global Server object #####
@@ -24,8 +24,13 @@ def ClientInstances(NoClients):
         Instances.append(client.Player())
     return Instances
 
-
 ##### TESTS #####
+
+
+def delayedSendinformation(client):
+    print('Executing', flush=True)
+    time.sleep(10)
+    client.SendInformationToOpponent({"data": "Hello dear opponent!"})
 
 # Test Client Matching and Sending Data
 @pytest.mark.parametrize('NoClients', [8])
@@ -42,22 +47,18 @@ def test_ClientMatching(ClientInstances, NoClients):
     Client_1.Ready()
     Client_2.Ready()
     time.sleep(2)
-    
-    Client_1.SendInformationToOpponent(GameState)
-    time.sleep(2)
+
+    thread = threading.Thread(target=delayedSendinformation, args=[Client_1])
+    thread.start()
 
 
-    data_2 = Client_2.GetMessageFromOpponent()
-    print('*** Data Recieved on client 2 ***')
-    print(data_2)
-    print('****************************')
-    data_1 = Client_1.GetMessageFromOpponent()
-    print('*** Data Recieved on client 1 ***')
-    print(data_1)
-    print('****************************')
+    data_2 = Client_2.GetMessageFromOpponent(blocking = True, timeout = 60)
     
-    assert data['Data'] == 'Message'
-    assert data['Error'] == None
+    #assert len(data_1) == 0
+    assert len(data_2) > 0
+    
+    #assert data['Data'] == 'Message'
+    #assert data['Error'] == None
 
     for client in ClientInstances:
         client.Disconnect()

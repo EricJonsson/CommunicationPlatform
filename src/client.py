@@ -9,21 +9,21 @@ import socketio
 
 # Method for sending a file to your opponent during a game.
 class Player:
-  PlayerInfo = None
-  MessageQue = []
   def __init__(self):
+    self.MessageQue = []
+    self.PlayerInfo = None
     self.sio = Client(logger=logger)
     self.__callbacks()
-
+    
   def __callbacks(self):
    # @self.sio.json_event(logging=True)
    # def msg_to_opponent(data):
    #   self.MessageQue.append(data)
-
+    
     @self.sio.json_event(logging=True)
     def msg_from_opponent(data):
       self.MessageQue.append(data)
-
+      
     @self.sio.json_event(logging=True)
     def game_info(data):
       pass
@@ -92,15 +92,18 @@ class Player:
   # Get Messages from Opponent
   # If Blocking, wait until there are messages available, specify timeout to break wait after timeout
   def GetMessageFromOpponent(self,blocking=False,timeout=None):
-
     if blocking:
       self.WaitForMessage(timeout=timeout)
-    return self.MessageQue
+
+    Messages = self.MessageQue
+    self.MessageQue = []
+    
+    return Messages
 
   # Wait until there are messages in MessageQue
   def WaitForMessage(self,timeout):
-    CurrentWait = 0
-    while len(self.MessageQue) < 1 and CurrentWait < timeout:
+    max = time.time() + timeout
+    while len(self.MessageQue) < 1 and time.time() < max:
       time.sleep(1)
-      CurrentWait += 1
+      
 #if __name__ == "__main__":
