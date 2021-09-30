@@ -27,6 +27,42 @@ def ClientInstances(NoClients):
 
 ##### TESTS #####
 
+# Test Client Matching and Sending Data
+@pytest.mark.parametrize('NoClients', [8])
+def test_ClientMatching(ClientInstances, NoClients):
+
+    Client_1 = ClientInstances[0]
+    Client_2 = ClientInstances[1]
+
+    GameState = {'Data':'Message','Error':None}
+
+    assert Client_1.ConnectToServer(HOST,PORT) == 0
+    assert Client_2.ConnectToServer(HOST,PORT) == 0
+
+    Client_1.Ready()
+    Client_2.Ready()
+    time.sleep(2)
+    
+    print('***********************************')
+    Client_1.SendInformationToOpponent(GameState)
+    Client_1.sio.emit('testEmit', {'TEST':'t'})
+    print('***********************************')
+    time.sleep(10)
+
+
+    print('********** C1')
+    print(Client_1.GetMessageFromOpponent())
+    print('********** C2')
+    print(Client_2.GetMessageFromOpponent())
+    print('********** END')
+
+    #print(' ****************** GAMEDATA RECIEVED *******************')
+    #print(data)
+
+
+    for client in ClientInstances:
+        client.Disconnect()
+    
 # Test Client Connections and Server Capacity
 @pytest.mark.parametrize('NoClients', [16])
 def test_ClientConnect(ClientInstances, NoClients):

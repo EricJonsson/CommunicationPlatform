@@ -10,7 +10,7 @@ import socketio
 # Method for sending a file to your opponent during a game.
 class Player:
   PlayerInfo = None
-
+  MessageQue = []
   def __init__(self):
     self.sio = Client(logger=logger)
     self.__callbacks()
@@ -19,11 +19,11 @@ class Player:
 
     @self.sio.json_event(logging=True)
     def msg_to_opponent(data):
-      pass
+      self.MessageQue.append(data)
 
     @self.sio.json_event(logging=True)
     def msg_from_opponent(data):
-      pass
+      self.MessageQue.append(data)
 
     @self.sio.json_event(logging=True)
     def game_info(data):
@@ -38,7 +38,8 @@ class Player:
       if not (data == "0" or data == "-1"):
         # this is actually game data and not some success/fail code
         logger.debug(f"game_data: recieved a new game state {data}")
-
+        self.MessageQue.append(data)
+        
     @self.sio.json_event(logging=True)
     def start_game_request(data):
       code = data["code"]
@@ -100,4 +101,19 @@ class Player:
     logger.debug(self.PlayerInfo)
     return self.PlayerInfo
 
+  # Get Messages from Opponent
+  # If Blocking, wait until there are messages available, specify timeout to break wait after timeout
+  def GetMessageFromOpponent(self,blocking=False,timeout=None):
+
+    if blocking:
+      self.WaitForMessage(timeout=timeout)
+    return self.MessageQue
+
+  # Wait until there are messages in MessageQue
+  def WaitForMessage(self,timeout):
+    CurrentWait = 0
+    while len(self.MessageQue) < 1 and CurrentWait < timeout:
+      time.sleep(1)
+      CurrentWait += 1
+      print(str(CurrentWait), ' / ', str(timeout))
 #if __name__ == "__main__":
