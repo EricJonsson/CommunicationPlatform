@@ -16,6 +16,7 @@ class Player:
     self.SignalVictoryReturn = None
     self.RequestStartGameReturn = None
     self.SendInformationToOpponentReturn = None
+    self.DisconnectReturn = None
     self.sio = Client(logger=logger)
     self.__callbacks()
     
@@ -35,6 +36,10 @@ class Player:
     @self.sio.json_event(logging=True)
     def player_info(data):
       self.PlayerInfo = data
+
+    @self.sio.json_event(logging=True)
+    def custom_disconnect(data):
+      self.DisconnectReturn = int(data['code'])
 
     @self.sio.json_event(logging=True)
     def start_game_request(data):
@@ -76,7 +81,15 @@ class Player:
       return -1
 
   def Disconnect(self):
-    self.sio.disconnect()
+    logger.debug("Disconnect")
+    try:
+      self.sio.emit('custom_disconnect')
+      self.WaitForDisconnect(1)
+      self.sio.disconnect()
+    except socketio.exceptions.BadNamespaceError as e:
+      self.DisconnectReturn = -1
+
+    return self.DisconnectReturn
 
   def SendInformationToOpponent(self, information):
     logger.debug(f'SendInformationToOpponent("{information}")')
@@ -118,6 +131,12 @@ class Player:
   def WaitForMessage(self,timeout):
     max = time.time() + timeout
     while len(self.MessageQue) < 1 and time.time() < max:
+      time.sleep(1)
+
+  # Wait until client gets disconnect signal from server DisconnectReturn
+  def WaitForDisconnect(self, timeout):
+    max = time.time() + timeout
+    while self.DisconnectReturn is None and time.time() < max:
       time.sleep(1)
       
 #if __name__ == "__main__":

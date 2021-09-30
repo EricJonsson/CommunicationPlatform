@@ -150,7 +150,12 @@ class CommunicationServer():  # External
     def start_game_request(sid):
       logger.debug(f'start_game_request: from {sid}')
       code = self.StartGame()
-      self.sio.emit('start_game_request', {"code": str(code)}, to=sid)
+      self.sio.emit('start_game_request', {'code': str(code)}, to=sid)
+
+    @self.sio.event
+    def custom_disconnect(sid):
+      logger.debug(f'custom_disconnect: from {sid}')
+      self.sio.emit('custom_disconnect', {'code': 0}, to=sid)
 
     @self.sio.on('player_data_request')
     def player_data_request(sid):
