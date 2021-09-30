@@ -20,7 +20,7 @@ class Player:
    # @self.sio.json_event(logging=True)
    # def msg_to_opponent(data):
    #   self.MessageQue.append(data)
-
+    
     @self.sio.json_event(logging=True)
     def msg_from_opponent(data):
       self.MessageQue.append(data)
@@ -114,8 +114,8 @@ class Player:
 
   # Wait until there are messages in MessageQue
   def WaitForMessage(self,timeout):
-    CurrentWait = 0
-    while len(self.MessageQue) < 1 and CurrentWait < timeout:
+    max = time.time() + timeout
+    while len(self.MessageQue) < 1 and time.time() < max:
       time.sleep(1)
-      CurrentWait += 1
+      
 #if __name__ == "__main__":
