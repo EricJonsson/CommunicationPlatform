@@ -59,16 +59,22 @@ class DictHandlerInterface(object):
     def emit(self, event: str, data: Dict=None, **kwargs):
         return super().emit(event, json.dumps(data) if data is not None else None, **kwargs)
 
-    def __getattr__(self, name):
-        if name not in ('json_on', 'json_event'):
-            return super().__getattr__(name)
+    def json_on(self, *args, **kwargs):
+        default_kwargs = {
+            'data_arg_pos': self.DEFAULT_DATA_ARG_POS,
+            'is_dict_handler': True
+        }
+        return self.on(*args, **(default_kwargs | kwargs))
 
-        def _json(*args, **kwargs):
-            if 'data_arg_pos' not in kwargs:
-                kwargs['data_arg_pos'] = self.DEFAULT_DATA_ARG_POS
-            return getattr(self, name.split('_', 1)[1])(*args, is_dict_handler=True, **kwargs)
-
-        return _json
+    def json_event(self, *args, **kwargs):
+        default_kwargs = {
+            'data_arg_pos': self.DEFAULT_DATA_ARG_POS,
+            'is_dict_handler': True
+        }
+        if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
+            return self.on(args[0].__name__, **(default_kwargs | kwargs))(args[0])
+        else:
+            return self.event(*args, **(default_kwargs | kwargs))
 
 
 class JsonClient(DictHandlerInterface, Client):
