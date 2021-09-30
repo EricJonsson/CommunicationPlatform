@@ -250,10 +250,10 @@ class CommunicationServer():  # External
       logger.debug(game)
       logger.debug('Started Game: ' + str(game.PlayerA) + ' vs ' + str(game.PlayerB) + '.')
       self.sio.emit('game_info', {
-          'data': 'you are now in a game vs {game.PlayerB}'
+          'data': f'you are now in a game vs {game.PlayerB}'
       }, to=game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
       self.sio.emit('game_info', {
-          'data': 'you are now in a game vs {game.PlayerA}'
+          'data': f'you are now in a game vs {game.PlayerA}'
       }, to=game.PlayerB.get_id()) # vice-versa
 
 
