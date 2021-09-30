@@ -187,6 +187,7 @@ class CommunicationServer():  # External
     @self.sio.event
     def gameover(sid):
       if game := self.FindActiveGameBySid(sid):
+        self.sio.emit('gameover', {"code": 0}, to=sid)
         game.ConcludeGame(sid)
         self.ConcludedGames.append(game)
 
@@ -210,6 +211,7 @@ class CommunicationServer():  # External
           else:
             logger.debug("Couldn't start any new games at this point.")
       else:
+        self.sio.emit('gameover', {"code": -1}, to=sid)
         logger.debug(f'ERROR: Event sent by inactive player `{sid}`.')
 
   def FindActiveGameBySid(self, sid: str) -> Optional[TypeVar("Game")]:

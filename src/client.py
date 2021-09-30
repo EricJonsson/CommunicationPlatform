@@ -12,6 +12,8 @@ class Player:
   def __init__(self):
     self.MessageQue = []
     self.PlayerInfo = None
+    self.ReadyReturn = None
+    self.SignalVictoryReturn = None
     self.sio = Client(logger=logger)
     self.__callbacks()
     
@@ -42,7 +44,12 @@ class Player:
 
     @self.sio.json_event(logging=True)
     def ready(data):
-      pass
+      self.ReadyReturn = int(data['code'])
+
+    @self.sio.json_event(logging=True)
+    def gameover(data):
+      self.SignalVictoryReturn = int(data['code'])
+
 
     @self.sio.on('disconnect')
     def disconnect():
@@ -78,11 +85,13 @@ class Player:
 
   def Ready(self):
     logger.debug("Ready")
-    self.sio.emit('ready')
+    self.sio.call('ready')
+    return self.ReadyReturn
 
   def SignalVictory(self):
     logger.debug("Game over")
-    self.sio.emit('gameover')
+    self.sio.call('gameover')
+    return self.SignalVictoryReturn
 
   def GetPlayerInfo(self):
     self.sio.call('player_data_request')
