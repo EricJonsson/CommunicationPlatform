@@ -1,6 +1,7 @@
 # Communication Platform - Client
 import time
 import json
+import socketio #Need this for exceptions
 
 from server import PlayerInfo
 from loggers import client_logger as logger
@@ -9,6 +10,7 @@ from common import JsonClient as Client
 # Method for sending a file to your opponent during a game.
 class Player:
   PlayerInfo = None
+  OpponentData = None
 
   def __init__(self):
     self.sio = Client(logger=logger)
@@ -35,6 +37,7 @@ class Player:
     @self.sio.json_event(logging=True)
     def game_data(data):
       if not (data == "0" or data == "-1"):
+        self.OpponentData = data
         # this is actually game data and not some success/fail code
         logger.debug(f"game_data: recieved a new game state {data}")
 
@@ -77,6 +80,14 @@ class Player:
   def SendInformationToOpponent(self, information):
     logger.debug(f'SendInformationToOpponent("{information}")')
     self.sio.emit('msg_to_opponent', information)
+  
+  def GetMessageFromOpponent(self, timeout=10):
+    mustend = time.time() + timeout
+    data = None
+    while(self.OpponentData is None and time.time() < mustend):
+      data = self.OpponentData
+    print(data)
+    return data
 
   def RequestStartGame(self):
     logger.debug("RequestStartGame")

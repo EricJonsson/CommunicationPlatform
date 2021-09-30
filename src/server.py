@@ -7,6 +7,7 @@ import itertools
 import random
 import json
 import textwrap
+import socketio #Need this for exceptions
 from loggers import server_logger as logger
 from common import JsonServer as Server
 import multiprocessing
@@ -208,7 +209,7 @@ class CommunicationServer():  # External
       if (sid == game.PlayerA.get_id() or sid == game.PlayerB.get_id()) and game.Active: # the player 'sid' is playing in the game and the game is still going on
         return game
 
-  def CreateServer(self, ip, port):
+  def CreateServer(self, ip='127.0.0.1', port=5000):
     # Create new Process with target _InternalCreateServer
     process = multiprocessing.Process(target=self._InternalCreateServer, args=[ip,port])
     # Set Process to daemon to destroy when main thread finishes

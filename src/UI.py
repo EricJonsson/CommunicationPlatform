@@ -17,6 +17,7 @@ if val == 1:
     #player.GetPlayerInfo()
     #time.sleep(2)
     player.SendGameData(GameState)
+    player.GetMessageFromOpponent()
     time.sleep(3)
     player.SignalVictory()
     time.sleep(1000)
