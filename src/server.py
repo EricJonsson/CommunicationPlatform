@@ -109,6 +109,26 @@ class CommunicationServer():  # External
         else:
           opponent = game.PlayerA.get_id()
 
+          
+        if opponent is not None: # if opponent is not None an opponent exists, meaning the player is in an active game
+          pass
+          #self.sio.emit('msg_to_opponent', {
+          #    'opponent': opponent
+          #}, to=sid) # response to the one calling
+          self.sio.emit('msg_from_opponent', {
+            'opponent':sid,
+            'data': data
+          }, to=opponent)
+          logger.debug(f'message sent to from {sid} to opponent {opponent}')
+        else:
+          #self.sio.emit('msg_to_opponent', 'You are not in a game, no opponent exists.', to=sid)
+          self.sio.emit('msg_to_opponent', {
+              'opponent': None
+          }, to=sid)
+          logger.debug(f'Player: {sid} is not in game, msg_to_opponent.')
+
+
+          '''
         if opponent is not None: # if opponent is not None an opponent exists, meaning the player is in an active game
           self.sio.emit('msg_to_opponent', {
               'opponent': '0'
@@ -123,7 +143,7 @@ class CommunicationServer():  # External
               'opponent': '-1'
           }, to=sid)
           logger.debug(f'Player: {sid} is not in game, msg_to_opponent.')
-
+          '''
     @self.sio.event
     def start_game_request(sid):
       logger.debug(f'start_game_request: from {sid}')

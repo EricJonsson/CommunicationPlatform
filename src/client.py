@@ -17,9 +17,9 @@ class Player:
 
   def __callbacks(self):
 
-    @self.sio.json_event(logging=True)
-    def msg_to_opponent(data):
-      self.MessageQue.append(data)
+   # @self.sio.json_event(logging=True)
+   # def msg_to_opponent(data):
+   #   self.MessageQue.append(data)
 
     @self.sio.json_event(logging=True)
     def msg_from_opponent(data):
@@ -115,5 +115,4 @@ class Player:
     while len(self.MessageQue) < 1 and CurrentWait < timeout:
       time.sleep(1)
       CurrentWait += 1
-      print(str(CurrentWait), ' / ', str(timeout))
 #if __name__ == "__main__":

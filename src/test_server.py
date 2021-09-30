@@ -43,22 +43,21 @@ def test_ClientMatching(ClientInstances, NoClients):
     Client_2.Ready()
     time.sleep(2)
     
-    print('***********************************')
     Client_1.SendInformationToOpponent(GameState)
-    Client_1.sio.emit('testEmit', {'TEST':'t'})
-    print('***********************************')
-    time.sleep(10)
+    time.sleep(2)
 
 
-    print('********** C1')
-    print(Client_1.GetMessageFromOpponent())
-    print('********** C2')
-    print(Client_2.GetMessageFromOpponent())
-    print('********** END')
-
-    #print(' ****************** GAMEDATA RECIEVED *******************')
-    #print(data)
-
+    data_2 = Client_2.GetMessageFromOpponent()
+    print('*** Data Recieved on client 2 ***')
+    print(data_2)
+    print('****************************')
+    data_1 = Client_1.GetMessageFromOpponent()
+    print('*** Data Recieved on client 1 ***')
+    print(data_1)
+    print('****************************')
+    
+    assert data['Data'] == 'Message'
+    assert data['Error'] == None
 
     for client in ClientInstances:
         client.Disconnect()
