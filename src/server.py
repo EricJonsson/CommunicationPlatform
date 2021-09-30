@@ -9,7 +9,7 @@ import json
 import textwrap
 from loggers import server_logger as logger
 from common import JsonServer as Server
-import multiprocessing
+import threading
 
 #from socketio.server import Server
 
@@ -109,6 +109,26 @@ class CommunicationServer():  # External
         else:
           opponent = game.PlayerA.get_id()
 
+          
+        if opponent is not None: # if opponent is not None an opponent exists, meaning the player is in an active game
+          pass
+          #self.sio.emit('msg_to_opponent', {
+          #    'opponent': opponent
+          #}, to=sid) # response to the one calling
+          self.sio.emit('msg_from_opponent', {
+            'opponent':sid,
+            'data': data
+          }, to=opponent)
+          logger.debug(f'message sent to from {sid} to opponent {opponent}')
+        else:
+          #self.sio.emit('msg_to_opponent', 'You are not in a game, no opponent exists.', to=sid)
+          self.sio.emit('msg_to_opponent', {
+              'opponent': None
+          }, to=sid)
+          logger.debug(f'Player: {sid} is not in game, msg_to_opponent.')
+
+
+          '''
         if opponent is not None: # if opponent is not None an opponent exists, meaning the player is in an active game
           self.sio.emit('msg_to_opponent', {
               'opponent': '0'
@@ -123,7 +143,7 @@ class CommunicationServer():  # External
               'opponent': '-1'
           }, to=sid)
           logger.debug(f'Player: {sid} is not in game, msg_to_opponent.')
-
+          '''
     @self.sio.event
     def start_game_request(sid):
       logger.debug(f'start_game_request: from {sid}')
@@ -153,7 +173,6 @@ class CommunicationServer():  # External
           break
       # NOTE: Currently does not have the case if sending -1 (fail) for a ready() call
 
-
       # Check if all players are ready, if they are we start a game!
       ready_counter = 0
       for client in self.Clients:
@@ -164,16 +183,6 @@ class CommunicationServer():  # External
         code = self.StartGame()
       else:
         logger.debug(f'Players Ready: {ready_counter}/{len(self.Clients)}, waiting for all.')
-
-    @self.sio.json_event
-    def game_data(sid, data):
-      logger.debug(f'game_data: {data} from {sid}')
-      opponent = self.GetOpponent(sid)
-      if opponent is not None: # An opponent exists, the player is currently playing
-        self.sio.emit('game_data', data, to=opponent) # relay to opponent!
-        self.sio.emit('game_data', {"data": 0}, to=sid) # succesfully sent response
-      else:
-        self.sio.emit('game_data', {"data": -1}, to=sid) # error code response
 
     @self.sio.event
     def gameover(sid):
@@ -209,12 +218,12 @@ class CommunicationServer():  # External
         return game
 
   def CreateServer(self, ip, port):
-    # Create new Process with target _InternalCreateServer
-    process = multiprocessing.Process(target=self._InternalCreateServer, args=[ip,port])
+    # Create new thread with target _InternalCreateServer
+    thread = threading.Thread(target=self._InternalCreateServer, args=[ip,port])
     # Set Process to daemon to destroy when main thread finishes
-    process.daemon = True
-    process.start()
-    return process
+    thread.daemon = True
+    thread.start()
+    return thread
 
   # Original Create Server Implementation
   def _InternalCreateServer(self,ip,port):

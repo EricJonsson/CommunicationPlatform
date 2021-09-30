@@ -45,5 +45,23 @@ elif val == 4:
     cs.sio.logger.setLevel(logging.DEBUG)
     cs.CreateServer('127.0.0.1', 5000)
     input('Press Any Key to Shut down')
+elif val == 5:
+    player = client.Player()
+    player.ConnectToServer('127.0.0.1', 5000)
+    time.sleep(2)
+    player.Ready()
+    time.sleep(2)
+    input('Press Any Key to send message')
+    player.SendInformationToOpponent({"data": "Hello dear opponent!"})
+    input('Press Any Key to send message')
+elif val == 6:
+    player = client.Player()
+    player.ConnectToServer('127.0.0.1', 5000)
+    time.sleep(2)
+    player.Ready()
+    time.sleep(2)
+    input('Press Any Key to Shut down')
+    player.SendInformationToOpponent({"data": "Hello dear opponent!"})
+    input('Press Any Key to Shut down')
 else: # do whatever you want here :)
     pass

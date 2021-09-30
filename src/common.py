@@ -64,7 +64,9 @@ class DictHandlerInterface(object):
             'data_arg_pos': self.DEFAULT_DATA_ARG_POS,
             'is_dict_handler': True
         }
-        return self.on(*args, **(default_kwargs | kwargs))
+        #return self.on(*args, **(default_kwargs | kwargs))
+        default_kwargs.update(kwargs)
+        return self.on(*args, **default_kwargs)
 
     def json_event(self, *args, **kwargs):
         default_kwargs = {
@@ -72,11 +74,15 @@ class DictHandlerInterface(object):
             'is_dict_handler': True
         }
         if len(args) == 1 and len(kwargs) == 0 and callable(args[0]):
-            return self.on(args[0].__name__, **(default_kwargs | kwargs))(args[0])
+            default_kwargs.update(kwargs)
+            return self.on(args[0].__name__, **default_kwargs)(args[0])
+            #return self.on(args[0].__name__, **(default_kwargs | kwargs))(args[0])
         else:
-            return self.event(*args, **(default_kwargs | kwargs))
+            #return self.event(*args, **(default_kwargs | kwargs))
+            default_kwargs.update(kwargs)
+            return self.event(*args, **default_kwargs)
 
-
+        
 class JsonClient(DictHandlerInterface, Client):
     """
     `sio.on` and `sio.event` can be used as before, with 3 added **optional** arguments documented above.
