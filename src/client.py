@@ -14,13 +14,15 @@ class Player:
     self.PlayerInfo = None
     self.ReadyReturn = None
     self.SignalVictoryReturn = None
+    self.RequestStartGameReturn = None
+    self.SendInformationToOpponentReturn = None
     self.sio = Client(logger=logger)
     self.__callbacks()
     
   def __callbacks(self):
-   # @self.sio.json_event(logging=True)
-   # def msg_to_opponent(data):
-   #   self.MessageQue.append(data)
+    @self.sio.json_event(logging=True)
+    def msg_to_opponent(data):
+      self.SendInformationToOpponentReturn = int(data['code'])
     
     @self.sio.json_event(logging=True)
     def msg_from_opponent(data):
@@ -36,7 +38,8 @@ class Player:
 
     @self.sio.json_event(logging=True)
     def start_game_request(data):
-      code = data["code"]
+      code = int(data["code"])
+      self.RequestStartGameReturn = code
       if code == 0:
         logger.debug("Request granted, started a new game!")
       elif code == -1:
@@ -77,11 +80,13 @@ class Player:
 
   def SendInformationToOpponent(self, information):
     logger.debug(f'SendInformationToOpponent("{information}")')
-    self.sio.emit('msg_to_opponent', information)
+    self.sio.call('msg_to_opponent', information)
+    return self.SendInformationToOpponentReturn
 
   def RequestStartGame(self):
     logger.debug("RequestStartGame")
-    self.sio.emit('start_game_request')
+    self.sio.call('start_game_request')
+    return self.RequestStartGameReturn
 
   def Ready(self):
     logger.debug("Ready")
