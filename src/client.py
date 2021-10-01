@@ -12,13 +12,18 @@ class Player:
   def __init__(self):
     self.MessageQue = []
     self.PlayerInfo = None
+    self.ReadyReturn = None
+    self.SignalVictoryReturn = None
+    self.RequestStartGameReturn = None
+    self.SendInformationToOpponentReturn = None
+    self.DisconnectReturn = None
     self.sio = Client(logger=logger)
     self.__callbacks()
     
   def __callbacks(self):
-   # @self.sio.json_event(logging=True)
-   # def msg_to_opponent(data):
-   #   self.MessageQue.append(data)
+    @self.sio.json_event(logging=True)
+    def msg_to_opponent(data):
+      self.SendInformationToOpponentReturn = int(data['code'])
     
     @self.sio.json_event(logging=True)
     def msg_from_opponent(data):
@@ -33,8 +38,13 @@ class Player:
       self.PlayerInfo = data
 
     @self.sio.json_event(logging=True)
+    def custom_disconnect(data):
+      self.DisconnectReturn = int(data['code'])
+
+    @self.sio.json_event(logging=True)
     def start_game_request(data):
-      code = data["code"]
+      code = int(data["code"])
+      self.RequestStartGameReturn = code
       if code == 0:
         logger.debug("Request granted, started a new game!")
       elif code == -1:
@@ -42,7 +52,12 @@ class Player:
 
     @self.sio.json_event(logging=True)
     def ready(data):
-      pass
+      self.ReadyReturn = int(data['code'])
+
+    @self.sio.json_event(logging=True)
+    def gameover(data):
+      self.SignalVictoryReturn = int(data['code'])
+
 
     @self.sio.on('disconnect')
     def disconnect():
@@ -66,23 +81,35 @@ class Player:
       return -1
 
   def Disconnect(self):
-    self.sio.disconnect()
+    logger.debug("Disconnect")
+    try:
+      self.sio.emit('custom_disconnect')
+      self.WaitForDisconnect(1)
+      self.sio.disconnect()
+    except socketio.exceptions.BadNamespaceError as e:
+      self.DisconnectReturn = -1
+
+    return self.DisconnectReturn
 
   def SendInformationToOpponent(self, information):
     logger.debug(f'SendInformationToOpponent("{information}")')
-    self.sio.emit('msg_to_opponent', information)
+    self.sio.call('msg_to_opponent', information)
+    return self.SendInformationToOpponentReturn
 
   def RequestStartGame(self):
     logger.debug("RequestStartGame")
-    self.sio.emit('start_game_request')
+    self.sio.call('start_game_request')
+    return self.RequestStartGameReturn
 
   def Ready(self):
     logger.debug("Ready")
-    self.sio.emit('ready')
+    self.sio.call('ready')
+    return self.ReadyReturn
 
   def SignalVictory(self):
     logger.debug("Game over")
-    self.sio.emit('gameover')
+    self.sio.call('gameover')
+    return self.SignalVictoryReturn
 
   def GetPlayerInfo(self):
     self.sio.call('player_data_request')
@@ -104,6 +131,12 @@ class Player:
   def WaitForMessage(self,timeout):
     max = time.time() + timeout
     while len(self.MessageQue) < 1 and time.time() < max:
+      time.sleep(1)
+
+  # Wait until client gets disconnect signal from server DisconnectReturn
+  def WaitForDisconnect(self, timeout):
+    max = time.time() + timeout
+    while self.DisconnectReturn is None and time.time() < max:
       time.sleep(1)
       
 #if __name__ == "__main__":

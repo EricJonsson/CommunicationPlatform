@@ -108,47 +108,35 @@ class CommunicationServer():  # External
           opponent = game.PlayerB.get_id()
         else:
           opponent = game.PlayerA.get_id()
-
           
         if opponent is not None: # if opponent is not None an opponent exists, meaning the player is in an active game
-          pass
           #self.sio.emit('msg_to_opponent', {
-          #    'opponent': opponent
+          #    'code': 0
           #}, to=sid) # response to the one calling
+          self.sio.emit('msg_to_opponent', {'code': 0}, to=sid)
           self.sio.emit('msg_from_opponent', {
             'opponent':sid,
             'data': data
           }, to=opponent)
           logger.debug(f'message sent to from {sid} to opponent {opponent}')
-        else:
-          #self.sio.emit('msg_to_opponent', 'You are not in a game, no opponent exists.', to=sid)
-          self.sio.emit('msg_to_opponent', {
-              'opponent': None
-          }, to=sid)
-          logger.debug(f'Player: {sid} is not in game, msg_to_opponent.')
+      else:
+        self.sio.emit('msg_to_opponent', {'code': -1}, to=sid)
+        #self.sio.emit('msg_to_opponent', 'You are not in a game, no opponent exists.', to=sid)
+        #self.sio.emit('msg_to_opponent', {
+        #    'code': -1
+        #}, to=sid)
+        logger.debug(f'Player: {sid} is not in game, msg_to_opponent.')
 
-
-          '''
-        if opponent is not None: # if opponent is not None an opponent exists, meaning the player is in an active game
-          self.sio.emit('msg_to_opponent', {
-              'opponent': '0'
-          }, to=sid) # response to the one calling
-          self.sio.emit('msg_from_opponent', {
-              'data': f'Opponent {sid} sent "{data}".'
-          }, to=opponent)
-          logger.debug(f'message sent to from {sid} to opponent {opponent}')
-        else:
-          #self.sio.emit('msg_to_opponent', 'You are not in a game, no opponent exists.', to=sid)
-          self.sio.emit('msg_to_opponent', {
-              'opponent': '-1'
-          }, to=sid)
-          logger.debug(f'Player: {sid} is not in game, msg_to_opponent.')
-          '''
     @self.sio.event
     def start_game_request(sid):
       logger.debug(f'start_game_request: from {sid}')
       code = self.StartGame()
-      self.sio.emit('start_game_request', {"code": str(code)}, to=sid)
+      self.sio.emit('start_game_request', {'code': str(code)}, to=sid)
+
+    @self.sio.event
+    def custom_disconnect(sid):
+      logger.debug(f'custom_disconnect: from {sid}')
+      self.sio.emit('custom_disconnect', {'code': 0}, to=sid)
 
     @self.sio.on('player_data_request')
     def player_data_request(sid):
@@ -169,7 +157,7 @@ class CommunicationServer():  # External
       for client in self.Clients:
         if client == sid:
           client.Ready = True
-          self.sio.emit('ready', {"code": 0}, to=sid)
+          self.sio.emit('ready', {'code': 0}, to=sid)
           break
       # NOTE: Currently does not have the case if sending -1 (fail) for a ready() call
 
@@ -187,6 +175,7 @@ class CommunicationServer():  # External
     @self.sio.event
     def gameover(sid):
       if game := self.FindActiveGameBySid(sid):
+        self.sio.emit('gameover', {"code": 0}, to=sid)
         game.ConcludeGame(sid)
         self.ConcludedGames.append(game)
 
@@ -210,6 +199,7 @@ class CommunicationServer():  # External
           else:
             logger.debug("Couldn't start any new games at this point.")
       else:
+        self.sio.emit('gameover', {"code": -1}, to=sid)
         logger.debug(f'ERROR: Event sent by inactive player `{sid}`.')
 
   def FindActiveGameBySid(self, sid: str) -> Optional[TypeVar("Game")]:
@@ -217,7 +207,7 @@ class CommunicationServer():  # External
       if (sid == game.PlayerA.get_id() or sid == game.PlayerB.get_id()) and game.Active: # the player 'sid' is playing in the game and the game is still going on
         return game
 
-  def CreateServer(self, ip, port):
+  def CreateServer(self, ip = '127.0.0.1', port=5000):
     # Create new thread with target _InternalCreateServer
     thread = threading.Thread(target=self._InternalCreateServer, args=[ip,port])
     # Set Process to daemon to destroy when main thread finishes
@@ -250,10 +240,10 @@ class CommunicationServer():  # External
       logger.debug(game)
       logger.debug('Started Game: ' + str(game.PlayerA) + ' vs ' + str(game.PlayerB) + '.')
       self.sio.emit('game_info', {
-          'data': 'you are now in a game vs {game.PlayerB}'
+          'data': f'you are now in a game vs {game.PlayerB}'
       }, to=game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
       self.sio.emit('game_info', {
-          'data': 'you are now in a game vs {game.PlayerA}'
+          'data': f'you are now in a game vs {game.PlayerA}'
       }, to=game.PlayerB.get_id()) # vice-versa
 
 
