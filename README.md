@@ -19,44 +19,69 @@ Class used to run a server / host games. This class is instantiated once, and wi
   ### Methods:   
   
 * CreateServer()
+  - Description: Creates and starts a new server
   - Returns: None
   - Parameters: | Integer | String | Integer
  
-        MaxConcurrent - Specify maximum number of concurrent users that the server will allow (Default = 8)
+        MaxConcurrent - The maximum number of concurrent users that the server will allow (Default = 8)
 
-        ip - Specify the host ip-address of the server (Default = '127.0.0.1'/localhost)
+        ip - The host IP-address of the server (Default = '127.0.0.1'/localhost)
 
-        port - Specify the host port of the server (Default = 5000)
+        port - The host port of the server (Default = 5000)
   
   
-## Client
-  ### Attributes:
-    attribute1
-  ### Methods: 
-* Method1
-  - Returns: None
-  - Parameters: | param1 | param2 |
-  
-        Param1: Desc
-        Param2: Desc
-
 ## Player
   ### Attributes:
-    attribute1
   ### Methods: 
-* Method1
-  - Returns: None
-  - Parameters: | param1 | param2 |
+* ConnectToServer 
+  - Description: Connects the player to a server
+  - Returns: 0 (Success) / -1 (Failure)
+  - Parameters: | String | Integer |
   
-        Param1: Desc
-        Param2: Desc
+        ip: The IP-Address of the server that the player is connecting to (Default = '127.0.0.1'/localhost).
+        port: The port of the server that the player is connecting to (Default = 5000) 
 
-* _Player_
-  - Attributes:
-  - Methods: 
-  * ConnectToServer(IP,PORT)
-* _Playerinfo_
+* Disconnect 
+  - Description: Disconnects the player from any connected server
+  - Returns: 0 (Success) / -1 (Failure)
+  - Parameters:
+
+* SendInformationToOpponent 
+  - Description: Sends information to the player's current opponent in a game
+  - Returns: 0 (Success) / -1 (Failure)
+  - Parameters: | Dictionary/String |
   
+        information: The information to be sent to the opponent. Can be a Python Dictionary or String
+
+* RequestStartGame 
+  - Description: Sends a request to the server to start a game/tournament (bypasses Ready) 
+  - Returns: 0 (Success) / -1 (Failure)
+  - Parameters:
+
+* Ready
+  - Description: Tells the server that the player is ready to start a game/tournament. Server will automatically start a game/tournament when all players connected are ready.
+  - Returns: 0 (Success) / -1 (Failure)
+  - Parameters:
+
+* GetMessageFromOpponent 
+  - Description: Retrieves all messages sent by the player's opponent since last call.
+  - Returns: List
+  - Parameters: | Bool | float
+
+        blocking : If True, the method will wait (and block the main thread) for any new messages if there are currently no new messages in the buffer. If False, the method will return and clear the buffer (even if empty). (Default = False)
+
+        timeout: The maximum amount of time the method should wait for new messages if blocking = True.
+
+* SignalVictory
+  - Description: Signal the server that a game has concluded and declare the caller as the winner.
+  - Returns: 0 (Success) / -1 (Failure)
+
+* GetPlayerInfo 
+  - Description: Retrieves `Playerinfo` about the calling player from the server.
+  - Returns: Playerinfo
+
+
+## Playerinfo
   Used to keep track of all info related to a player. 
   - Attributes: |
       GamesPlayed |
@@ -64,21 +89,6 @@ Class used to run a server / host games. This class is instantiated once, and wi
       NumberOfWins |
       
       Keeps track of number of played games, games left in a tournament and number of wins. 
-  - Methods: 
-
-## Game
-  ### Attributes:
-    attribute1
-  ### Methods: 
-* Method1
-  - Returns: None
-  - Parameters: | param1 | param2 |
-  
-        Param1: Desc
-        Param2: Desc
-
-* _Game_
-  - Attributes:
   - Methods: 
 
 ## Tests
