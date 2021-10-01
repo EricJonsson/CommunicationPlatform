@@ -1,6 +1,7 @@
 # Communication Platform - Client
 import time
 import json
+import socketio #Need this for exceptions
 
 from server import PlayerInfo
 from loggers import client_logger as logger
@@ -71,10 +72,10 @@ class Player:
     def waiting():
       logger.debug("Waiting for your next game.")
 
-  def ConnectToServer(self, ipAddress='127.0.0.1', port=5000):
+  def ConnectToServer(self, ip='127.0.0.1', port=5000):
     try:
-      self.sio.connect('http://' + ipAddress + ':' + str(port))
-      logger.debug('Connected to ' + ipAddress + ':' +str(port))
+      self.sio.connect('http://' + ip+ ':' + str(port))
+      logger.debug('Connected to ' + ip+ ':' +str(port))
       return 0
     except socketio.exceptions.ConnectionError as e:
       logger.debug('Failed to connect to server')

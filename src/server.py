@@ -7,6 +7,7 @@ import itertools
 import random
 import json
 import textwrap
+import socketio #Need this for exceptions
 from loggers import server_logger as logger
 from common import JsonServer as Server
 import threading
