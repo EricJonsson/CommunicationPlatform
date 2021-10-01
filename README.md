@@ -20,9 +20,14 @@ Class used to run a server / host games. This class is instantiated once, and wi
   
 * CreateServer()
   - Returns: None
-  - Parameters: | Integer |
+  - Parameters: | Integer | String | Integer
  
         MaxConcurrent - Specify maximum number of concurrent users that the server will allow (Default = 8)
+
+        ip - Specify the host ip-address of the server (Default = '127.0.0.1'/localhost)
+
+        port - Specify the host port of the server (Default = 5000)
+  
   
 ## Client
   ### Attributes:
