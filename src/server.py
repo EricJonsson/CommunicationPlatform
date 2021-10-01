@@ -108,7 +108,6 @@ class CommunicationServer():  # External
           opponent = game.PlayerB.get_id()
         else:
           opponent = game.PlayerA.get_id()
-
           
         if opponent is not None: # if opponent is not None an opponent exists, meaning the player is in an active game
           #self.sio.emit('msg_to_opponent', {
@@ -127,24 +126,6 @@ class CommunicationServer():  # External
         #    'code': -1
         #}, to=sid)
         logger.debug(f'Player: {sid} is not in game, msg_to_opponent.')
-
-
-        '''
-      if opponent is not None: # if opponent is not None an opponent exists, meaning the player is in an active game
-        self.sio.emit('msg_to_opponent', {
-            'opponent': '0'
-        }, to=sid) # response to the one calling
-        self.sio.emit('msg_from_opponent', {
-            'data': f'Opponent {sid} sent "{data}".'
-        }, to=opponent)
-        logger.debug(f'message sent to from {sid} to opponent {opponent}')
-      else:
-        #self.sio.emit('msg_to_opponent', 'You are not in a game, no opponent exists.', to=sid)
-        self.sio.emit('msg_to_opponent', {
-            'opponent': '-1'
-        }, to=sid)
-        logger.debug(f'Player: {sid} is not in game, msg_to_opponent.')
-        '''
 
     @self.sio.event
     def start_game_request(sid):
@@ -226,7 +207,7 @@ class CommunicationServer():  # External
       if (sid == game.PlayerA.get_id() or sid == game.PlayerB.get_id()) and game.Active: # the player 'sid' is playing in the game and the game is still going on
         return game
 
-  def CreateServer(self, ip, port):
+  def CreateServer(self, ip = '127.0.0.1', port=5000):
     # Create new thread with target _InternalCreateServer
     thread = threading.Thread(target=self._InternalCreateServer, args=[ip,port])
     # Set Process to daemon to destroy when main thread finishes
