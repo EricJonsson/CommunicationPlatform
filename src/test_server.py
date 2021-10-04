@@ -1,7 +1,11 @@
 # Test Server / Client Communication
 
 import pytest, time, threading, socket
+from socketio.client import Client
+from socketio.server import Server
+
 import server, client
+from server import Client as cs_client 
 
 ##### Variables and global Server object #####
 HOST = '127.0.0.1'
@@ -24,17 +28,50 @@ def ClientInstances(NoClients):
         Instances.append(client.Player())
     return Instances
 
-##### TESTS #####
-
-
 def delayedSendinformation(client):
     print('Executing', flush=True)
     time.sleep(10)
     client.SendInformationToOpponent({"data": "Hello dear opponent!"})
 
+def clean_server():
+  SERVER.Clients = []
+  SERVER.ActiveGames = []
+  SERVER.TournamentGames = []
+  SERVER.ConcludedGames = []
+
+
+##### TESTS #####
+#Server unit tests - no events
+def test_server_unit():
+  clean_server()
+
+  #Fill Clients with dummies
+  for i in range(8):
+    SERVER.Clients.append(cs_client(i))
+
+  assert len(SERVER.Clients) == 8
+
+  #Try generating a tournament
+  SERVER.generateTournament()
+  assert len(SERVER.TournamentGames) == 28
+
+  #Try generating a round
+  SERVER.generateRound()
+  assert len(SERVER.TournamentGames) == 24
+  assert len(SERVER.ActiveGames) == 4
+
+  #Check all players are in a game
+  for i in range(8):
+    assert SERVER.FindActiveGameBySid(i) != None
+
+  game = SERVER.FindActiveGameBySid(i)
+
+  SERVER.ConcludedGames()
+  
 # Test Client Matching and Sending Data
 @pytest.mark.parametrize('NoClients', [8])
 def test_ClientMatching(ClientInstances, NoClients):
+    clean_server()
 
     Client_1 = ClientInstances[0]
     Client_2 = ClientInstances[1]
@@ -66,7 +103,7 @@ def test_ClientMatching(ClientInstances, NoClients):
 # Test Client Connections and Server Capacity
 @pytest.mark.parametrize('NoClients', [16])
 def test_ClientConnect(ClientInstances, NoClients):
-
+    clean_server()
     # List of indices in ClientInstances list
     Set = [0,1,2,3,4,5,6,7]
     for i in Set:
