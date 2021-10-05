@@ -38,15 +38,15 @@ class CommunicationServer():  # External
       contains = False
       for a_game in self.ActiveGames:
         contains = a_game.checkOverlap(t_game) or contains
+
       if not contains: # start the game
         self.ActiveGames.append(t_game)
         self.sio.emit('game_info', {
-            'data': 'you are now in a game vs {}'.format(t_game.PlayerB)
+            'data': 'You are now in a game vs {}'.format(t_game.PlayerB)
         }, to=t_game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
         self.sio.emit('game_info', {
-            'data': 'you are now in a game vs {}'.format(t_game.PlayerA)
+            'data': 'You are now in a game vs {}'.format(t_game.PlayerA)
         }, to=t_game.PlayerB.get_id()) # vice-versa
-
 
     #Remove Active games from tournament-list
     for game in self.ActiveGames:
@@ -65,7 +65,6 @@ class CommunicationServer():  # External
       game = Game(PlayerA = combination[0], PlayerB= combination[1])
       self.TournamentGames.append(game)
 
-    random.shuffle(self.TournamentGames)
     return 0
 
   def __removeClientById(self, sid):
@@ -91,7 +90,7 @@ class CommunicationServer():  # External
       game = self.FindActiveGameBySid(sid)
       if game:
         opponent = (game.PlayerA if game.PlayerA != sid else game.PlayerB).get_id()
-        game.ConcludeGame(winner=opponent)
+        self._concludeGame(game, winner=opponent)
       logger.debug('Clients connected: {}'.format(len(self.Clients)))
 
     # @self.sio.event # not used currently
@@ -176,36 +175,21 @@ class CommunicationServer():  # External
     @self.sio.event
     def gameover(sid):
       if game := self.FindActiveGameBySid(sid):
+
         self.sio.emit('gameover', {"code": 0}, to=sid)
-        game.ConcludeGame(sid)
-        self.ConcludedGames.append(game)
-
-        # remove the game from active games
-        for a_game in self.ActiveGames:
-          if a_game.PlayerA == game.PlayerA and a_game.PlayerB == game.PlayerB:
-            self.ActiveGames.remove(game)
-
+        self._concludeGame(game, winner=sid)
 
         self.sio.emit('waiting', to=game.PlayerA.get_id())
         self.sio.emit('waiting', to=game.PlayerB.get_id())
 
-        if len(self.TournamentGames) > 0: #there's an ongoing tournament, since a game is over we can try to start new games!
-          code = self.generateRound()
-          #logger.debug("###### GENERATE ROUND: " + str(code))
-          #logger.debug("Active Games: " + str(len(self.ActiveGames)))
-          #logger.debug("Tournament Games: " + str(len(self.TournamentGames)))
-
-          if code == 0:
-            logger.debug('Started Game: ' + str(game.PlayerA) + ' vs ' + str(game.PlayerB) + '.')
-          else:
-            logger.debug("Couldn't start any new games at this point.")
       else:
         self.sio.emit('gameover', {"code": -1}, to=sid)
         logger.debug(f'ERROR: Event sent by inactive player `{sid}`.')
 
   def FindActiveGameBySid(self, sid: str) -> Optional[TypeVar("Game")]:
+    assert isinstance(sid, str)
     for game in self.ActiveGames:
-      if (sid == game.PlayerA.get_id() or sid == game.PlayerB.get_id()) and game.Active: # the player 'sid' is playing in the game and the game is still going on
+      if (game.PlayerA == sid or game.PlayerB == sid) and game.Active: # the player 'sid' is playing in the game and the game is still going on
         return game
 
   def CreateServer(self, ip = '127.0.0.1', port=5000):
@@ -215,6 +199,18 @@ class CommunicationServer():  # External
     thread.daemon = True
     thread.start()
     return thread
+
+  def _concludeGame(self, game, winner):
+    game.ConcludeGame(winner=winner)
+    self.ConcludedGames.append(game)
+
+    #Remove active game
+    self.ActiveGames.remove(game)
+
+    if len(self.ActiveGames) == 0 and len(self.TournamentGames) > 0: #there's an ongoing tournament, since a game is over we can try to start new games! 
+      code = self.generateRound()
+      if code == 0:
+        logger.debug("Started a new Round, all games completed")
 
   # Original Create Server Implementation
   def _InternalCreateServer(self,ip,port):
