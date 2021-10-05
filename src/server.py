@@ -2,12 +2,9 @@
 from typing import Optional, TypeVar
 from flask import Flask
 import socketio
-import time
 import itertools
 import random
-import json
 import textwrap
-import socketio #Need this for exceptions
 from loggers import server_logger as logger
 from common import JsonServer as Server
 import threading
@@ -54,6 +51,17 @@ class CommunicationServer():  # External
 
     return 0
 
+  def _concludePlayerGames(self, player):
+    idx = 0
+    while idx < len(self.TournamentGames):
+      t_game = self.TournamentGames[idx]
+      if t_game.PlayerA == player or t_game.PlayerB == player:
+        t_game.ConcludeGame(t_game.PlayerB if t_game.PlayerA == player else t_game.PlayerA)
+        self.ConcludedGames.append(t_game)
+        self.TournamentGames.remove(t_game)
+      else:
+        idx += 1
+
   #Fills TournamentGames with all matches for the tournament
   def generateTournament(self):
     if len(self.TournamentGames) != 0:
@@ -91,6 +99,7 @@ class CommunicationServer():  # External
       if game:
         opponent = (game.PlayerA if game.PlayerA != sid else game.PlayerB).get_id()
         self._concludeGame(game, winner=opponent)
+      self._concludePlayerGames(sid)
       logger.debug('Clients connected: {}'.format(len(self.Clients)))
 
     # @self.sio.event # not used currently
@@ -207,7 +216,7 @@ class CommunicationServer():  # External
     #Remove active game
     self.ActiveGames.remove(game)
 
-    if len(self.ActiveGames) == 0 and len(self.TournamentGames) > 0: #there's an ongoing tournament, since a game is over we can try to start new games! 
+    if len(self.ActiveGames) == 0 and len(self.TournamentGames) > 0: #there's an ongoing tournament, since a game is over we can try to start new games!
       code = self.generateRound()
       if code == 0:
         logger.debug("Started a new Round, all games completed")
