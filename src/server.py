@@ -109,7 +109,7 @@ class CommunicationServer():  # External
           opponent = game.PlayerB.get_id()
         else:
           opponent = game.PlayerA.get_id()
-          
+
         if opponent is not None: # if opponent is not None an opponent exists, meaning the player is in an active game
           #self.sio.emit('msg_to_opponent', {
           #    'code': 0
@@ -301,9 +301,11 @@ class Client:
     return self.ID
 
   def lose(self):
+    self.Ready = False
     self.PlayerInfo.lose()
 
   def win(self):
+    self.Ready = False
     self.PlayerInfo.win()
 
   def addGameLeft(self):

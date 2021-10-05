@@ -20,16 +20,16 @@ class Player:
     self.DisconnectReturn = None
     self.sio = Client(logger=logger)
     self.__callbacks()
-    
+
   def __callbacks(self):
     @self.sio.json_event(logging=True)
     def msg_to_opponent(data):
       self.SendInformationToOpponentReturn = int(data['code'])
-    
+
     @self.sio.json_event(logging=True)
     def msg_from_opponent(data):
       self.MessageQue.append(data)
-      
+
     @self.sio.json_event(logging=True)
     def game_info(data):
       pass
@@ -90,27 +90,37 @@ class Player:
     except socketio.exceptions.BadNamespaceError as e:
       self.DisconnectReturn = -1
 
-    return self.DisconnectReturn
+    ret = self.DisconnectReturn
+    self.DisconnectReturn = None
+    return ret
 
   def SendInformationToOpponent(self, information):
     logger.debug(f'SendInformationToOpponent("{information}")')
     self.sio.call('msg_to_opponent', information)
-    return self.SendInformationToOpponentReturn
+    ret = self.SendInformationToOpponentReturn
+    self.SendInformationToOpponentReturn = None
+    return ret
 
   def RequestStartGame(self):
     logger.debug("RequestStartGame")
     self.sio.call('start_game_request')
-    return self.RequestStartGameReturn
+    ret = self.RequestStartGameReturn
+    self.RequestStartGameReturn = None
+    return ret
 
   def Ready(self):
     logger.debug("Ready")
     self.sio.call('ready')
-    return self.ReadyReturn
+    ret = self.ReadyReturn
+    self.ReadyReturn = None
+    return ret
 
   def SignalVictory(self):
     logger.debug("Game over")
     self.sio.call('gameover')
-    return self.SignalVictoryReturn
+    ret = self.SignalVictoryReturn
+    self.SignalVictoryReturn = None
+    return ret
 
   def GetPlayerInfo(self):
     self.sio.call('player_data_request')
@@ -125,7 +135,7 @@ class Player:
 
     Messages = self.MessageQue
     self.MessageQue = []
-    
+
     return Messages
 
   # Wait until there are messages in MessageQue
@@ -139,5 +149,5 @@ class Player:
     max = time.time() + timeout
     while self.DisconnectReturn is None and time.time() < max:
       time.sleep(1)
-      
+
 #if __name__ == "__main__":
