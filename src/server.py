@@ -22,6 +22,7 @@ class CommunicationServer():  # External
     self.ActiveGames = []
     self.TournamentGames = []
     self.ConcludedGames = []
+    self.TournamentStarted = False
 
   # Generates the next round. i.e. moves as many games as
   # possible from TournamentGames to ActiveGames without overlap
@@ -72,6 +73,7 @@ class CommunicationServer():  # External
     for combination in combinations:
       game = Game(PlayerA = combination[0], PlayerB= combination[1])
       self.TournamentGames.append(game)
+    self.TournamentStarted = True
 
     return 0
 
@@ -87,6 +89,8 @@ class CommunicationServer():  # External
     def connect(sid, environ, auth):
       if len(self.Clients) >= self.MaxConcurrentClients:
         raise socketio.exceptions.ConnectionRefusedError('Server is full')
+      elif self.TournamentStarted:
+        raise socketio.exceptions.ConnectionRefusedError('Tournament already started.')
       else:
         new_client = Client(sid)
         self.Clients.append(new_client)
@@ -96,10 +100,10 @@ class CommunicationServer():  # External
     def disconnect(sid):
       self.__removeClientById(sid)
       game = self.FindActiveGameBySid(sid)
+      self._concludePlayerGames(sid)
       if game:
         opponent = (game.PlayerA if game.PlayerA != sid else game.PlayerB).get_id()
         self._concludeGame(game, winner=opponent)
-      self._concludePlayerGames(sid)
       logger.debug('Clients connected: {}'.format(len(self.Clients)))
 
     # @self.sio.event # not used currently
