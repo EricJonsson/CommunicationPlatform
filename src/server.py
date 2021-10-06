@@ -274,6 +274,18 @@ class CommunicationServer():  # External
         break
     return opponent
 
+  def ResetTournament(self):
+    self.ActiveGames = []
+    self.ConcludedGames = []
+    self.TournamentGames = []
+
+    players = [client for client in self.Clients if not client.isAI]
+    self.Clients = players
+    for client in self.Clients:
+      client.reset()
+      #Tell the clients that the everything has been reset
+
+    return 0
 
 
 class Client:
@@ -306,6 +318,10 @@ class Client:
 
   def addGameLeft(self):
     self.PlayerInfo.addGameLeft()
+  
+  def reset(self):
+    self.Ready = False
+    self.PlayerInfo.reset()
 
 
 class PlayerInfo:
@@ -325,6 +341,11 @@ class PlayerInfo:
 
   def addGameLeft(self):
     self.GamesLeft += 1
+
+  def reset(self):
+    self.GamesPlayed = 0
+    self.GamesLeft = 0
+    self.NumberOfWins = 0
 
 class Game:
   def __init__(self, PlayerA=None, PlayerB=None, Active=True, Winner=None):
