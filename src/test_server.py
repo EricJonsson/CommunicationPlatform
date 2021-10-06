@@ -193,6 +193,9 @@ def test_Tournament_logic(ClientInstances, NoClients):
   assert len(SERVER.TournamentGames) == 20
   assert len(SERVER.ActiveGames) == 4
 
+  for client in ClientInstances:
+        client.Disconnect()
+
 # Test Client Matching and Sending Data
 @pytest.mark.parametrize('NoClients', [8])
 def test_ClientMessaging(ClientInstances, NoClients):
