@@ -26,6 +26,7 @@ class CommunicationServer():  # External
     self.TournamentGames = []
     self.ConcludedGames = []
     self.AICounter = 0
+    self.TournamentMode = False
 
   # Generates the next round. i.e. moves as many games as
   # possible from TournamentGames to ActiveGames without overlap
@@ -46,14 +47,14 @@ class CommunicationServer():  # External
           self.sio.emit('game_info', {
             'opponent': str(t_game.PlayerB.get_id()),
             'AI': t_game.PlayerB.isAI,
-            'difficuly': t_game.PlayerB.difficulty
+            'difficulty': t_game.PlayerB.difficulty
           }, to=t_game.PlayerA.get_id())  # msg PlayerA that they are playing vs PlayerB
 
         if not t_game.PlayerB.isAI:
           self.sio.emit('game_info', {
             'opponent': str(t_game.PlayerA.get_id()),
             'AI': t_game.PlayerA.isAI,
-            'difficuly': t_game.PlayerA.difficulty
+            'difficulty': t_game.PlayerA.difficulty
           }, to=t_game.PlayerB.get_id()) # vice-versa
 
     for game in self.ActiveGames: #Remove all active games from TrounamentGames
@@ -193,12 +194,16 @@ class CommunicationServer():  # External
     @self.sio.event
     def gameover(sid):
       if game := self.FindActiveGameBySid(sid):
-
         self.sio.emit('gameover', {"code": 0}, to=sid)
         self._concludeGame(game, winner=sid)
 
-        self.sio.emit('waiting', to=game.PlayerA.get_id())
-        self.sio.emit('waiting', to=game.PlayerB.get_id())
+        if len(self.ActiveGames) == 0 and len(self.TournamentGames) == 0 and self.TournamentMode: # all games for the tournament are complete!
+          logger.debug('The tournament is over.')
+          self.TournamentMode = False
+
+          # announce to everyone in the tournament that the tournament is over
+          for client in self.Clients:
+            self.sio.emit('game_info', {"code": 1, "data": "The tournament is over."}, to=client.get_id())
 
       else:
         self.sio.emit('gameover', {"code": -1}, to=sid)
@@ -229,6 +234,9 @@ class CommunicationServer():  # External
 
     #Remove active game
     self.ActiveGames.remove(game)
+
+    self.sio.emit('gameover', {"code": 1, "winner": winner}, to=game.PlayerA.get_id())
+    self.sio.emit('gameover', {"code": 1, "winner": winner}, to=game.PlayerB.get_id())
 
     if len(self.ActiveGames) == 0 and len(self.TournamentGames) > 0: #there's an ongoing tournament, since a game is over we can try to start new games! 
       code = self.generateRound()
@@ -290,6 +298,7 @@ class CommunicationServer():  # External
       if code == -1: #
         logger.debug("Error: Couldn't generate a new round")
         return -1
+      self.TournamentMode = True
 
     return 0
 
