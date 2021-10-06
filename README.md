@@ -60,18 +60,19 @@ Class used to run a server / host games. This class is instantiated once, and wi
   ### Attributes:
 
   ### Event Hooks
-    The Player class contains multiple "Event hooks" for reacting to signals sent by the server. 
-    The data parameter contains any data sent by the server. Can be a String or Python Dict
-    The four main ones to consider when intergrating can be found at the top of the ```__callbacks``` method:
+  The Player class contains multiple "Event hooks" for reacting to signals sent by the server.  
+  The data parameter contains any data sent by the server. Can be a String or Python Dict.  
+  The four main ones to consider when intergrating can be found at the top of the ```__callbacks``` method:  
   * game_reset - Fired when the ```CommunicationServer``` calls ```ResetTournament```
   * server_message - Fired when the ```CommunicationServer``` calls ```SendToPlayer```
-      - data contains the message sent
+    data contains the message sent
 
-  * game_info - Fired when the ```CommunicationServer``` adds the player to a new game
-      - data contains the following fields:
-          opponent: Name of the opponent
-          AI: True/False if the opponent is an AI or not
-          difficulty: The difficulty level of the opponent (Only applicable if AI = True)
+  * game_info - Fired when the ```CommunicationServer``` adds the player to a new game.
+
+        data contains the following fields:
+        opponent: Name of the opponent
+        AI: True/False if the opponent is an AI or not
+        difficulty: The difficulty level of the opponent (Only applicable if AI = True)
 
   * gameover - Fired when a ```Player``` calls ```SignalVictory```. 
     The calling ```Player``` is already listening for this event through ```SignalVictory```. But can be extended for the losing opponent.
@@ -104,7 +105,8 @@ Class used to run a server / host games. This class is instantiated once, and wi
   - Parameters:
 
 * Ready
-  - Description: Tells the server that the player is ready to start a game/tournament. Server will automatically start a game/tournament when all players connected are ready.
+  - Description: Tells the server that the player is ready to start a game/tournament.  
+    Server will automatically start a game/tournament when all players connected are ready.
   - Returns: 0 (Success) / -1 (Failure)
   - Parameters:
 
@@ -113,7 +115,8 @@ Class used to run a server / host games. This class is instantiated once, and wi
   - Returns: List
   - Parameters: | Bool | float
 
-        blocking : If True, the method will wait (and block the main thread) for any new messages if there are currently no new messages in the buffer. If False, the method will return and clear the buffer (even if empty). (Default = False)
+        blocking : If True, the method will wait (and block the main thread) for any new messages if there are currently no new messages in the buffer.  
+        If False, the method will return and clear the buffer (even if empty). (Default = False)
 
         timeout: The maximum amount of time the method should wait for new messages if blocking = True.
 
@@ -126,7 +129,8 @@ Class used to run a server / host games. This class is instantiated once, and wi
   - Returns: Playerinfo
 
 * SetName
-  - Description: Sets the name of a player which will be used in tournaments. The name is sent to the server. If a name is already taken, a suffix will be added to the name by the server.
+  - Description: Sets the name of a player which will be used in tournaments.  
+    The name is sent to the server. If a name is already taken, a suffix will be added to the name by the server.
   - Returns: 0 (Success) / -1 (Failure)
   - Parameters: | String |
       name: The requested name
