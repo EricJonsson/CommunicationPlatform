@@ -28,7 +28,16 @@ Class used to run a server / host games. This class is instantiated once, and wi
         ip - The host IP-address of the server (Default = '127.0.0.1'/localhost)
 
         port - The host port of the server (Default = 5000)
-  
+
+* AddAI()
+  - Description: Adds an AI player to the Clients list. Fails if the maximumm number of clients have been reached.
+  - Returns: 0 (Success) / -1 (Failure)
+  - Parameters: | Integer 
+        difficulty: The difficulty level of the AI 1-3 (Default = 1)
+
+* GetNumPlayers()
+  - Description: Returns the current number of clients.
+  - Returns: num_clients
   
 ## Player
   ### Attributes:
