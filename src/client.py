@@ -31,8 +31,12 @@ class Player:
       self.MessageQue.append(data)
 
     @self.sio.json_event(logging=True)
+    def game_reset(data):
+      pass #TODO Handle game reset
+
+    @self.sio.json_event(logging=True)
     def game_info(data):
-      pass
+      pass #TODO handle game info
 
     @self.sio.json_event(logging=True)
     def player_info(data):
@@ -58,7 +62,6 @@ class Player:
     @self.sio.json_event(logging=True)
     def gameover(data):
       self.SignalVictoryReturn = int(data['code'])
-
 
     @self.sio.on('disconnect')
     def disconnect():
