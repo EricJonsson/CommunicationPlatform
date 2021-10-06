@@ -2,12 +2,9 @@
 from typing import Optional, TypeVar
 from flask import Flask
 import socketio
-import time
 import itertools
 import random
-import json
 import textwrap
-import socketio #Need this for exceptions
 from loggers import server_logger as logger
 from common import JsonServer as Server
 import threading
@@ -25,6 +22,7 @@ class CommunicationServer():  # External
     self.ActiveGames = []
     self.TournamentGames = []
     self.ConcludedGames = []
+    self.TournamentStarted = False
 
   # Generates the next round. i.e. moves as many games as
   # possible from TournamentGames to ActiveGames without overlap
@@ -54,6 +52,17 @@ class CommunicationServer():  # External
 
     return 0
 
+  def _concludePlayerGames(self, player):
+    idx = 0
+    while idx < len(self.TournamentGames):
+      t_game = self.TournamentGames[idx]
+      if t_game.PlayerA == player or t_game.PlayerB == player:
+        t_game.ConcludeGame(t_game.PlayerB if t_game.PlayerA == player else t_game.PlayerA)
+        self.ConcludedGames.append(t_game)
+        self.TournamentGames.remove(t_game)
+      else:
+        idx += 1
+
   #Fills TournamentGames with all matches for the tournament
   def generateTournament(self):
     if len(self.TournamentGames) != 0:
@@ -64,6 +73,7 @@ class CommunicationServer():  # External
     for combination in combinations:
       game = Game(PlayerA = combination[0], PlayerB= combination[1])
       self.TournamentGames.append(game)
+    self.TournamentStarted = True
 
     return 0
 
@@ -79,6 +89,8 @@ class CommunicationServer():  # External
     def connect(sid, environ, auth):
       if len(self.Clients) >= self.MaxConcurrentClients:
         raise socketio.exceptions.ConnectionRefusedError('Server is full')
+      elif self.TournamentStarted:
+        raise socketio.exceptions.ConnectionRefusedError('Tournament already started.')
       else:
         new_client = Client(sid)
         self.Clients.append(new_client)
@@ -88,6 +100,7 @@ class CommunicationServer():  # External
     def disconnect(sid):
       self.__removeClientById(sid)
       game = self.FindActiveGameBySid(sid)
+      self._concludePlayerGames(sid)
       if game:
         opponent = (game.PlayerA if game.PlayerA != sid else game.PlayerB).get_id()
         self._concludeGame(game, winner=opponent)
@@ -207,7 +220,7 @@ class CommunicationServer():  # External
     #Remove active game
     self.ActiveGames.remove(game)
 
-    if len(self.ActiveGames) == 0 and len(self.TournamentGames) > 0: #there's an ongoing tournament, since a game is over we can try to start new games! 
+    if len(self.ActiveGames) == 0 and len(self.TournamentGames) > 0: #there's an ongoing tournament, since a game is over we can try to start new games!
       code = self.generateRound()
       if code == 0:
         logger.debug("Started a new Round, all games completed")
