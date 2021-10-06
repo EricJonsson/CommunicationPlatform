@@ -373,6 +373,18 @@ class CommunicationServer():  # External
 
     return data
 
+  def SendToPlayer(self, name, info):
+    playerID = ''
+    for client in self.Clients:
+      if client.Name == name:
+        playerID = client.ID
+
+    if playerID == '':
+      return -1
+    
+    self.sio.emit('server_message', info, to=playerID)
+    return 0
+
 class Client:
   def __init__(self, ID, AI = False, difficulty = 1):
     self.ID = ID
