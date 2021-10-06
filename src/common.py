@@ -4,7 +4,7 @@ import json
 from functools import wraps
 from typing import Dict, Callable, Optional
 
-from socketio import Server, Client
+from socketio import Client, Server
 
 
 def unpack(

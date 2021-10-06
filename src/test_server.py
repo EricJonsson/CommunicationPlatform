@@ -12,8 +12,7 @@ HOST = '127.0.0.1'
 PORT = 5000
 # Server object is instantiated outside of test scope as there is no shutdown feature
 SERVER = server.CommunicationServer(8)
-server_thread = SERVER.CreateServer(HOST,PORT)
-time.sleep(1)
+SERVER.CreateServer(HOST,PORT)
 
 
 ##### FIXTURES #####
@@ -41,6 +40,36 @@ def clean_server():
 
 
 ##### TESTS #####
+
+def test_AI():
+  clean_server()
+
+  SERVER.AddAI()
+  SERVER.AddAI()
+  assert SERVER.GetNumPlayers() == 2
+
+  for i in range(2):
+    SERVER.Clients.append(cs_client(str(i)))
+
+  SERVER.generateTournament()
+  assert len(SERVER.TournamentGames) == 6
+
+  SERVER.generateRound()
+
+  #Check that AI games are skipped
+  assert len(SERVER.ActiveGames) == 1
+  assert len(SERVER.ConcludedGames) == 1
+
+  assert SERVER.Clients[0].get_id() != SERVER.Clients[1].get_id()
+  #Check that AIs are AI
+  assert SERVER.Clients[0].isAI
+  assert SERVER.Clients[1].isAI
+  #Check that players are not AI
+  assert not SERVER.Clients[2].isAI
+  assert not SERVER.Clients[3].isAI
+
+
+
 #Server unit tests - no events
 def test_server_unit():
   clean_server()
@@ -49,7 +78,7 @@ def test_server_unit():
   for i in range(8):
     SERVER.Clients.append(cs_client(str(i)))
 
-  assert len(SERVER.Clients) == 8
+  assert SERVER.GetNumPlayers() == 8
 
   #Try generating a tournament
   SERVER.generateTournament()
