@@ -155,8 +155,8 @@ class CommunicationServer():  # External
     @self.sio.event
     def set_name(sid, data):
       logger.debug(f'set_name: from {sid} data {data}')
-      code = self.SetPlayerName(sid, data)
-      self.sio.emit('set_name', {'code': str(code)}, to=sid)
+      code, given_name = self.SetPlayerName(sid, data.strip('"'))
+      self.sio.emit('set_name', {'code': str(code), 'given_name': given_name}, to=sid)
 
     @self.sio.event
     def custom_disconnect(sid):
@@ -339,14 +339,23 @@ class CommunicationServer():  # External
         name_exists = True
         break
 
-    if name_exists:
-      return -1
+    if name_exists: # auto generate some additional numbers to make the user's name unique
+        while name_exists:
+          suffix = random.randint(1000,9999)
+          new_name = name + "#" + str(suffix)
+          new_name_exists = False
+          for client in self.Clients:
+            if client.Name == new_name:
+              new_name_exists = True
+              break
+          name_exists = new_name_exists
+        name = new_name
 
-    # name isn't taken, set it for the client
+    # set the name for the client
     for client in self.Clients:
       if client.get_id() == sid:
         client.Name = name
-    return 0
+    return 0, name
 
 class Client:
   def __init__(self, ID, AI = False, difficulty = 1):

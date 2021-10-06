@@ -67,7 +67,10 @@ class Player:
 
     @self.sio.json_event(logging=True)
     def set_name(data):
-      self.SetNameReturn = int(data['code'])
+      code = int(data["code"])
+      self.SetNameReturn = code
+      if code == 0:
+        self.Name = data['given_name']
 
     @self.sio.on('disconnect')
     def disconnect():
@@ -142,8 +145,6 @@ class Player:
     self.sio.call('set_name', name)
     ret = self.SetNameReturn
     self.SetNameReturn = None
-    if ret == 0:
-      self.Name = name
     return ret
 
   # Get Messages from Opponent
