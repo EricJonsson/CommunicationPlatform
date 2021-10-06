@@ -26,6 +26,7 @@ class CommunicationServer():  # External
     self.TournamentGames = []
     self.ConcludedGames = []
     self.AICounter = 0
+    self.TournamentMode = False
 
   # Generates the next round. i.e. moves as many games as
   # possible from TournamentGames to ActiveGames without overlap
@@ -46,14 +47,14 @@ class CommunicationServer():  # External
           self.sio.emit('game_info', {
             'opponent': str(t_game.PlayerB.get_id()),
             'AI': t_game.PlayerB.isAI,
-            'difficuly': t_game.PlayerB.difficulty
+            'difficulty': t_game.PlayerB.difficulty
           }, to=t_game.PlayerA.get_id())  # msg PlayerA that they are playing vs PlayerB
 
         if not t_game.PlayerB.isAI:
           self.sio.emit('game_info', {
             'opponent': str(t_game.PlayerA.get_id()),
             'AI': t_game.PlayerA.isAI,
-            'difficuly': t_game.PlayerA.difficulty
+            'difficulty': t_game.PlayerA.difficulty
           }, to=t_game.PlayerB.get_id()) # vice-versa
 
     for game in self.ActiveGames: #Remove all active games from TrounamentGames
@@ -152,6 +153,12 @@ class CommunicationServer():  # External
       self.sio.emit('start_game_request', {'code': str(code)}, to=sid)
 
     @self.sio.event
+    def set_name(sid, data):
+      logger.debug(f'set_name: from {sid} data {data}')
+      code, given_name = self.SetPlayerName(sid, data.strip('"'))
+      self.sio.emit('set_name', {'code': str(code), 'given_name': given_name}, to=sid)
+
+    @self.sio.event
     def custom_disconnect(sid):
       logger.debug(f'custom_disconnect: from {sid}')
       self.sio.emit('custom_disconnect', {'code': 0}, to=sid)
@@ -193,12 +200,16 @@ class CommunicationServer():  # External
     @self.sio.event
     def gameover(sid):
       if game := self.FindActiveGameBySid(sid):
-
         self.sio.emit('gameover', {"code": 0}, to=sid)
         self._concludeGame(game, winner=sid)
 
-        self.sio.emit('waiting', to=game.PlayerA.get_id())
-        self.sio.emit('waiting', to=game.PlayerB.get_id())
+        if len(self.ActiveGames) == 0 and len(self.TournamentGames) == 0 and self.TournamentMode: # all games for the tournament are complete!
+          logger.debug('The tournament is over.')
+          self.TournamentMode = False
+
+          # announce to everyone in the tournament that the tournament is over
+          for client in self.Clients:
+            self.sio.emit('game_info', {"code": 1, "data": "The tournament is over."}, to=client.get_id())
 
       else:
         self.sio.emit('gameover', {"code": -1}, to=sid)
@@ -229,6 +240,9 @@ class CommunicationServer():  # External
 
     #Remove active game
     self.ActiveGames.remove(game)
+
+    self.sio.emit('gameover', {"code": 1, "winner": winner}, to=game.PlayerA.get_id())
+    self.sio.emit('gameover', {"code": 1, "winner": winner}, to=game.PlayerB.get_id())
 
     if len(self.ActiveGames) == 0 and len(self.TournamentGames) > 0: #there's an ongoing tournament, since a game is over we can try to start new games! 
       code = self.generateRound()
@@ -290,6 +304,7 @@ class CommunicationServer():  # External
       if code == -1: #
         logger.debug("Error: Couldn't generate a new round")
         return -1
+      self.TournamentMode = True
 
     return 0
 
@@ -317,10 +332,35 @@ class CommunicationServer():  # External
       self.sio.emit('game_reset', to = client.get_id())
     return 0
 
+  def SetPlayerName(self, sid, name):
+    name_exists = False
+    for client in self.Clients:
+      if client.Name == name:
+        name_exists = True
+        break
+
+    if name_exists: # auto generate some additional numbers to make the user's name unique
+        while name_exists:
+          suffix = random.randint(1000,9999)
+          new_name = name + "#" + str(suffix)
+          new_name_exists = False
+          for client in self.Clients:
+            if client.Name == new_name:
+              new_name_exists = True
+              break
+          name_exists = new_name_exists
+        name = new_name
+
+    # set the name for the client
+    for client in self.Clients:
+      if client.get_id() == sid:
+        client.Name = name
+    return 0, name
 
 class Client:
   def __init__(self, ID, AI = False, difficulty = 1):
     self.ID = ID
+    self.Name = None
     self.Ready = False
     self.PlayerInfo = PlayerInfo()
     self.isAI = AI 
