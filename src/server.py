@@ -314,8 +314,7 @@ class CommunicationServer():  # External
     self.Clients = players
     for client in self.Clients:
       client.reset()
-      #Tell the clients that the everything has been reset
-
+      self.sio.emit('game_reset', to = client.get_id())
     return 0
 
 
