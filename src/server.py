@@ -45,14 +45,14 @@ class CommunicationServer():  # External
         self.ActiveGames.append(t_game)
         if not t_game.PlayerA.isAI:
           self.sio.emit('game_info', {
-            'opponent': str(t_game.PlayerB.get_id()),
+            'opponent': str(t_game.PlayerB.Name),
             'AI': t_game.PlayerB.isAI,
             'difficulty': t_game.PlayerB.difficulty
           }, to=t_game.PlayerA.get_id())  # msg PlayerA that they are playing vs PlayerB
 
         if not t_game.PlayerB.isAI:
           self.sio.emit('game_info', {
-            'opponent': str(t_game.PlayerA.get_id()),
+            'opponent': str(t_game.PlayerA.Name),
             'AI': t_game.PlayerA.isAI,
             'difficulty': t_game.PlayerA.difficulty
           }, to=t_game.PlayerB.get_id()) # vice-versa
@@ -357,7 +357,7 @@ class CommunicationServer():  # External
         client.Name = name
     return 0, name
 
-  def GetLobbyData(self):
+  def GetTournamentData(self):
     if not self.TournamentMode:
       return -1
 

@@ -24,6 +24,28 @@ class Player:
     self.__callbacks()
 
   def __callbacks(self):
+
+    @self.sio.json_event(logging=True)
+    def game_reset(data):
+      pass #TODO when integrating Handle game reset
+      #Call function here
+
+    @self.sio.json_event(logging=True)
+    def server_message(data):
+      pass #TODO when integrating handle server_message 
+      #Call function here
+
+    @self.sio.json_event(logging=True)
+    def game_info(data):
+      pass #TODO when integrating handle game info
+      #Call function here
+
+    @self.sio.json_event(logging=True)
+    def gameover(data):
+      self.SignalVictoryReturn = int(data['code'])
+      #TODO can be extended for the Player not calling SignalVictory
+      #Call function here
+
     @self.sio.json_event(logging=True)
     def msg_to_opponent(data):
       self.SendInformationToOpponentReturn = int(data['code'])
@@ -31,15 +53,7 @@ class Player:
     @self.sio.json_event(logging=True)
     def msg_from_opponent(data):
       self.MessageQue.append(data)
-
-    @self.sio.json_event(logging=True)
-    def game_reset(data):
-      pass #TODO Handle game reset
-
-    @self.sio.json_event(logging=True)
-    def game_info(data):
-      pass #TODO handle game info
-
+   
     @self.sio.json_event(logging=True)
     def player_info(data):
       self.PlayerInfo = data

@@ -38,9 +38,45 @@ Class used to run a server / host games. This class is instantiated once, and wi
 * GetNumPlayers()
   - Description: Returns the current number of clients.
   - Returns: num_clients
+
+* GetTournamentData()
+  - Description: Fetches data about an ongoing tournament
+  - Returns: A List of Dicts with the following fields:
+        Name: The name of the player
+        Wins: The number of wins of the player
+        ID: The internal unique ID of the player
+        AI: True/False - If the player is an AI or not
+
+  
+* SendToPlayer()
+  - Description: Sends a message to the specified player
+  - Returns: 0 (Success) / -1 (Failure)
+  - Parameters: | String | Dict/String
+        name: The name of the player
+        info: The info to be sent. Can be a Python Dict or String
+  
   
 ## Player
   ### Attributes:
+
+  ### Event Hooks
+    The Player class contains multiple "Event hooks" for reacting to signals sent by the server. 
+    The data parameter contains any data sent by the server. Can be a String or Python Dict
+    The four main ones to consider when intergrating can be found at the top of the ```__callbacks``` method:
+  * game_reset - Fired when the ```CommunicationServer``` calls ```ResetTournament```
+  * server_message - Fired when the ```CommunicationServer``` calls ```SendToPlayer```
+      - data contains the message sent
+
+  * game_info - Fired when the ```CommunicationServer``` adds the player to a new game
+      - data contains the following fields:
+          opponent: Name of the opponent
+          AI: True/False if the opponent is an AI or not
+          difficulty: The difficulty level of the opponent (Only applicable if AI = True)
+
+  * gameover - Fired when a ```Player``` calls ```SignalVictory```. 
+    The calling ```Player``` is already listening for this event through ```SignalVictory```. But can be extended for the losing opponent.
+  
+
   ### Methods: 
 * ConnectToServer 
   - Description: Connects the player to a server
@@ -88,6 +124,12 @@ Class used to run a server / host games. This class is instantiated once, and wi
 * GetPlayerInfo 
   - Description: Retrieves `Playerinfo` about the calling player from the server.
   - Returns: Playerinfo
+
+* SetName
+  - Description: Sets the name of a player which will be used in tournaments. The name is sent to the server. If a name is already taken, a suffix will be added to the name by the server.
+  - Returns: 0 (Success) / -1 (Failure)
+  - Parameters: | String |
+      name: The requested name
 
 
 ## Playerinfo
