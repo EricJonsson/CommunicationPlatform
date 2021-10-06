@@ -49,7 +49,7 @@ def test_server_unit():
   for i in range(8):
     SERVER.Clients.append(cs_client(str(i)))
 
-  assert len(SERVER.Clients) == 8
+  assert SERVER.GetNumPlayers() == 8
 
   #Try generating a tournament
   SERVER.generateTournament()
