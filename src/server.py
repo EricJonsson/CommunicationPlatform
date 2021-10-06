@@ -25,6 +25,7 @@ class CommunicationServer():  # External
     self.ActiveGames = []
     self.TournamentGames = []
     self.ConcludedGames = []
+    self.AICounter = 0
 
   # Generates the next round. i.e. moves as many games as
   # possible from TournamentGames to ActiveGames without overlap
@@ -41,18 +42,35 @@ class CommunicationServer():  # External
 
       if not contains: # start the game
         self.ActiveGames.append(t_game)
-        self.sio.emit('game_info', {
-            'data': 'You are now in a game vs {}'.format(t_game.PlayerB)
-        }, to=t_game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
-        self.sio.emit('game_info', {
-            'data': 'You are now in a game vs {}'.format(t_game.PlayerA)
-        }, to=t_game.PlayerB.get_id()) # vice-versa
+        if not t_game.PlayerA.isAI:
+          self.sio.emit('game_info', {
+            'opponent': str(t_game.PlayerB.get_id()),
+            'AI': t_game.PlayerB.isAI,
+            'difficuly': t_game.PlayerB.difficulty
+          }, to=t_game.PlayerA.get_id())  # msg PlayerA that they are playing vs PlayerB
 
-    #Remove Active games from tournament-list
-    for game in self.ActiveGames:
+        if not t_game.PlayerB.isAI:
+          self.sio.emit('game_info', {
+            'opponent': str(t_game.PlayerA.get_id()),
+            'AI': t_game.PlayerA.isAI,
+            'difficuly': t_game.PlayerA.difficulty
+          }, to=t_game.PlayerB.get_id()) # vice-versa
+
+    for game in self.ActiveGames: #Remove all active games from TrounamentGames
+      if game.PlayerA.isAI and game.PlayerB.isAI:
+        self._concludeAIGame(game)
+        self.ConcludedGames.append(game)
+
       self.TournamentGames.remove(game)
 
     return 0
+  
+  def _concludeAIGame(self, game): #Randomizes a winner in the case that both players are AIs
+    winner = random.randint(0, 1)
+    if winner == 1:
+      game.ConcludeGame(winner = game.PlayerA.get_id())
+    else:
+      game.ConcludeGame(winner = game.PlayerB.get_id())
 
   #Fills TournamentGames with all matches for the tournament
   def generateTournament(self):
@@ -192,13 +210,18 @@ class CommunicationServer():  # External
       if (game.PlayerA == sid or game.PlayerB == sid) and game.Active: # the player 'sid' is playing in the game and the game is still going on
         return game
 
-  def CreateServer(self, ip = '127.0.0.1', port=5000):
-    # Create new thread with target _InternalCreateServer
-    thread = threading.Thread(target=self._InternalCreateServer, args=[ip,port])
-    # Set Process to daemon to destroy when main thread finishes
-    thread.daemon = True
-    thread.start()
-    return thread
+  def GetNumPlayers(self):
+    return len(self.Clients)
+
+  def AddAI(self, difficulty = 1):
+    if self.GetNumPlayers() >= self.MaxConcurrentClients:
+      return -1
+
+    AI = Client(ID=str(self.AICounter), AI=True, difficulty=difficulty)
+    AI.Ready = True
+    self.AICounter += 1
+    self.Clients.append(AI)
+    return 0
 
   def _concludeGame(self, game, winner):
     game.ConcludeGame(winner=winner)
@@ -211,6 +234,15 @@ class CommunicationServer():  # External
       code = self.generateRound()
       if code == 0:
         logger.debug("Started a new Round, all games completed")
+
+  def CreateServer(self, ip = '127.0.0.1', port=5000):
+    # Create new thread with target _InternalCreateServer
+    thread = threading.Thread(target=self._InternalCreateServer, args=[ip,port])
+    # Set Process to daemon to destroy when main thread finishes
+    thread.daemon = True
+    thread.start()
+    return thread
+
 
   # Original Create Server Implementation
   def _InternalCreateServer(self,ip,port):
@@ -228,8 +260,7 @@ class CommunicationServer():  # External
     # Starts a game, different cases based on number of players
     if len(self.Clients) == 1:
       # only 1 player, start AI match
-      logger.debug("Starting AI Game (not implemented)")
-      return -1
+      logger.debug("Waiting for Player or AI")
     if len(self.Clients) == 2:
       # 2 players, match them up for a game
       game = Game(self.Clients[0], self.Clients[1])
@@ -274,13 +305,26 @@ class CommunicationServer():  # External
         break
     return opponent
 
+  def ResetTournament(self):
+    self.ActiveGames = []
+    self.ConcludedGames = []
+    self.TournamentGames = []
+
+    players = [client for client in self.Clients if not client.isAI]
+    self.Clients = players
+    for client in self.Clients:
+      client.reset()
+      self.sio.emit('game_reset', to = client.get_id())
+    return 0
 
 
 class Client:
-  def __init__(self, ID):
+  def __init__(self, ID, AI = False, difficulty = 1):
     self.ID = ID
     self.Ready = False
     self.PlayerInfo = PlayerInfo()
+    self.isAI = AI 
+    self.difficulty = difficulty
 
   def __str__(self):
     return f'[SID: {self.ID}]' # might want to add playerinfo here later on
@@ -306,6 +350,10 @@ class Client:
 
   def addGameLeft(self):
     self.PlayerInfo.addGameLeft()
+  
+  def reset(self):
+    self.Ready = False
+    self.PlayerInfo.reset()
 
 
 class PlayerInfo:
@@ -325,6 +373,11 @@ class PlayerInfo:
 
   def addGameLeft(self):
     self.GamesLeft += 1
+
+  def reset(self):
+    self.GamesPlayed = 0
+    self.GamesLeft = 0
+    self.NumberOfWins = 0
 
 class Game:
   def __init__(self, PlayerA=None, PlayerB=None, Active=True, Winner=None):
