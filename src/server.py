@@ -200,6 +200,9 @@ class CommunicationServer():  # External
     thread.start()
     return thread
 
+  def GetNumPlayers(self):
+    return len(self.Clients)
+
   def _concludeGame(self, game, winner):
     game.ConcludeGame(winner=winner)
     self.ConcludedGames.append(game)
