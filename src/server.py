@@ -357,6 +357,22 @@ class CommunicationServer():  # External
         client.Name = name
     return 0, name
 
+  def GetLobbyData(self):
+    if not self.TournamentMode:
+      return -1
+
+    data = []
+    for client in self.Clients:
+      client_data = {
+        'Name': client.Name,
+        'Wins': client.PlayerInfo.NumberOfWins,
+        'ID': client.ID,
+        'AI': client.isAI
+      }
+      data.append(client_data)
+
+    return data
+
 class Client:
   def __init__(self, ID, AI = False, difficulty = 1):
     self.ID = ID
