@@ -153,6 +153,12 @@ class CommunicationServer():  # External
       self.sio.emit('start_game_request', {'code': str(code)}, to=sid)
 
     @self.sio.event
+    def set_name(sid, data):
+      logger.debug(f'set_name: from {sid} data {data}')
+      code = self.SetPlayerName(sid, data)
+      self.sio.emit('set_name', {'code': str(code)}, to=sid)
+
+    @self.sio.event
     def custom_disconnect(sid):
       logger.debug(f'custom_disconnect: from {sid}')
       self.sio.emit('custom_disconnect', {'code': 0}, to=sid)
@@ -326,10 +332,26 @@ class CommunicationServer():  # External
       self.sio.emit('game_reset', to = client.get_id())
     return 0
 
+  def SetPlayerName(self, sid, name):
+    name_exists = False
+    for client in self.Clients:
+      if client.Name == name:
+        name_exists = True
+        break
+
+    if name_exists:
+      return -1
+
+    # name isn't taken, set it for the client
+    for client in self.Clients:
+      if client.get_id() == sid:
+        client.Name = name
+    return 0
 
 class Client:
   def __init__(self, ID, AI = False, difficulty = 1):
     self.ID = ID
+    self.Name = None
     self.Ready = False
     self.PlayerInfo = PlayerInfo()
     self.isAI = AI 

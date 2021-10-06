@@ -11,6 +11,7 @@ import socketio
 # Method for sending a file to your opponent during a game.
 class Player:
   def __init__(self):
+    self.Name = None
     self.MessageQue = []
     self.PlayerInfo = None
     self.ReadyReturn = None
@@ -18,6 +19,7 @@ class Player:
     self.RequestStartGameReturn = None
     self.SendInformationToOpponentReturn = None
     self.DisconnectReturn = None
+    self.SetNameReturn = None
     self.sio = Client(logger=logger)
     self.__callbacks()
 
@@ -62,6 +64,10 @@ class Player:
     @self.sio.json_event(logging=True)
     def gameover(data):
       self.SignalVictoryReturn = int(data['code'])
+
+    @self.sio.json_event(logging=True)
+    def set_name(data):
+      self.SetNameReturn = int(data['code'])
 
     @self.sio.on('disconnect')
     def disconnect():
@@ -129,6 +135,16 @@ class Player:
     self.sio.call('player_data_request')
     logger.debug(self.PlayerInfo)
     return self.PlayerInfo
+
+  # Set the player name
+  def SetName(self, name):
+    logger.debug("Set Name")
+    self.sio.call('set_name', name)
+    ret = self.SetNameReturn
+    self.SetNameReturn = None
+    if ret == 0:
+      self.Name = name
+    return ret
 
   # Get Messages from Opponent
   # If Blocking, wait until there are messages available, specify timeout to break wait after timeout
