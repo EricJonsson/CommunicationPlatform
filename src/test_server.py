@@ -27,10 +27,11 @@ def ClientInstances(NoClients):
         Instances.append(client.Player())
     return Instances
 
-def delayedSendinformation(client):
-    print('Executing', flush=True)
-    time.sleep(2)
-    client.SendInformationToOpponent({"data": "Hello dear opponent!"})
+def delayedSendinformation(client, msg, delay):
+    print('Executing delayed message in: ', str(delay), ' seconds')
+    time.sleep(delay)
+    client.SendInformationToOpponent(msg)
+    print('Message sent, exiting thread...')
 
 def clean_server():
   SERVER.Clients = []
@@ -200,33 +201,134 @@ def test_Tournament_logic(ClientInstances, NoClients):
 @pytest.mark.parametrize('NoClients', [8])
 def test_ClientMessaging(ClientInstances, NoClients):
     clean_server()
-
+    
     Client_1 = ClientInstances[0]
     Client_2 = ClientInstances[1]
 
     GameState = {'Data':'Message','Error':None}
 
+    # Connect Clients to server
     assert Client_1.ConnectToServer(HOST,PORT) == 0
     assert Client_2.ConnectToServer(HOST,PORT) == 0
-
+    # Both Clients Ready up (Should start a match between them)
     Client_1.Ready()
     Client_2.Ready()
     time.sleep(2)
-
-    thread = threading.Thread(target=delayedSendinformation, args=[Client_1])
+    # Assert that neither client has recieved any messages
+    assert len(Client_1.MessageQue) == 0
+    assert len(Client_2.MessageQue) == 0
+    # Create a thread that sends a message from client 1 to client 2 after 2 seconds
+    message = {'Action':'Left','Error':None}
+    thread = threading.Thread(target=delayedSendinformation, args=[Client_1,message,2])
     thread.start()
 
-
+    # Fetch Data and assert that timeout did not occur
+    timeout = time.time() + 30
     data_2 = Client_2.GetMessageFromOpponent(blocking = True, timeout = 60)
+    assert time.time() < timeout
+    data_1 = Client_1.GetMessageFromOpponent(blocking = False)
 
-    thread.join()
-    
-    #assert len(data_1) == 0
-    assert len(data_2) > 0
-    
-    #assert data['Data'] == 'Message'
-    #assert data['Error'] == None
+    # Both Clients should have cleared their message ques after getting messages
+    assert len(Client_1.MessageQue) == 0
+    assert len(Client_2.MessageQue) == 0
 
+    print('Data 1')
+    print(data_1)
+    print('Data 2')
+    print(data_2)
+
+    # Assert that client 2 has recieved data, and that message was correct
+    assert len(data_1) == 0
+    assert len(data_2) == 1
+    assert data_2[0]['data']['Action'] == 'Left'
+    assert data_2[0]['data']['Error'] == None
+
+    # Get messages again, should recieve nothing
+    data_1 = Client_1.GetMessageFromOpponent(blocking = False)
+    data_2 = Client_2.GetMessageFromOpponent(blocking = False)
+    assert len(data_1) == 0
+    assert len(data_2) == 0
+    
+    # Test sending more messages
+    msg_1 = {'msg_1':'packet_1'}
+    msg_2 = {'msg_2':-1}
+    msg_3 = {'msg_3':0.5}
+    Client_2.SendInformationToOpponent(msg_1)
+    Client_2.SendInformationToOpponent(msg_2)
+    Client_2.SendInformationToOpponent(msg_3)
+    Client_1.SendInformationToOpponent(msg_1)
+    Client_1.SendInformationToOpponent(msg_2)
+    
+    timeout = time.time() + 30
+    data_1 = Client_1.GetMessageFromOpponent(blocking = True, timeout = 60)
+    assert time.time() < timeout
+    data_2 = Client_2.GetMessageFromOpponent(blocking = False)
+
+    print('Data in Client 1: ')
+    print(data_1)
+    print('Data in Client 2: ')
+    print(data_2)
+    
+    assert len(data_1) == 3
+    assert len(data_2) == 2
+    assert len(Client_1.MessageQue) == 0
+    assert len(Client_2.MessageQue) == 0
+
+    assert data_1[0]['data']['msg_1'] == 'packet_1'
+    assert data_1[1]['data']['msg_2'] == -1
+    assert data_1[2]['data']['msg_3'] == 0.5
+    assert data_2[0]['data']['msg_1'] == 'packet_1'
+    assert data_2[1]['data']['msg_2'] == -1
+    
+    # Test many messages in quick succession
+    for i in range(20):
+        Client_2.SendInformationToOpponent({'packet':i})
+
+    time.sleep(1)
+    
+    timeout = time.time() + 30
+    data_1 = Client_1.GetMessageFromOpponent(blocking = True, timeout = 60)
+    assert time.time() < timeout
+
+    for i in range(20):
+        assert data_1[i]['data']['packet'] == i
+
+    # Add two more clients
+    Client_3 = ClientInstances[2]
+    Client_4 = ClientInstances[3]
+
+    GameState = {'Data':'Message','Error':None}
+    # Connect new clients to server
+    assert Client_3.ConnectToServer(HOST,PORT) == 0
+    assert Client_4.ConnectToServer(HOST,PORT) == 0
+    # Ready up new clients
+    Client_3.Ready()
+    Client_4.Ready()
+    time.sleep(2)
+    # Assert that server has 4 clients connected
+    assert len(SERVER.Clients) == 4
+    # Assert that new clients have no messages
+    assert len(Client_3.MessageQue) == 0
+    assert len(Client_4.MessageQue) == 0
+
+    # Send message from client 3 to client 4 and vice versa
+    msg = {'message':0}
+    Client_3.SendInformationToOpponent(msg)
+    Client_4.SendInformationToOpponent(msg)
+    time.sleep(1)
+    # Get messsages from clients, not blocking
+    data_3 = Client_3.GetMessageFromOpponent(blocking = False)
+    data_4 = Client_4.GetMessageFromOpponent(blocking = False)
+
+    print('Data Recieved by client 3: ')
+    print(data_3)
+    print('Data Recieved by client 4: ')
+    print(data_4)
+
+    
+    assert data_3[0]['data']['message'] == 0
+    assert data_4[0]['data']['message'] == 0
+    
     for client in ClientInstances:
         client.Disconnect()
     
