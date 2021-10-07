@@ -45,14 +45,14 @@ class CommunicationServer():  # External
         self.ActiveGames.append(t_game)
         if not t_game.PlayerA.isAI:
           self.sio.emit('game_info', {
-            'opponent': str(t_game.PlayerB.get_id()),
+            'opponent': str(t_game.PlayerB.Name),
             'AI': t_game.PlayerB.isAI,
             'difficulty': t_game.PlayerB.difficulty
           }, to=t_game.PlayerA.get_id())  # msg PlayerA that they are playing vs PlayerB
 
         if not t_game.PlayerB.isAI:
           self.sio.emit('game_info', {
-            'opponent': str(t_game.PlayerA.get_id()),
+            'opponent': str(t_game.PlayerA.Name),
             'AI': t_game.PlayerA.isAI,
             'difficulty': t_game.PlayerA.difficulty
           }, to=t_game.PlayerB.get_id()) # vice-versa
@@ -356,6 +356,34 @@ class CommunicationServer():  # External
       if client.get_id() == sid:
         client.Name = name
     return 0, name
+
+  def GetTournamentData(self):
+    if not self.TournamentMode:
+      return -1
+
+    data = []
+    for client in self.Clients:
+      client_data = {
+        'Name': client.Name,
+        'Wins': client.PlayerInfo.NumberOfWins,
+        'ID': client.ID,
+        'AI': client.isAI
+      }
+      data.append(client_data)
+
+    return data
+
+  def SendToPlayer(self, name, info):
+    playerID = ''
+    for client in self.Clients:
+      if client.Name == name:
+        playerID = client.ID
+
+    if playerID == '':
+      return -1
+    
+    self.sio.emit('server_message', info, to=playerID)
+    return 0
 
 class Client:
   def __init__(self, ID, AI = False, difficulty = 1):
