@@ -258,7 +258,7 @@ def test_ClientMessaging(ClientInstances, NoClients):
     Client_2.SendInformationToOpponent(msg_3)
     Client_1.SendInformationToOpponent(msg_1)
     Client_1.SendInformationToOpponent(msg_2)
-    
+    time.sleep(1)
     timeout = time.time() + 30
     data_1 = Client_1.GetMessageFromOpponent(blocking = True, timeout = 60)
     assert time.time() < timeout
@@ -293,7 +293,8 @@ def test_ClientMessaging(ClientInstances, NoClients):
     for i in range(20):
         assert data_1[i]['data']['packet'] == i
 
-    # Add two more clients
+    #### Add two more clients ####
+
     Client_3 = ClientInstances[2]
     Client_4 = ClientInstances[3]
 
@@ -319,13 +320,14 @@ def test_ClientMessaging(ClientInstances, NoClients):
     # Get messsages from clients, not blocking
     data_3 = Client_3.GetMessageFromOpponent(blocking = False)
     data_4 = Client_4.GetMessageFromOpponent(blocking = False)
-
+    
     print('Data Recieved by client 3: ')
     print(data_3)
     print('Data Recieved by client 4: ')
     print(data_4)
-
     
+    assert len(data_3) == 1
+    assert len(data_4) == 1
     assert data_3[0]['data']['message'] == 0
     assert data_4[0]['data']['message'] == 0
     
