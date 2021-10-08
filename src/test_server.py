@@ -292,44 +292,6 @@ def test_ClientMessaging(ClientInstances, NoClients):
 
     for i in range(20):
         assert data_1[i]['data']['packet'] == i
-
-    #### Add two more clients ####
-
-    Client_3 = ClientInstances[2]
-    Client_4 = ClientInstances[3]
-
-    GameState = {'Data':'Message','Error':None}
-    # Connect new clients to server
-    assert Client_3.ConnectToServer(HOST,PORT) == 0
-    assert Client_4.ConnectToServer(HOST,PORT) == 0
-    # Ready up new clients
-    Client_3.Ready()
-    Client_4.Ready()
-    time.sleep(2)
-    # Assert that server has 4 clients connected
-    assert len(SERVER.Clients) == 4
-    # Assert that new clients have no messages
-    assert len(Client_3.MessageQue) == 0
-    assert len(Client_4.MessageQue) == 0
-
-    # Send message from client 3 to client 4 and vice versa
-    msg = {'message':0}
-    Client_3.SendInformationToOpponent(msg)
-    Client_4.SendInformationToOpponent(msg)
-    time.sleep(1)
-    # Get messsages from clients, not blocking
-    data_3 = Client_3.GetMessageFromOpponent(blocking = False)
-    data_4 = Client_4.GetMessageFromOpponent(blocking = False)
-    
-    print('Data Recieved by client 3: ')
-    print(data_3)
-    print('Data Recieved by client 4: ')
-    print(data_4)
-    
-    assert len(data_3) == 1
-    assert len(data_4) == 1
-    assert data_3[0]['data']['message'] == 0
-    assert data_4[0]['data']['message'] == 0
     
     for client in ClientInstances:
         client.Disconnect()
