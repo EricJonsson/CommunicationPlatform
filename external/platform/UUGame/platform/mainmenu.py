@@ -1,0 +1,130 @@
+from .gamemodel import AiDifficulty, GameModel, Color, Player
+from .gamecontroller import GameController
+from .gameview import GameView
+from .utils import clear_screen
+from typing import Tuple
+
+def mainmenu():
+    is_running = True
+
+    while is_running:
+        clear_screen()
+        print_main_menu()
+        choice = get_numeric_choice()
+        if choice == 1:
+            play_menu()
+        elif choice == 2:
+            tournament_menu()
+        elif choice == 3:
+            join_tournament()
+        elif choice == 4:
+            is_running = False
+    
+    input("Exiting. \nPress Enter to continue...")
+
+
+def print_main_menu():
+    print(" ---------------- UU-Game ---------------- ")
+    print("")
+    print("")
+    print("1) Play Game")
+    print("2) Start Tournament")
+    print("3) Join Tournament")
+    print("4) Quit")
+
+def print_play_menu():
+    print("1) Player vs Player")
+    print("2) Player vs Computer")
+
+def print_ai_difficulty_menu():
+    print("AI Difficulty")
+    print("1) Easy")
+    print("2) Medium")
+    print("3) Hard")
+
+def play_menu():
+    invalid_choice = True
+
+    while invalid_choice:
+        clear_screen()
+        print_play_menu()
+        
+        choice = get_numeric_choice()
+        if choice == 1:
+            invalid_choice = False
+            play_local()
+        elif choice == 2:
+            invalid_choice = False
+            ai_difficulty_menu()
+
+def get_numeric_choice() -> int or None:
+    choice = input()
+    if not choice.isnumeric():
+        return None
+    return int(choice)
+
+def ai_difficulty_menu():
+    invalid_choice = True
+
+    while invalid_choice:
+        clear_screen()
+        print_ai_difficulty_menu()
+        choice = get_numeric_choice()
+        if choice is None: 
+            continue
+
+        if 1 <= choice <= 3:
+            invalid_choice = False
+            play_local(ai_opponent = True, ai_difficulty = AiDifficulty(choice))
+
+def tournament_menu():
+    pass
+
+def join_tournament():
+    pass
+
+def get_player_names() -> Tuple[str, str]:
+    clear_screen()
+    print("Player Black's name: ")
+    black_player_name = input()
+    print("Player White's name: ")
+    white_player_name = input()
+    return (black_player_name, white_player_name)
+
+def play_local(ai_opponent = False, ai_difficulty = AiDifficulty.NONE):
+    should_restart = True
+    (black_player_name, white_player_name) = get_player_names()
+
+    while should_restart:
+        game_model = GameModel()
+        game_view = GameView(game_model)
+        game_controller = GameController(game_model, game_view)
+
+        if(ai_opponent):
+            game_model.set_ai_player(Color.WHITE, ai_difficulty)
+
+        game_model.set_player_name(Color.BLACK, black_player_name)
+        game_model.set_player_name(Color.WHITE, white_player_name)
+
+        winner = game_controller.start_game()        
+        should_restart = False
+        if winner is None: # game was a draw
+            should_restart = query_rematch_choice()
+
+        input("Press Enter to continue...")
+
+
+def query_rematch_choice() -> bool:
+    invalid_choice = True
+
+    while invalid_choice:
+        clear_screen()
+        print("Rematch? (Y/N)")
+        choice = input().lower()
+        if choice == "y":
+            return True
+        elif choice == "n":
+            return False
+
+if __name__ == "__main__":
+    mainmenu()

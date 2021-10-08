@@ -1,0 +1,3 @@
+MAX_PIECES = 9
+MAX_TURNS = 150
+AI_INPUT_FILENAME = "ai_input.json"

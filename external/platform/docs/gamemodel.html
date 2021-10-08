@@ -1,0 +1,3001 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>gameplatform.gamemodel API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>gameplatform.gamemodel</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from enum import Enum, IntEnum
+from typing import Tuple
+from utils import StateObservable
+import gameconfiguration as GameConfig
+
+
+class Direction(IntEnum):
+    NORTH = 0
+    NORTH_EAST = 1
+    EAST = 2
+    SOUTH_EAST = 3
+    SOUTH = 4
+    SOUTH_WEST = 5
+    WEST = 6
+    NORTH_WEST = 7
+
+# Matrix for defining edges and the direction of those edges. Do NOT use or manipulate outside this module.
+# element order: [N, NE, E, SE, S, SW, W, NW]
+_directed_adjacency_matrix = [
+                                                       #node_id
+    [None, None, 1, 3, 9, None, None, None],           #0
+    [None, None, 2, None, 4, None, 0, None],           #1
+    [None, None, None, None, 14, 5, 1, None],          #2
+    [None, None, 4, None, 10, None, None, 0],          #3
+    [1, None, 5, None, 7, None, 3, None],              #4
+    [None, 2, None, None, 13, None, 4, None],          #5
+    [None, None, 7, None, 11, None, None, None],       #6
+    [4, None, 8, None, None, None, 6, None],           #7
+    [None, None, None, None, 12, None, 7, None],       #8
+    [0, None, 10, None, 21, None, None, None],         #9
+    [3, None, 11, None, 18, None, 9, None],            #10
+    [6, None, None, None, 15, None, 10, None],         #11
+    [8, None, 13, None, 17, None, None, None],         #12
+    [5, None, 14, None, 20, None, 12, None],           #13
+    [2, None, None, None, 23, None, 13, None],         #14
+    [11, None, 16, None, None, None, None, None],      #15
+    [None, None, 17, None, 19, None, 15, None],        #16
+    [12, None, None, None, None, None, 16, None],      #17
+    [10, None, 19, None, None, 21, None, None],        #18
+    [16, None, 20, None, 22, None, 18, None],          #19
+    [13, None, None, 23, None, None, 19, None],        #20
+    [9, 18, 22, None, None, None, None, None],         #21
+    [19, None, 23, None, None, None, 21, None],        #22
+    [14, None, None, None, None, None, 22, 20]         #23
+    ]
+
+class Color(IntEnum):
+    NONE = 0
+    BLACK = 1
+    WHITE = 2
+
+class AiDifficulty(IntEnum):
+    NONE = 0
+    EASY = 1
+    MODERATE = 2
+    HARD = 3
+
+    def __str__(self):
+        return self.name.lower()
+
+
+class Player(StateObservable):
+    &#34;&#34;&#34;
+    Represents the state of a player.
+
+    Parameters:
+        color {Color} -- The color that the player should have.
+
+    Attributes:
+        color {Color} -- The player&#39;s color.
+    &#34;&#34;&#34;
+    color : Color
+    __phase = 1
+    __active_pieces : int # the total amount of pieces remaining in the game for this player
+    __pieces_to_place : int # the amount of pieces the player has left to place on the board
+    __max_pieces : int = GameConfig.MAX_PIECES # maximum amount of pieces that the player can have in the game
+    __name : str
+    __is_ai : bool # might need a reference to an ai controller object instead
+    __ai_difficulty : AiDifficulty
+
+    def __init__(self, color : Color, name : str = &#34;&#34;, is_ai : bool = False, ai_difficulty = AiDifficulty.NONE):
+        super().__init__()
+        self.color = color
+        self.__active_pieces = self.__max_pieces
+        self.__pieces_to_place = self.__max_pieces
+        self.__name = name
+        self.__is_ai = is_ai
+        self.__ai_difficulty = ai_difficulty
+
+    def is_ai(self) -&gt; bool:
+        &#34;&#34;&#34;Returns whether or not this player is controlled by an AI.
+
+        Returns:
+            bool -- True if this player is controlled by an AI. Otherwise False.
+        &#34;&#34;&#34;        
+        return self.__is_ai
+    
+    def enable_ai(self, ai_difficulty : AiDifficulty = AiDifficulty.EASY):  
+        &#34;&#34;&#34;Enables AI for this player.
+
+        Keyword Arguments:
+            ai_difficulty {AiDifficulty} -- the difficulty of this AI player (default: {AiDifficulty.EASY})
+        &#34;&#34;&#34;           
+        self.__is_ai = True
+        self.__ai_difficulty = ai_difficulty
+    
+    def disable_ai(self):
+        &#34;&#34;&#34;Disables AI for this player.
+        &#34;&#34;&#34;        
+        self.__is_ai = False
+        self.__ai_difficulty = AiDifficulty.NONE
+    
+    def set_ai_difficulty(self, new_difficulty : AiDifficulty):
+        &#34;&#34;&#34;Sets the AI difficulty for this player. This has no effect if the player is not an AI player.
+
+        Arguments:
+            new_difficulty {AiDifficulty} -- the new ai difficulty
+        &#34;&#34;&#34;
+        if not self.is_ai(): return
+
+        self.__ai_difficulty = new_difficulty
+
+    def get_ai_difficulty(self) -&gt; AiDifficulty:
+        &#34;&#34;&#34;Gets the AI difficulty of this player.
+
+        Returns:
+            AiDifficulty -- the ai difficulty of this player
+        &#34;&#34;&#34;        
+        return self.__ai_difficulty
+
+    def get_name(self) -&gt; str:
+        &#34;&#34;&#34;Gets the name of the player.
+
+        Returns:
+            str -- the name of the player
+        &#34;&#34;&#34;        
+        return self.__name
+    
+    def set_name(self, new_name : str):
+        &#34;&#34;&#34;Sets a new name for this player.
+
+        Arguments:
+            new_name {str} -- the new name of the player
+        &#34;&#34;&#34;        
+        self.__name = new_name
+        self.trigger_state_event()
+
+    def get_max_pieces(self) -&gt; int:
+        &#34;&#34;&#34;Gets the maximum number of pieces that this player can have on the board.
+
+        Returns:
+            int -- the maximum number of pieces for this player
+        &#34;&#34;&#34;        
+        return self.__max_pieces
+
+    def reset(self):
+        &#34;&#34;&#34;Resets the player state to its starting state.
+
+        This is equivalent to creating a new player object without changing its color.
+        &#34;&#34;&#34;
+        self.__phase = 1
+        self.__active_pieces = GameConfig.MAX_PIECES
+        self.__pieces_to_place = GameConfig.MAX_PIECES
+
+    def has_pieces_to_place(self) -&gt; bool:
+        &#34;&#34;&#34;Returns whether or not the player has pieces left to place.
+
+        Returns:
+            bool -- True if the player has pieces left to place. Otherwise False.
+        &#34;&#34;&#34;
+        return self.__pieces_to_place &gt; 0
+
+    def get_pieces_to_place(self) -&gt; int:
+        &#34;&#34;&#34;Gets the number of pieces that the player has left to place.
+
+        Returns:
+            int -- The amount of pieces left to place for this player.
+        &#34;&#34;&#34;
+        return self.__pieces_to_place
+
+    def set_pieces_to_place(self, nr_of_pieces : int):
+        &#34;&#34;&#34;Sets the number of pieces that this player is able to place onto the board.
+
+        Arguments:
+            nr_of_pieces {int} -- the number of pieces
+        &#34;&#34;&#34;
+        self.__pieces_to_place = nr_of_pieces
+        self.trigger_state_event()
+
+    def get_active_pieces(self) -&gt; int:
+        &#34;&#34;&#34;Returns the number of active pieces that this player has in the game.
+        This is the total number of pieces that the player still has active in the game.
+        This also includes pieces that the player has yet to place on the board.
+
+        Returns:
+            int -- The amount of active pieces.
+        &#34;&#34;&#34;
+        return self.__active_pieces
+
+    def set_active_pieces(self, nr_of_pieces : int):
+        &#34;&#34;&#34;Sets the number of pieces that this player has left in the game.
+        This is the total number of pieces that the player still has active in the game.
+        This also includes pieces that the player has yet to place on the board.
+
+        Arguments:
+            nr_of_pieces {int} -- the number of active pieces
+        &#34;&#34;&#34;
+        self.__active_pieces = nr_of_pieces
+        self.trigger_state_event()
+
+    def decrement_pieces_to_place(self):
+        &#34;&#34;&#34;Decrements the amount of pieces that the player can place.
+        &#34;&#34;&#34;
+        self.set_pieces_to_place(self.get_pieces_to_place()-1)
+
+    def decrement_active_pieces(self):
+        &#34;&#34;&#34;Decrements the total amount of pieces that the player has left in the game.
+        This also includes pieces that the player has yet to place on the board
+        &#34;&#34;&#34;
+        self.set_active_pieces(self.get_active_pieces()-1)
+
+    def get_phase(self) -&gt; int:
+        &#34;&#34;&#34;Gets the current phase that the player is in.
+
+        Returns:
+            int -- The current phase.
+        &#34;&#34;&#34;
+        return self.__phase
+
+    def set_phase(self, new_phase : int) -&gt; None:
+        &#34;&#34;&#34;Sets the current phase of the player.
+
+        Arguments:
+            new_phase {int} -- the new phase for the player
+        &#34;&#34;&#34;
+        self.__phase = new_phase
+        self.trigger_state_event()
+
+class Piece():
+    &#34;&#34;&#34;
+    Represents the state of a piece.
+
+    Parameters:
+        owner {Player} -- The player owner of this piece.
+
+    Attributes:
+        owner {Player} -- The player owner of this piece.
+    &#34;&#34;&#34;
+    owner : Player
+
+    def __init__(self, owner : Player):
+        self.owner = owner
+
+    def __eq__(self, other):
+        if other == None:
+            return False
+        return self.owner is other.owner
+
+class Node():
+    &#34;&#34;&#34;
+    Represents the state of a node.
+
+    Parameters:
+        node_id {int} -- The node id for this node.
+
+    Attributes:
+        node_id {int} -- The node id for this node.\n
+        piece {Piece} -- The occupying this node. May be None.
+    &#34;&#34;&#34;
+    node_id = -1
+    piece : Piece
+
+    def __init__(self, node_id):
+        self.node_id = node_id
+        self.piece = None
+
+    def __eq__(self, other) -&gt; bool:
+        if other is None:
+            return False
+        return self.node_id == other.node_id
+
+    def __hash__(self) -&gt; int:
+        return hash(self.node_id)
+
+    def is_occupied(self) -&gt; bool:
+        &#39;&#39;&#39;Check if this node is occupied by a player.
+
+        Returns:
+            bool -- True if occupied, else False
+        &#39;&#39;&#39;
+        return self.piece != None
+
+    def get_piece(self) -&gt; Piece or None:
+        &#39;&#39;&#39;Gets the piece at this node.
+
+        Returns:
+            Piece or None -- The piece at the node if there is a piece at the node, otherwise returns None
+        &#39;&#39;&#39;
+        return self.piece
+
+    def occupying_player(self) -&gt; Player or None:
+        &#39;&#39;&#39;Gets the player occupying this node.
+
+        Returns:
+            Player or None -- If a player occupies this node, return that player, else return None
+        &#39;&#39;&#39;
+        if self.piece == None:
+            return None
+        return self.piece.owner
+
+
+# Subject to interface change
+class Board(StateObservable):
+    &#34;&#34;&#34;
+    Represents the state of a board.
+    &#34;&#34;&#34;
+    __graph: list[Node]
+    __mills: list[list[Node]]
+
+    def __init__(self):
+        super().__init__()
+        self.__graph = [Node(n) for n in range(24)]
+        self.__mills = []
+
+    def get_neighbors(self, node_id : int) -&gt; list[int]:
+        &#39;&#39;&#39;Get adjacently connected nodes from a given node ID.
+
+        Arguments:
+            node_id {int} -- The node ID to get adjacent nodes from.
+
+        Returns:
+            list[int] -- A list of node_ids that are adjacent to the node with node ID node_id. Empty list if the node is invalid.
+        &#39;&#39;&#39;
+        if not self.is_valid_node(node_id):
+            return []
+
+        return [x for x in _directed_adjacency_matrix[node_id] if x is not None]
+
+    def is_adjacent(self, first_node : int, second_node : int) -&gt; bool:
+        &#34;&#34;&#34;Checks whether two nodes are adjacent to each other.
+
+        Arguments:
+            first_node {int} -- the first node
+            second_node {int} -- the node to check adjacency to
+
+        Returns:
+            bool -- True if first_node and second_node have an edge between them. Otherwise False.
+        &#34;&#34;&#34;        
+        adjacent_nodes = self.get_neighbors(first_node)
+
+        return second_node in adjacent_nodes
+
+    def get_nodes(self) -&gt; list[Node]:
+        &#39;&#39;&#39;Get a list of all Nodes on the board.
+
+        Returns:
+            list[Node] -- A list of all Nodes on the board.
+        &#39;&#39;&#39;
+        return self.__graph
+
+    def is_valid_node(self, node_id) -&gt; bool:
+        &#39;&#39;&#39;Returns whether a given node ID is one that exists on the board.
+
+        Arguments:
+            node_id {int} -- ID of the node to check
+
+        Returns:
+            bool -- True if node_id is on the board, otherwise False.
+        &#39;&#39;&#39;
+        return node_id in range(0, len(self.get_nodes()))
+
+    def get_node(self, node_id : int) -&gt; Node or None:
+        &#39;&#39;&#39;Gets the node with a given ID.
+
+        Arguments:
+            node_id {int} -- The ID of the node to get.
+
+        Returns:
+            Node or None -- Node with the given ID if it exists, else None
+        &#39;&#39;&#39;
+        if self.is_valid_node(node_id):
+            return self.__graph[node_id]
+        else:
+            return None
+
+    def is_occupied(self, node_id : int) -&gt; bool:
+        &#39;&#39;&#39;Check if a given node ID is occupied by some piece.
+
+        Arguments:
+            node_id {int} -- ID of the node to check
+
+        Returns:
+            bool -- True if there is a piece at the given node, else False
+        &#39;&#39;&#39;
+        return self.__graph[node_id].is_occupied()
+
+    def get_occupied_nodes(self) -&gt; list[Node]:
+        &#39;&#39;&#39;Gets all occupied nodes on the board
+
+        Returns:
+            list[Node] -- A list of nodes that are currently occupied by a piece
+        &#39;&#39;&#39;
+        occupied_nodes = []
+        for node in self.get_nodes():
+            if node.is_occupied():
+                occupied_nodes.append(node)
+        return occupied_nodes
+
+    def nodes_occupied_by_player(self, player : Player) -&gt; list[int]:
+        &#34;&#34;&#34;Gets a list of node ids that a given player has pieces at.
+
+        Arguments:
+            player {Player} -- the given player
+
+        Returns:
+            list[int] -- A list of node ids that the player has pieces on. May be an empty list.
+        &#34;&#34;&#34;        
+        if player is None:
+            return []
+
+        occupied_nodes = self.get_occupied_nodes()
+        nodes_occupied_by_player = []
+
+        for node in occupied_nodes:
+            if node.piece is not None and node.piece.owner == player:
+                nodes_occupied_by_player.append(node.node_id)
+
+        return nodes_occupied_by_player
+
+    def set_piece(self, node_id : int, owner : Player):
+        &#39;&#39;&#39;Set a piece on the given node with the given player owner.
+
+        The caller must ensure that the id is valid. Any piece already on the node will be replaced.
+
+        Arguments:
+            node_id {int} -- ID of the node to set the piece at\n
+            owner {Player} -- The player that owns the piece
+        &#39;&#39;&#39;
+        self.__graph[node_id].piece = Piece(owner)
+        self.trigger_state_event()
+
+    def remove_piece(self, node_id : int) -&gt; Player or None:
+        &#39;&#39;&#39;Remove a piece from a given node on the board.
+
+        The caller must ensure the node id is valid.
+
+        Arguments:
+            node_id {int} -- ID of the node to remove from
+
+        Returns:
+            Player or None -- The owner of the piece that was removed, or None if there was no piece at the Node
+        &#39;&#39;&#39;
+        if self.__graph[node_id].piece is None:
+            return None
+
+        # remove from cached mills, if any
+        self.__remove_from_mills(self.get_node(node_id))
+
+        owner = self.__graph[node_id].piece.owner
+        self.__graph[node_id].piece = None
+
+        self.trigger_state_event()
+        return owner
+
+    def move_piece_to(self, from_node_id : int, to_node_id : int):
+        &#34;&#34;&#34;Moves a piece from one node id to another.
+
+        The caller must ensure the node id is valid. Any pieces already on the destination node are replaced.
+        Trying to move a piece from an empty node, or trying to move to the same node has no effect.
+
+        Arguments:
+            from_node_id {int} -- the node id to move the piece from
+            to_node_id {int} -- the node id to move the piece to
+        &#34;&#34;&#34;
+
+        from_node = self.__graph[from_node_id]
+        to_node = self.__graph[to_node_id]
+
+        if from_node.piece is None or from_node_id == to_node_id:
+            return
+
+        piece_to_move = from_node.piece
+        from_node.piece = None
+        to_node.piece = piece_to_move
+
+
+        self.__remove_from_mills(self.get_node(from_node_id))
+
+        self.trigger_state_event()
+
+    def is_mill_at(self, node_id : int) -&gt; bool:
+        &#39;&#39;&#39;Check if the given node_id is part of a mill
+
+        Arguments:
+            node_id {int} -- ID of the node to check if part of a mill
+
+        Returns:
+            bool -- True if the node is part of a mill else False
+        &#39;&#39;&#39;
+        node = self.get_node(node_id)
+        if node is None:
+            return False
+
+        for mill in self.__mills:
+            if node in mill:
+                return True
+        # No existing mills, can we generate mills?
+
+        return self.__try_generate_mill(node_id)
+
+    def piece_can_move_to_neighbors(self, node_id : int) -&gt; bool:
+        &#34;&#34;&#34;Returns whether a piece on this node can move to an adjacent node.
+
+        Arguments:
+            node_id {int} -- the node ID the piece is on
+
+        Returns:
+            bool -- True if there is a piece on the node and it can move to an adjacent node, otherwise False
+        &#34;&#34;&#34;
+        node = self.get_node(node_id)
+        if node is None or node.piece is None:
+            return False
+
+        adjacent_nodes = map(lambda x: self.get_node(x), self.get_neighbors(node_id))
+
+        for adjacent_node in adjacent_nodes:
+            if not adjacent_node.is_occupied():
+                return True
+        return False
+
+    # Tries to generate one or several mills and add them to the list of mills, given that the generated mills do not already exist.
+    def __try_generate_mill(self, node_id : int) -&gt; bool:
+        start_node = self.__graph[node_id]
+
+        # Can&#39;t generate mill starting from an empty node
+        if start_node is None or start_node.piece is None:
+            return False
+
+        nodes_per_dir : list[Node] = [None] * len(list(Direction))
+
+        for dir in Direction:
+            nodes_per_dir[dir] = self.__get_consecutive_nodes(start_node, dir, [])
+
+        vertical_nodes = nodes_per_dir[Direction.NORTH] + nodes_per_dir[Direction.SOUTH]
+        horizontal_nodes = nodes_per_dir[Direction.EAST] + nodes_per_dir[Direction.WEST]
+        diagonal_nodes = nodes_per_dir[Direction.SOUTH_EAST] + nodes_per_dir[Direction.SOUTH_WEST] \
+        + nodes_per_dir[Direction.NORTH_EAST] + nodes_per_dir[Direction.NORTH_WEST]
+
+        has_formed_mill = False
+
+        if len(vertical_nodes) &gt;= 2:
+            if self.__add_mill(vertical_nodes + [start_node]):
+                has_formed_mill = True
+        if len(horizontal_nodes) &gt;= 2:
+            if self.__add_mill(horizontal_nodes + [start_node]):
+                has_formed_mill = True
+        if len(diagonal_nodes) &gt;= 2:
+            if self.__add_mill(diagonal_nodes + [start_node]):
+                has_formed_mill = True
+
+        return has_formed_mill
+
+    def __add_mill(self, new_mill : list[Node]) -&gt; bool:
+        set_of_mills = map(lambda x: set(x), self.__mills)
+        new_mill_set = set(new_mill)
+        if new_mill_set not in set_of_mills:
+            self.__mills.append(new_mill)
+            return True
+        return False
+
+    def __remove_from_mills(self, node_to_remove : Node):
+        # get the mills that this node belongs to, if any
+        mills_to_remove = []
+        for mill in self.__mills:
+            if node_to_remove in mill:
+                mills_to_remove.append(mill)
+
+        # remove the mills
+        for mill in mills_to_remove:
+            self.__remove_mill(mill)
+
+    def __remove_mill(self, mill_to_remove : list[Node]) -&gt; bool:
+        set_of_mills = list(map(lambda x: set(x), self.__mills))
+        mill_set_to_remove = set(mill_to_remove)
+        index_to_remove = set_of_mills.index(mill_set_to_remove)
+        self.__mills.pop(index_to_remove)
+
+    def __get_node_dir(self, node : Node, dir : Direction) -&gt; Node or None:
+        next_node_id = _directed_adjacency_matrix[node.node_id][dir]
+        if next_node_id is None:
+            return None
+        return self.__graph[next_node_id]
+
+    def __get_consecutive_nodes(self, current_node : Node, dir : Direction, acc : list[Node] = []):
+        next_node = self.__get_node_dir(current_node, dir)
+        if next_node is None or current_node.piece != next_node.piece:
+            return acc
+        acc.append(next_node)
+        return self.__get_consecutive_nodes(next_node, dir, acc)
+
+# Subject to interface change
+class GameModel(StateObservable):
+    &#34;&#34;&#34;
+    Represents the state of the game.
+
+    Attributes:
+        board {Board} -- The board associated with this game state.
+    &#34;&#34;&#34;
+    board : Board
+    __current_player : int = 0 # first player is always the first index
+    __players : Tuple[Player, Player] # players are in order: (BLACK, WHITE)
+    __turn_counter = 0
+
+    def __init__(self):
+        super().__init__()
+        self.board = Board()
+        self.__players = (Player(Color.BLACK), Player(Color.WHITE))
+        self.board.register_listener(self.__notify_state_change)
+        for player in self.__players:
+            player.register_listener(self.__notify_state_change)
+
+    def next_player(self) -&gt; Player:
+        &#39;&#39;&#39;Swap turn to next player.
+
+        Returns:
+            Player -- The next player to play
+        &#39;&#39;&#39;
+        self.__current_player = (self.__current_player + 1) % len(self.__players)
+        return self.__players[self.__current_player]
+    
+    def set_player_name(self, color : Color, new_name : str):
+        &#34;&#34;&#34;Sets the name of a player with a given color.
+
+        Arguments:
+            color {Color} -- the color of the player whose name should be set
+            new_name {str} -- the new name of the player
+        &#34;&#34;&#34;        
+        player = self.get_player_by_color(color)
+        if player is None:
+            return
+
+        player.set_name(new_name)
+
+    def set_ai_player(self, color : Color, ai_difficulty : AiDifficulty = AiDifficulty.EASY):
+        &#34;&#34;&#34;Enables AI for a player with a given color.
+
+        Arguments:
+            color {Color} -- the color of the player
+
+        Keyword Arguments:
+            ai_difficulty {AiDifficulty} -- the difficulty of the AI. AiDifficulty.NONE disables the AI for this player. (default: {AiDifficulty.EASY})
+        &#34;&#34;&#34;        
+        player = self.get_player_by_color(color)
+        if player is None: 
+            return
+
+        if ai_difficulty == AiDifficulty.NONE:
+            player.disable_ai()
+        
+        player.enable_ai(ai_difficulty)
+
+    def set_turn_count(self, turn_count : int):
+        &#39;&#39;&#39;Sets current turn number.
+
+        Arguments:
+            turn_count {int} -- Turn number to set
+        &#39;&#39;&#39;
+        self.__turn_counter = turn_count
+
+    def get_turn_count(self) -&gt; int:
+        &#39;&#39;&#39;Gets the current turn number.
+
+        Returns:
+            int -- Current turn number
+        &#39;&#39;&#39;
+        return self.__turn_counter
+
+    def get_all_players(self) -&gt; list[Player]:
+        &#34;&#34;&#34;Gets a list of all players in the game.
+
+        Returns:
+            list[Player] -- the list of players in the game
+        &#34;&#34;&#34;        
+        return list(self.__players)
+    
+    def get_player_by_color(self, color : Color) -&gt; Player or None:
+        &#34;&#34;&#34;Gets the first occurence of a player based on the player&#39;s color.
+
+        Arguments:
+            color {Color} -- the color of the player
+
+        Returns:
+            Player or None -- The player with the given color, or None if no such player exists.
+        &#34;&#34;&#34;        
+        for player in self.__players:
+            if player.color == color:
+                return player
+        return None
+
+    def get_current_player(self) -&gt; Player:
+        &#39;&#39;&#39;Gets the current player.
+
+        Returns:
+            Player -- Current Player
+        &#39;&#39;&#39;
+        return self.__players[self.__current_player]
+
+    def to_ai_input(self, which_player : Player) -&gt; dict:
+        &#34;&#34;&#34;Converts the current state of the model to a format readable by an AI module.
+        Note that there may be multiple AI players.
+        Arguments:
+            which_player {Player} -- the ai player for which this input is formatted
+
+        Returns:
+            dict -- a dictionary representing the current game state. The format is defined in ai_schema.json.
+        &#34;&#34;&#34;
+        data = {}
+        data[&#34;version&#34;] = 2
+        data[&#34;ai_difficulty&#34;] = str(which_player.get_ai_difficulty())
+        data[&#34;state&#34;] = {}
+
+        data[&#34;state&#34;][&#34;turns_left&#34;] = GameConfig.MAX_TURNS - self.get_turn_count()
+
+        opponent = self.__players[(self.__players.index(which_player) + 1) % len(self.__players)] # next player, needs to be rewritten for more than 2 players
+        data[&#34;state&#34;][&#34;they&#34;] = {}
+        data[&#34;state&#34;][&#34;they&#34;][&#34;pieces_onboard&#34;] = self.board.nodes_occupied_by_player(opponent)
+        data[&#34;state&#34;][&#34;they&#34;][&#34;pieces_offboard&#34;] = opponent.get_pieces_to_place()
+
+        data[&#34;state&#34;][&#34;we&#34;] = {}
+        data[&#34;state&#34;][&#34;we&#34;][&#34;pieces_onboard&#34;] = self.board.nodes_occupied_by_player(which_player)
+        data[&#34;state&#34;][&#34;we&#34;][&#34;pieces_offboard&#34;] = which_player.get_pieces_to_place()
+        return data
+    
+    def load_ai_output(self, which_player : Player, data : dict):
+
+        new_state = data[&#34;state&#34;]
+        new_state[&#34;we&#34;][&#34;pieces_onboard&#34;]
+        which_player.set_pieces_to_place(new_state[&#34;we&#34;][&#34;pieces_offboard&#34;])
+        self.__load_nodes(which_player, new_state[&#34;we&#34;][&#34;pieces_onboard&#34;])
+        #new_ai_nodes = new_state[&#34;we&#34;][&#34;pieces_onboard&#34;]
+        #old_ai_nodes = self.board.nodes_occupied_by_player(which_player)
+
+        opponent = self.__players[(self.__players.index(which_player) + 1) % len(self.__players)] # next player, needs to be rewritten for more than 2 players
+        self.__load_nodes(opponent, new_state[&#34;they&#34;][&#34;pieces_onboard&#34;])
+        #old_opponent_nodes = self.board.nodes_occupied_by_player(opponent)
+        #new_opponent_nodes = new_state[&#34;they&#34;][&#34;pieces_onboard&#34;]
+        opponent.set_pieces_to_place(new_state[&#34;they&#34;][&#34;pieces_offboard&#34;])
+    
+    def __load_nodes(self, player : Player, new_nodes : list[int]):
+        old_nodes_set = set(self.board.nodes_occupied_by_player(player))
+        new_nodes_set = set(new_nodes)
+        if old_nodes_set == new_nodes_set:
+            return
+        
+        removed_nodes = old_nodes_set - new_nodes_set
+        for node_id in removed_nodes:
+            self.board.remove_piece(node_id)
+
+        added_nodes =  new_nodes_set - old_nodes_set
+        for node_id in added_nodes:
+            self.board.set_piece(node_id, player)
+
+
+    def __notify_state_change(self):
+        self.trigger_state_event()
+
+
+# entry point should be main.py
+def main():
+    pass
+
+if __name__ == &#34;__main__&#34;:
+    main()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="gameplatform.gamemodel.main"><code class="name flex">
+<span>def <span class="ident">main</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def main():
+    pass</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="gameplatform.gamemodel.AiDifficulty"><code class="flex name class">
+<span>class <span class="ident">AiDifficulty</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class AiDifficulty(IntEnum):
+    NONE = 0
+    EASY = 1
+    MODERATE = 2
+    HARD = 3
+
+    def __str__(self):
+        return self.name.lower()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="gameplatform.gamemodel.AiDifficulty.EASY"><code class="name">var <span class="ident">EASY</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="gameplatform.gamemodel.AiDifficulty.HARD"><code class="name">var <span class="ident">HARD</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="gameplatform.gamemodel.AiDifficulty.MODERATE"><code class="name">var <span class="ident">MODERATE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="gameplatform.gamemodel.AiDifficulty.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="gameplatform.gamemodel.Board"><code class="flex name class">
+<span>class <span class="ident">Board</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents the state of a board.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Board(StateObservable):
+    &#34;&#34;&#34;
+    Represents the state of a board.
+    &#34;&#34;&#34;
+    __graph: list[Node]
+    __mills: list[list[Node]]
+
+    def __init__(self):
+        super().__init__()
+        self.__graph = [Node(n) for n in range(24)]
+        self.__mills = []
+
+    def get_neighbors(self, node_id : int) -&gt; list[int]:
+        &#39;&#39;&#39;Get adjacently connected nodes from a given node ID.
+
+        Arguments:
+            node_id {int} -- The node ID to get adjacent nodes from.
+
+        Returns:
+            list[int] -- A list of node_ids that are adjacent to the node with node ID node_id. Empty list if the node is invalid.
+        &#39;&#39;&#39;
+        if not self.is_valid_node(node_id):
+            return []
+
+        return [x for x in _directed_adjacency_matrix[node_id] if x is not None]
+
+    def is_adjacent(self, first_node : int, second_node : int) -&gt; bool:
+        &#34;&#34;&#34;Checks whether two nodes are adjacent to each other.
+
+        Arguments:
+            first_node {int} -- the first node
+            second_node {int} -- the node to check adjacency to
+
+        Returns:
+            bool -- True if first_node and second_node have an edge between them. Otherwise False.
+        &#34;&#34;&#34;        
+        adjacent_nodes = self.get_neighbors(first_node)
+
+        return second_node in adjacent_nodes
+
+    def get_nodes(self) -&gt; list[Node]:
+        &#39;&#39;&#39;Get a list of all Nodes on the board.
+
+        Returns:
+            list[Node] -- A list of all Nodes on the board.
+        &#39;&#39;&#39;
+        return self.__graph
+
+    def is_valid_node(self, node_id) -&gt; bool:
+        &#39;&#39;&#39;Returns whether a given node ID is one that exists on the board.
+
+        Arguments:
+            node_id {int} -- ID of the node to check
+
+        Returns:
+            bool -- True if node_id is on the board, otherwise False.
+        &#39;&#39;&#39;
+        return node_id in range(0, len(self.get_nodes()))
+
+    def get_node(self, node_id : int) -&gt; Node or None:
+        &#39;&#39;&#39;Gets the node with a given ID.
+
+        Arguments:
+            node_id {int} -- The ID of the node to get.
+
+        Returns:
+            Node or None -- Node with the given ID if it exists, else None
+        &#39;&#39;&#39;
+        if self.is_valid_node(node_id):
+            return self.__graph[node_id]
+        else:
+            return None
+
+    def is_occupied(self, node_id : int) -&gt; bool:
+        &#39;&#39;&#39;Check if a given node ID is occupied by some piece.
+
+        Arguments:
+            node_id {int} -- ID of the node to check
+
+        Returns:
+            bool -- True if there is a piece at the given node, else False
+        &#39;&#39;&#39;
+        return self.__graph[node_id].is_occupied()
+
+    def get_occupied_nodes(self) -&gt; list[Node]:
+        &#39;&#39;&#39;Gets all occupied nodes on the board
+
+        Returns:
+            list[Node] -- A list of nodes that are currently occupied by a piece
+        &#39;&#39;&#39;
+        occupied_nodes = []
+        for node in self.get_nodes():
+            if node.is_occupied():
+                occupied_nodes.append(node)
+        return occupied_nodes
+
+    def nodes_occupied_by_player(self, player : Player) -&gt; list[int]:
+        &#34;&#34;&#34;Gets a list of node ids that a given player has pieces at.
+
+        Arguments:
+            player {Player} -- the given player
+
+        Returns:
+            list[int] -- A list of node ids that the player has pieces on. May be an empty list.
+        &#34;&#34;&#34;        
+        if player is None:
+            return []
+
+        occupied_nodes = self.get_occupied_nodes()
+        nodes_occupied_by_player = []
+
+        for node in occupied_nodes:
+            if node.piece is not None and node.piece.owner == player:
+                nodes_occupied_by_player.append(node.node_id)
+
+        return nodes_occupied_by_player
+
+    def set_piece(self, node_id : int, owner : Player):
+        &#39;&#39;&#39;Set a piece on the given node with the given player owner.
+
+        The caller must ensure that the id is valid. Any piece already on the node will be replaced.
+
+        Arguments:
+            node_id {int} -- ID of the node to set the piece at\n
+            owner {Player} -- The player that owns the piece
+        &#39;&#39;&#39;
+        self.__graph[node_id].piece = Piece(owner)
+        self.trigger_state_event()
+
+    def remove_piece(self, node_id : int) -&gt; Player or None:
+        &#39;&#39;&#39;Remove a piece from a given node on the board.
+
+        The caller must ensure the node id is valid.
+
+        Arguments:
+            node_id {int} -- ID of the node to remove from
+
+        Returns:
+            Player or None -- The owner of the piece that was removed, or None if there was no piece at the Node
+        &#39;&#39;&#39;
+        if self.__graph[node_id].piece is None:
+            return None
+
+        # remove from cached mills, if any
+        self.__remove_from_mills(self.get_node(node_id))
+
+        owner = self.__graph[node_id].piece.owner
+        self.__graph[node_id].piece = None
+
+        self.trigger_state_event()
+        return owner
+
+    def move_piece_to(self, from_node_id : int, to_node_id : int):
+        &#34;&#34;&#34;Moves a piece from one node id to another.
+
+        The caller must ensure the node id is valid. Any pieces already on the destination node are replaced.
+        Trying to move a piece from an empty node, or trying to move to the same node has no effect.
+
+        Arguments:
+            from_node_id {int} -- the node id to move the piece from
+            to_node_id {int} -- the node id to move the piece to
+        &#34;&#34;&#34;
+
+        from_node = self.__graph[from_node_id]
+        to_node = self.__graph[to_node_id]
+
+        if from_node.piece is None or from_node_id == to_node_id:
+            return
+
+        piece_to_move = from_node.piece
+        from_node.piece = None
+        to_node.piece = piece_to_move
+
+
+        self.__remove_from_mills(self.get_node(from_node_id))
+
+        self.trigger_state_event()
+
+    def is_mill_at(self, node_id : int) -&gt; bool:
+        &#39;&#39;&#39;Check if the given node_id is part of a mill
+
+        Arguments:
+            node_id {int} -- ID of the node to check if part of a mill
+
+        Returns:
+            bool -- True if the node is part of a mill else False
+        &#39;&#39;&#39;
+        node = self.get_node(node_id)
+        if node is None:
+            return False
+
+        for mill in self.__mills:
+            if node in mill:
+                return True
+        # No existing mills, can we generate mills?
+
+        return self.__try_generate_mill(node_id)
+
+    def piece_can_move_to_neighbors(self, node_id : int) -&gt; bool:
+        &#34;&#34;&#34;Returns whether a piece on this node can move to an adjacent node.
+
+        Arguments:
+            node_id {int} -- the node ID the piece is on
+
+        Returns:
+            bool -- True if there is a piece on the node and it can move to an adjacent node, otherwise False
+        &#34;&#34;&#34;
+        node = self.get_node(node_id)
+        if node is None or node.piece is None:
+            return False
+
+        adjacent_nodes = map(lambda x: self.get_node(x), self.get_neighbors(node_id))
+
+        for adjacent_node in adjacent_nodes:
+            if not adjacent_node.is_occupied():
+                return True
+        return False
+
+    # Tries to generate one or several mills and add them to the list of mills, given that the generated mills do not already exist.
+    def __try_generate_mill(self, node_id : int) -&gt; bool:
+        start_node = self.__graph[node_id]
+
+        # Can&#39;t generate mill starting from an empty node
+        if start_node is None or start_node.piece is None:
+            return False
+
+        nodes_per_dir : list[Node] = [None] * len(list(Direction))
+
+        for dir in Direction:
+            nodes_per_dir[dir] = self.__get_consecutive_nodes(start_node, dir, [])
+
+        vertical_nodes = nodes_per_dir[Direction.NORTH] + nodes_per_dir[Direction.SOUTH]
+        horizontal_nodes = nodes_per_dir[Direction.EAST] + nodes_per_dir[Direction.WEST]
+        diagonal_nodes = nodes_per_dir[Direction.SOUTH_EAST] + nodes_per_dir[Direction.SOUTH_WEST] \
+        + nodes_per_dir[Direction.NORTH_EAST] + nodes_per_dir[Direction.NORTH_WEST]
+
+        has_formed_mill = False
+
+        if len(vertical_nodes) &gt;= 2:
+            if self.__add_mill(vertical_nodes + [start_node]):
+                has_formed_mill = True
+        if len(horizontal_nodes) &gt;= 2:
+            if self.__add_mill(horizontal_nodes + [start_node]):
+                has_formed_mill = True
+        if len(diagonal_nodes) &gt;= 2:
+            if self.__add_mill(diagonal_nodes + [start_node]):
+                has_formed_mill = True
+
+        return has_formed_mill
+
+    def __add_mill(self, new_mill : list[Node]) -&gt; bool:
+        set_of_mills = map(lambda x: set(x), self.__mills)
+        new_mill_set = set(new_mill)
+        if new_mill_set not in set_of_mills:
+            self.__mills.append(new_mill)
+            return True
+        return False
+
+    def __remove_from_mills(self, node_to_remove : Node):
+        # get the mills that this node belongs to, if any
+        mills_to_remove = []
+        for mill in self.__mills:
+            if node_to_remove in mill:
+                mills_to_remove.append(mill)
+
+        # remove the mills
+        for mill in mills_to_remove:
+            self.__remove_mill(mill)
+
+    def __remove_mill(self, mill_to_remove : list[Node]) -&gt; bool:
+        set_of_mills = list(map(lambda x: set(x), self.__mills))
+        mill_set_to_remove = set(mill_to_remove)
+        index_to_remove = set_of_mills.index(mill_set_to_remove)
+        self.__mills.pop(index_to_remove)
+
+    def __get_node_dir(self, node : Node, dir : Direction) -&gt; Node or None:
+        next_node_id = _directed_adjacency_matrix[node.node_id][dir]
+        if next_node_id is None:
+            return None
+        return self.__graph[next_node_id]
+
+    def __get_consecutive_nodes(self, current_node : Node, dir : Direction, acc : list[Node] = []):
+        next_node = self.__get_node_dir(current_node, dir)
+        if next_node is None or current_node.piece != next_node.piece:
+            return acc
+        acc.append(next_node)
+        return self.__get_consecutive_nodes(next_node, dir, acc)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>utils.StateObservable</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="gameplatform.gamemodel.Board.get_neighbors"><code class="name flex">
+<span>def <span class="ident">get_neighbors</span></span>(<span>self, node_id: int) ‑> list</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get adjacently connected nodes from a given node ID.</p>
+<h2 id="arguments">Arguments</h2>
+<p>node_id {int} &ndash; The node ID to get adjacent nodes from.</p>
+<h2 id="returns">Returns</h2>
+<p>list[int] &ndash; A list of node_ids that are adjacent to the node with node ID node_id. Empty list if the node is invalid.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_neighbors(self, node_id : int) -&gt; list[int]:
+    &#39;&#39;&#39;Get adjacently connected nodes from a given node ID.
+
+    Arguments:
+        node_id {int} -- The node ID to get adjacent nodes from.
+
+    Returns:
+        list[int] -- A list of node_ids that are adjacent to the node with node ID node_id. Empty list if the node is invalid.
+    &#39;&#39;&#39;
+    if not self.is_valid_node(node_id):
+        return []
+
+    return [x for x in _directed_adjacency_matrix[node_id] if x is not None]</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Board.get_node"><code class="name flex">
+<span>def <span class="ident">get_node</span></span>(<span>self, node_id: int) ‑> <a title="gameplatform.gamemodel.Node" href="#gameplatform.gamemodel.Node">Node</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the node with a given ID.</p>
+<h2 id="arguments">Arguments</h2>
+<p>node_id {int} &ndash; The ID of the node to get.</p>
+<h2 id="returns">Returns</h2>
+<p>Node or None &ndash; Node with the given ID if it exists, else None</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_node(self, node_id : int) -&gt; Node or None:
+    &#39;&#39;&#39;Gets the node with a given ID.
+
+    Arguments:
+        node_id {int} -- The ID of the node to get.
+
+    Returns:
+        Node or None -- Node with the given ID if it exists, else None
+    &#39;&#39;&#39;
+    if self.is_valid_node(node_id):
+        return self.__graph[node_id]
+    else:
+        return None</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Board.get_nodes"><code class="name flex">
+<span>def <span class="ident">get_nodes</span></span>(<span>self) ‑> list</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Get a list of all Nodes on the board.</p>
+<h2 id="returns">Returns</h2>
+<p>list[Node] &ndash; A list of all Nodes on the board.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_nodes(self) -&gt; list[Node]:
+    &#39;&#39;&#39;Get a list of all Nodes on the board.
+
+    Returns:
+        list[Node] -- A list of all Nodes on the board.
+    &#39;&#39;&#39;
+    return self.__graph</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Board.get_occupied_nodes"><code class="name flex">
+<span>def <span class="ident">get_occupied_nodes</span></span>(<span>self) ‑> list</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets all occupied nodes on the board</p>
+<h2 id="returns">Returns</h2>
+<p>list[Node] &ndash; A list of nodes that are currently occupied by a piece</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_occupied_nodes(self) -&gt; list[Node]:
+    &#39;&#39;&#39;Gets all occupied nodes on the board
+
+    Returns:
+        list[Node] -- A list of nodes that are currently occupied by a piece
+    &#39;&#39;&#39;
+    occupied_nodes = []
+    for node in self.get_nodes():
+        if node.is_occupied():
+            occupied_nodes.append(node)
+    return occupied_nodes</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Board.is_adjacent"><code class="name flex">
+<span>def <span class="ident">is_adjacent</span></span>(<span>self, first_node: int, second_node: int) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Checks whether two nodes are adjacent to each other.</p>
+<h2 id="arguments">Arguments</h2>
+<p>first_node {int} &ndash; the first node
+second_node {int} &ndash; the node to check adjacency to</p>
+<h2 id="returns">Returns</h2>
+<p>bool &ndash; True if first_node and second_node have an edge between them. Otherwise False.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_adjacent(self, first_node : int, second_node : int) -&gt; bool:
+    &#34;&#34;&#34;Checks whether two nodes are adjacent to each other.
+
+    Arguments:
+        first_node {int} -- the first node
+        second_node {int} -- the node to check adjacency to
+
+    Returns:
+        bool -- True if first_node and second_node have an edge between them. Otherwise False.
+    &#34;&#34;&#34;        
+    adjacent_nodes = self.get_neighbors(first_node)
+
+    return second_node in adjacent_nodes</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Board.is_mill_at"><code class="name flex">
+<span>def <span class="ident">is_mill_at</span></span>(<span>self, node_id: int) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if the given node_id is part of a mill</p>
+<h2 id="arguments">Arguments</h2>
+<p>node_id {int} &ndash; ID of the node to check if part of a mill</p>
+<h2 id="returns">Returns</h2>
+<p>bool &ndash; True if the node is part of a mill else False</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_mill_at(self, node_id : int) -&gt; bool:
+    &#39;&#39;&#39;Check if the given node_id is part of a mill
+
+    Arguments:
+        node_id {int} -- ID of the node to check if part of a mill
+
+    Returns:
+        bool -- True if the node is part of a mill else False
+    &#39;&#39;&#39;
+    node = self.get_node(node_id)
+    if node is None:
+        return False
+
+    for mill in self.__mills:
+        if node in mill:
+            return True
+    # No existing mills, can we generate mills?
+
+    return self.__try_generate_mill(node_id)</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Board.is_occupied"><code class="name flex">
+<span>def <span class="ident">is_occupied</span></span>(<span>self, node_id: int) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if a given node ID is occupied by some piece.</p>
+<h2 id="arguments">Arguments</h2>
+<p>node_id {int} &ndash; ID of the node to check</p>
+<h2 id="returns">Returns</h2>
+<p>bool &ndash; True if there is a piece at the given node, else False</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_occupied(self, node_id : int) -&gt; bool:
+    &#39;&#39;&#39;Check if a given node ID is occupied by some piece.
+
+    Arguments:
+        node_id {int} -- ID of the node to check
+
+    Returns:
+        bool -- True if there is a piece at the given node, else False
+    &#39;&#39;&#39;
+    return self.__graph[node_id].is_occupied()</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Board.is_valid_node"><code class="name flex">
+<span>def <span class="ident">is_valid_node</span></span>(<span>self, node_id) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns whether a given node ID is one that exists on the board.</p>
+<h2 id="arguments">Arguments</h2>
+<p>node_id {int} &ndash; ID of the node to check</p>
+<h2 id="returns">Returns</h2>
+<p>bool &ndash; True if node_id is on the board, otherwise False.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_valid_node(self, node_id) -&gt; bool:
+    &#39;&#39;&#39;Returns whether a given node ID is one that exists on the board.
+
+    Arguments:
+        node_id {int} -- ID of the node to check
+
+    Returns:
+        bool -- True if node_id is on the board, otherwise False.
+    &#39;&#39;&#39;
+    return node_id in range(0, len(self.get_nodes()))</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Board.move_piece_to"><code class="name flex">
+<span>def <span class="ident">move_piece_to</span></span>(<span>self, from_node_id: int, to_node_id: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Moves a piece from one node id to another.</p>
+<p>The caller must ensure the node id is valid. Any pieces already on the destination node are replaced.
+Trying to move a piece from an empty node, or trying to move to the same node has no effect.</p>
+<h2 id="arguments">Arguments</h2>
+<p>from_node_id {int} &ndash; the node id to move the piece from
+to_node_id {int} &ndash; the node id to move the piece to</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def move_piece_to(self, from_node_id : int, to_node_id : int):
+    &#34;&#34;&#34;Moves a piece from one node id to another.
+
+    The caller must ensure the node id is valid. Any pieces already on the destination node are replaced.
+    Trying to move a piece from an empty node, or trying to move to the same node has no effect.
+
+    Arguments:
+        from_node_id {int} -- the node id to move the piece from
+        to_node_id {int} -- the node id to move the piece to
+    &#34;&#34;&#34;
+
+    from_node = self.__graph[from_node_id]
+    to_node = self.__graph[to_node_id]
+
+    if from_node.piece is None or from_node_id == to_node_id:
+        return
+
+    piece_to_move = from_node.piece
+    from_node.piece = None
+    to_node.piece = piece_to_move
+
+
+    self.__remove_from_mills(self.get_node(from_node_id))
+
+    self.trigger_state_event()</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Board.nodes_occupied_by_player"><code class="name flex">
+<span>def <span class="ident">nodes_occupied_by_player</span></span>(<span>self, player: <a title="gameplatform.gamemodel.Player" href="#gameplatform.gamemodel.Player">Player</a>) ‑> list</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets a list of node ids that a given player has pieces at.</p>
+<h2 id="arguments">Arguments</h2>
+<p>player {Player} &ndash; the given player</p>
+<h2 id="returns">Returns</h2>
+<p>list[int] &ndash; A list of node ids that the player has pieces on. May be an empty list.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def nodes_occupied_by_player(self, player : Player) -&gt; list[int]:
+    &#34;&#34;&#34;Gets a list of node ids that a given player has pieces at.
+
+    Arguments:
+        player {Player} -- the given player
+
+    Returns:
+        list[int] -- A list of node ids that the player has pieces on. May be an empty list.
+    &#34;&#34;&#34;        
+    if player is None:
+        return []
+
+    occupied_nodes = self.get_occupied_nodes()
+    nodes_occupied_by_player = []
+
+    for node in occupied_nodes:
+        if node.piece is not None and node.piece.owner == player:
+            nodes_occupied_by_player.append(node.node_id)
+
+    return nodes_occupied_by_player</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Board.piece_can_move_to_neighbors"><code class="name flex">
+<span>def <span class="ident">piece_can_move_to_neighbors</span></span>(<span>self, node_id: int) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns whether a piece on this node can move to an adjacent node.</p>
+<h2 id="arguments">Arguments</h2>
+<p>node_id {int} &ndash; the node ID the piece is on</p>
+<h2 id="returns">Returns</h2>
+<p>bool &ndash; True if there is a piece on the node and it can move to an adjacent node, otherwise False</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def piece_can_move_to_neighbors(self, node_id : int) -&gt; bool:
+    &#34;&#34;&#34;Returns whether a piece on this node can move to an adjacent node.
+
+    Arguments:
+        node_id {int} -- the node ID the piece is on
+
+    Returns:
+        bool -- True if there is a piece on the node and it can move to an adjacent node, otherwise False
+    &#34;&#34;&#34;
+    node = self.get_node(node_id)
+    if node is None or node.piece is None:
+        return False
+
+    adjacent_nodes = map(lambda x: self.get_node(x), self.get_neighbors(node_id))
+
+    for adjacent_node in adjacent_nodes:
+        if not adjacent_node.is_occupied():
+            return True
+    return False</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Board.remove_piece"><code class="name flex">
+<span>def <span class="ident">remove_piece</span></span>(<span>self, node_id: int) ‑> <a title="gameplatform.gamemodel.Player" href="#gameplatform.gamemodel.Player">Player</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Remove a piece from a given node on the board.</p>
+<p>The caller must ensure the node id is valid.</p>
+<h2 id="arguments">Arguments</h2>
+<p>node_id {int} &ndash; ID of the node to remove from</p>
+<h2 id="returns">Returns</h2>
+<p>Player or None &ndash; The owner of the piece that was removed, or None if there was no piece at the Node</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def remove_piece(self, node_id : int) -&gt; Player or None:
+    &#39;&#39;&#39;Remove a piece from a given node on the board.
+
+    The caller must ensure the node id is valid.
+
+    Arguments:
+        node_id {int} -- ID of the node to remove from
+
+    Returns:
+        Player or None -- The owner of the piece that was removed, or None if there was no piece at the Node
+    &#39;&#39;&#39;
+    if self.__graph[node_id].piece is None:
+        return None
+
+    # remove from cached mills, if any
+    self.__remove_from_mills(self.get_node(node_id))
+
+    owner = self.__graph[node_id].piece.owner
+    self.__graph[node_id].piece = None
+
+    self.trigger_state_event()
+    return owner</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Board.set_piece"><code class="name flex">
+<span>def <span class="ident">set_piece</span></span>(<span>self, node_id: int, owner: <a title="gameplatform.gamemodel.Player" href="#gameplatform.gamemodel.Player">Player</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Set a piece on the given node with the given player owner.</p>
+<p>The caller must ensure that the id is valid. Any piece already on the node will be replaced.</p>
+<h2 id="arguments">Arguments</h2>
+<p>node_id {int} &ndash; ID of the node to set the piece at</p>
+<p>owner {Player} &ndash; The player that owns the piece</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_piece(self, node_id : int, owner : Player):
+    &#39;&#39;&#39;Set a piece on the given node with the given player owner.
+
+    The caller must ensure that the id is valid. Any piece already on the node will be replaced.
+
+    Arguments:
+        node_id {int} -- ID of the node to set the piece at\n
+        owner {Player} -- The player that owns the piece
+    &#39;&#39;&#39;
+    self.__graph[node_id].piece = Piece(owner)
+    self.trigger_state_event()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="gameplatform.gamemodel.Color"><code class="flex name class">
+<span>class <span class="ident">Color</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Color(IntEnum):
+    NONE = 0
+    BLACK = 1
+    WHITE = 2</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="gameplatform.gamemodel.Color.BLACK"><code class="name">var <span class="ident">BLACK</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="gameplatform.gamemodel.Color.NONE"><code class="name">var <span class="ident">NONE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="gameplatform.gamemodel.Color.WHITE"><code class="name">var <span class="ident">WHITE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="gameplatform.gamemodel.Direction"><code class="flex name class">
+<span>class <span class="ident">Direction</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>An enumeration.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Direction(IntEnum):
+    NORTH = 0
+    NORTH_EAST = 1
+    EAST = 2
+    SOUTH_EAST = 3
+    SOUTH = 4
+    SOUTH_WEST = 5
+    WEST = 6
+    NORTH_WEST = 7</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.IntEnum</li>
+<li>builtins.int</li>
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="gameplatform.gamemodel.Direction.EAST"><code class="name">var <span class="ident">EAST</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="gameplatform.gamemodel.Direction.NORTH"><code class="name">var <span class="ident">NORTH</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="gameplatform.gamemodel.Direction.NORTH_EAST"><code class="name">var <span class="ident">NORTH_EAST</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="gameplatform.gamemodel.Direction.NORTH_WEST"><code class="name">var <span class="ident">NORTH_WEST</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="gameplatform.gamemodel.Direction.SOUTH"><code class="name">var <span class="ident">SOUTH</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="gameplatform.gamemodel.Direction.SOUTH_EAST"><code class="name">var <span class="ident">SOUTH_EAST</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="gameplatform.gamemodel.Direction.SOUTH_WEST"><code class="name">var <span class="ident">SOUTH_WEST</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="gameplatform.gamemodel.Direction.WEST"><code class="name">var <span class="ident">WEST</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="gameplatform.gamemodel.GameModel"><code class="flex name class">
+<span>class <span class="ident">GameModel</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents the state of the game.</p>
+<h2 id="attributes">Attributes</h2>
+<p>board {Board} &ndash; The board associated with this game state.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class GameModel(StateObservable):
+    &#34;&#34;&#34;
+    Represents the state of the game.
+
+    Attributes:
+        board {Board} -- The board associated with this game state.
+    &#34;&#34;&#34;
+    board : Board
+    __current_player : int = 0 # first player is always the first index
+    __players : Tuple[Player, Player] # players are in order: (BLACK, WHITE)
+    __turn_counter = 0
+
+    def __init__(self):
+        super().__init__()
+        self.board = Board()
+        self.__players = (Player(Color.BLACK), Player(Color.WHITE))
+        self.board.register_listener(self.__notify_state_change)
+        for player in self.__players:
+            player.register_listener(self.__notify_state_change)
+
+    def next_player(self) -&gt; Player:
+        &#39;&#39;&#39;Swap turn to next player.
+
+        Returns:
+            Player -- The next player to play
+        &#39;&#39;&#39;
+        self.__current_player = (self.__current_player + 1) % len(self.__players)
+        return self.__players[self.__current_player]
+    
+    def set_player_name(self, color : Color, new_name : str):
+        &#34;&#34;&#34;Sets the name of a player with a given color.
+
+        Arguments:
+            color {Color} -- the color of the player whose name should be set
+            new_name {str} -- the new name of the player
+        &#34;&#34;&#34;        
+        player = self.get_player_by_color(color)
+        if player is None:
+            return
+
+        player.set_name(new_name)
+
+    def set_ai_player(self, color : Color, ai_difficulty : AiDifficulty = AiDifficulty.EASY):
+        &#34;&#34;&#34;Enables AI for a player with a given color.
+
+        Arguments:
+            color {Color} -- the color of the player
+
+        Keyword Arguments:
+            ai_difficulty {AiDifficulty} -- the difficulty of the AI. AiDifficulty.NONE disables the AI for this player. (default: {AiDifficulty.EASY})
+        &#34;&#34;&#34;        
+        player = self.get_player_by_color(color)
+        if player is None: 
+            return
+
+        if ai_difficulty == AiDifficulty.NONE:
+            player.disable_ai()
+        
+        player.enable_ai(ai_difficulty)
+
+    def set_turn_count(self, turn_count : int):
+        &#39;&#39;&#39;Sets current turn number.
+
+        Arguments:
+            turn_count {int} -- Turn number to set
+        &#39;&#39;&#39;
+        self.__turn_counter = turn_count
+
+    def get_turn_count(self) -&gt; int:
+        &#39;&#39;&#39;Gets the current turn number.
+
+        Returns:
+            int -- Current turn number
+        &#39;&#39;&#39;
+        return self.__turn_counter
+
+    def get_all_players(self) -&gt; list[Player]:
+        &#34;&#34;&#34;Gets a list of all players in the game.
+
+        Returns:
+            list[Player] -- the list of players in the game
+        &#34;&#34;&#34;        
+        return list(self.__players)
+    
+    def get_player_by_color(self, color : Color) -&gt; Player or None:
+        &#34;&#34;&#34;Gets the first occurence of a player based on the player&#39;s color.
+
+        Arguments:
+            color {Color} -- the color of the player
+
+        Returns:
+            Player or None -- The player with the given color, or None if no such player exists.
+        &#34;&#34;&#34;        
+        for player in self.__players:
+            if player.color == color:
+                return player
+        return None
+
+    def get_current_player(self) -&gt; Player:
+        &#39;&#39;&#39;Gets the current player.
+
+        Returns:
+            Player -- Current Player
+        &#39;&#39;&#39;
+        return self.__players[self.__current_player]
+
+    def to_ai_input(self, which_player : Player) -&gt; dict:
+        &#34;&#34;&#34;Converts the current state of the model to a format readable by an AI module.
+        Note that there may be multiple AI players.
+        Arguments:
+            which_player {Player} -- the ai player for which this input is formatted
+
+        Returns:
+            dict -- a dictionary representing the current game state. The format is defined in ai_schema.json.
+        &#34;&#34;&#34;
+        data = {}
+        data[&#34;version&#34;] = 2
+        data[&#34;ai_difficulty&#34;] = str(which_player.get_ai_difficulty())
+        data[&#34;state&#34;] = {}
+
+        data[&#34;state&#34;][&#34;turns_left&#34;] = GameConfig.MAX_TURNS - self.get_turn_count()
+
+        opponent = self.__players[(self.__players.index(which_player) + 1) % len(self.__players)] # next player, needs to be rewritten for more than 2 players
+        data[&#34;state&#34;][&#34;they&#34;] = {}
+        data[&#34;state&#34;][&#34;they&#34;][&#34;pieces_onboard&#34;] = self.board.nodes_occupied_by_player(opponent)
+        data[&#34;state&#34;][&#34;they&#34;][&#34;pieces_offboard&#34;] = opponent.get_pieces_to_place()
+
+        data[&#34;state&#34;][&#34;we&#34;] = {}
+        data[&#34;state&#34;][&#34;we&#34;][&#34;pieces_onboard&#34;] = self.board.nodes_occupied_by_player(which_player)
+        data[&#34;state&#34;][&#34;we&#34;][&#34;pieces_offboard&#34;] = which_player.get_pieces_to_place()
+        return data
+    
+    def load_ai_output(self, which_player : Player, data : dict):
+
+        new_state = data[&#34;state&#34;]
+        new_state[&#34;we&#34;][&#34;pieces_onboard&#34;]
+        which_player.set_pieces_to_place(new_state[&#34;we&#34;][&#34;pieces_offboard&#34;])
+        self.__load_nodes(which_player, new_state[&#34;we&#34;][&#34;pieces_onboard&#34;])
+        #new_ai_nodes = new_state[&#34;we&#34;][&#34;pieces_onboard&#34;]
+        #old_ai_nodes = self.board.nodes_occupied_by_player(which_player)
+
+        opponent = self.__players[(self.__players.index(which_player) + 1) % len(self.__players)] # next player, needs to be rewritten for more than 2 players
+        self.__load_nodes(opponent, new_state[&#34;they&#34;][&#34;pieces_onboard&#34;])
+        #old_opponent_nodes = self.board.nodes_occupied_by_player(opponent)
+        #new_opponent_nodes = new_state[&#34;they&#34;][&#34;pieces_onboard&#34;]
+        opponent.set_pieces_to_place(new_state[&#34;they&#34;][&#34;pieces_offboard&#34;])
+    
+    def __load_nodes(self, player : Player, new_nodes : list[int]):
+        old_nodes_set = set(self.board.nodes_occupied_by_player(player))
+        new_nodes_set = set(new_nodes)
+        if old_nodes_set == new_nodes_set:
+            return
+        
+        removed_nodes = old_nodes_set - new_nodes_set
+        for node_id in removed_nodes:
+            self.board.remove_piece(node_id)
+
+        added_nodes =  new_nodes_set - old_nodes_set
+        for node_id in added_nodes:
+            self.board.set_piece(node_id, player)
+
+
+    def __notify_state_change(self):
+        self.trigger_state_event()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>utils.StateObservable</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="gameplatform.gamemodel.GameModel.board"><code class="name">var <span class="ident">board</span> : <a title="gameplatform.gamemodel.Board" href="#gameplatform.gamemodel.Board">Board</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="gameplatform.gamemodel.GameModel.get_all_players"><code class="name flex">
+<span>def <span class="ident">get_all_players</span></span>(<span>self) ‑> list</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets a list of all players in the game.</p>
+<h2 id="returns">Returns</h2>
+<p>list[Player] &ndash; the list of players in the game</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_all_players(self) -&gt; list[Player]:
+    &#34;&#34;&#34;Gets a list of all players in the game.
+
+    Returns:
+        list[Player] -- the list of players in the game
+    &#34;&#34;&#34;        
+    return list(self.__players)</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.GameModel.get_current_player"><code class="name flex">
+<span>def <span class="ident">get_current_player</span></span>(<span>self) ‑> <a title="gameplatform.gamemodel.Player" href="#gameplatform.gamemodel.Player">Player</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the current player.</p>
+<h2 id="returns">Returns</h2>
+<p>Player &ndash; Current Player</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_current_player(self) -&gt; Player:
+    &#39;&#39;&#39;Gets the current player.
+
+    Returns:
+        Player -- Current Player
+    &#39;&#39;&#39;
+    return self.__players[self.__current_player]</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.GameModel.get_player_by_color"><code class="name flex">
+<span>def <span class="ident">get_player_by_color</span></span>(<span>self, color: <a title="gameplatform.gamemodel.Color" href="#gameplatform.gamemodel.Color">Color</a>) ‑> <a title="gameplatform.gamemodel.Player" href="#gameplatform.gamemodel.Player">Player</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the first occurence of a player based on the player's color.</p>
+<h2 id="arguments">Arguments</h2>
+<p>color {Color} &ndash; the color of the player</p>
+<h2 id="returns">Returns</h2>
+<p>Player or None &ndash; The player with the given color, or None if no such player exists.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_player_by_color(self, color : Color) -&gt; Player or None:
+    &#34;&#34;&#34;Gets the first occurence of a player based on the player&#39;s color.
+
+    Arguments:
+        color {Color} -- the color of the player
+
+    Returns:
+        Player or None -- The player with the given color, or None if no such player exists.
+    &#34;&#34;&#34;        
+    for player in self.__players:
+        if player.color == color:
+            return player
+    return None</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.GameModel.get_turn_count"><code class="name flex">
+<span>def <span class="ident">get_turn_count</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the current turn number.</p>
+<h2 id="returns">Returns</h2>
+<p>int &ndash; Current turn number</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_turn_count(self) -&gt; int:
+    &#39;&#39;&#39;Gets the current turn number.
+
+    Returns:
+        int -- Current turn number
+    &#39;&#39;&#39;
+    return self.__turn_counter</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.GameModel.load_ai_output"><code class="name flex">
+<span>def <span class="ident">load_ai_output</span></span>(<span>self, which_player: <a title="gameplatform.gamemodel.Player" href="#gameplatform.gamemodel.Player">Player</a>, data: dict)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def load_ai_output(self, which_player : Player, data : dict):
+
+    new_state = data[&#34;state&#34;]
+    new_state[&#34;we&#34;][&#34;pieces_onboard&#34;]
+    which_player.set_pieces_to_place(new_state[&#34;we&#34;][&#34;pieces_offboard&#34;])
+    self.__load_nodes(which_player, new_state[&#34;we&#34;][&#34;pieces_onboard&#34;])
+    #new_ai_nodes = new_state[&#34;we&#34;][&#34;pieces_onboard&#34;]
+    #old_ai_nodes = self.board.nodes_occupied_by_player(which_player)
+
+    opponent = self.__players[(self.__players.index(which_player) + 1) % len(self.__players)] # next player, needs to be rewritten for more than 2 players
+    self.__load_nodes(opponent, new_state[&#34;they&#34;][&#34;pieces_onboard&#34;])
+    #old_opponent_nodes = self.board.nodes_occupied_by_player(opponent)
+    #new_opponent_nodes = new_state[&#34;they&#34;][&#34;pieces_onboard&#34;]
+    opponent.set_pieces_to_place(new_state[&#34;they&#34;][&#34;pieces_offboard&#34;])</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.GameModel.next_player"><code class="name flex">
+<span>def <span class="ident">next_player</span></span>(<span>self) ‑> <a title="gameplatform.gamemodel.Player" href="#gameplatform.gamemodel.Player">Player</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Swap turn to next player.</p>
+<h2 id="returns">Returns</h2>
+<p>Player &ndash; The next player to play</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def next_player(self) -&gt; Player:
+    &#39;&#39;&#39;Swap turn to next player.
+
+    Returns:
+        Player -- The next player to play
+    &#39;&#39;&#39;
+    self.__current_player = (self.__current_player + 1) % len(self.__players)
+    return self.__players[self.__current_player]</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.GameModel.set_ai_player"><code class="name flex">
+<span>def <span class="ident">set_ai_player</span></span>(<span>self, color: <a title="gameplatform.gamemodel.Color" href="#gameplatform.gamemodel.Color">Color</a>, ai_difficulty: <a title="gameplatform.gamemodel.AiDifficulty" href="#gameplatform.gamemodel.AiDifficulty">AiDifficulty</a> = easy)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enables AI for a player with a given color.</p>
+<h2 id="arguments">Arguments</h2>
+<p>color {Color} &ndash; the color of the player</p>
+<p>Keyword Arguments:
+ai_difficulty {AiDifficulty} &ndash; the difficulty of the AI. AiDifficulty.NONE disables the AI for this player. (default: {AiDifficulty.EASY})</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_ai_player(self, color : Color, ai_difficulty : AiDifficulty = AiDifficulty.EASY):
+    &#34;&#34;&#34;Enables AI for a player with a given color.
+
+    Arguments:
+        color {Color} -- the color of the player
+
+    Keyword Arguments:
+        ai_difficulty {AiDifficulty} -- the difficulty of the AI. AiDifficulty.NONE disables the AI for this player. (default: {AiDifficulty.EASY})
+    &#34;&#34;&#34;        
+    player = self.get_player_by_color(color)
+    if player is None: 
+        return
+
+    if ai_difficulty == AiDifficulty.NONE:
+        player.disable_ai()
+    
+    player.enable_ai(ai_difficulty)</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.GameModel.set_player_name"><code class="name flex">
+<span>def <span class="ident">set_player_name</span></span>(<span>self, color: <a title="gameplatform.gamemodel.Color" href="#gameplatform.gamemodel.Color">Color</a>, new_name: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the name of a player with a given color.</p>
+<h2 id="arguments">Arguments</h2>
+<p>color {Color} &ndash; the color of the player whose name should be set
+new_name {str} &ndash; the new name of the player</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_player_name(self, color : Color, new_name : str):
+    &#34;&#34;&#34;Sets the name of a player with a given color.
+
+    Arguments:
+        color {Color} -- the color of the player whose name should be set
+        new_name {str} -- the new name of the player
+    &#34;&#34;&#34;        
+    player = self.get_player_by_color(color)
+    if player is None:
+        return
+
+    player.set_name(new_name)</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.GameModel.set_turn_count"><code class="name flex">
+<span>def <span class="ident">set_turn_count</span></span>(<span>self, turn_count: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets current turn number.</p>
+<h2 id="arguments">Arguments</h2>
+<p>turn_count {int} &ndash; Turn number to set</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_turn_count(self, turn_count : int):
+    &#39;&#39;&#39;Sets current turn number.
+
+    Arguments:
+        turn_count {int} -- Turn number to set
+    &#39;&#39;&#39;
+    self.__turn_counter = turn_count</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.GameModel.to_ai_input"><code class="name flex">
+<span>def <span class="ident">to_ai_input</span></span>(<span>self, which_player: <a title="gameplatform.gamemodel.Player" href="#gameplatform.gamemodel.Player">Player</a>) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Converts the current state of the model to a format readable by an AI module.
+Note that there may be multiple AI players.</p>
+<h2 id="arguments">Arguments</h2>
+<p>which_player {Player} &ndash; the ai player for which this input is formatted</p>
+<h2 id="returns">Returns</h2>
+<p>dict &ndash; a dictionary representing the current game state. The format is defined in ai_schema.json.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def to_ai_input(self, which_player : Player) -&gt; dict:
+    &#34;&#34;&#34;Converts the current state of the model to a format readable by an AI module.
+    Note that there may be multiple AI players.
+    Arguments:
+        which_player {Player} -- the ai player for which this input is formatted
+
+    Returns:
+        dict -- a dictionary representing the current game state. The format is defined in ai_schema.json.
+    &#34;&#34;&#34;
+    data = {}
+    data[&#34;version&#34;] = 2
+    data[&#34;ai_difficulty&#34;] = str(which_player.get_ai_difficulty())
+    data[&#34;state&#34;] = {}
+
+    data[&#34;state&#34;][&#34;turns_left&#34;] = GameConfig.MAX_TURNS - self.get_turn_count()
+
+    opponent = self.__players[(self.__players.index(which_player) + 1) % len(self.__players)] # next player, needs to be rewritten for more than 2 players
+    data[&#34;state&#34;][&#34;they&#34;] = {}
+    data[&#34;state&#34;][&#34;they&#34;][&#34;pieces_onboard&#34;] = self.board.nodes_occupied_by_player(opponent)
+    data[&#34;state&#34;][&#34;they&#34;][&#34;pieces_offboard&#34;] = opponent.get_pieces_to_place()
+
+    data[&#34;state&#34;][&#34;we&#34;] = {}
+    data[&#34;state&#34;][&#34;we&#34;][&#34;pieces_onboard&#34;] = self.board.nodes_occupied_by_player(which_player)
+    data[&#34;state&#34;][&#34;we&#34;][&#34;pieces_offboard&#34;] = which_player.get_pieces_to_place()
+    return data</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="gameplatform.gamemodel.Node"><code class="flex name class">
+<span>class <span class="ident">Node</span></span>
+<span>(</span><span>node_id)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents the state of a node.</p>
+<h2 id="parameters">Parameters</h2>
+<p>node_id {int} &ndash; The node id for this node.</p>
+<h2 id="attributes">Attributes</h2>
+<p>node_id {int} &ndash; The node id for this node.</p>
+<p>piece {Piece} &ndash; The occupying this node. May be None.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Node():
+    &#34;&#34;&#34;
+    Represents the state of a node.
+
+    Parameters:
+        node_id {int} -- The node id for this node.
+
+    Attributes:
+        node_id {int} -- The node id for this node.\n
+        piece {Piece} -- The occupying this node. May be None.
+    &#34;&#34;&#34;
+    node_id = -1
+    piece : Piece
+
+    def __init__(self, node_id):
+        self.node_id = node_id
+        self.piece = None
+
+    def __eq__(self, other) -&gt; bool:
+        if other is None:
+            return False
+        return self.node_id == other.node_id
+
+    def __hash__(self) -&gt; int:
+        return hash(self.node_id)
+
+    def is_occupied(self) -&gt; bool:
+        &#39;&#39;&#39;Check if this node is occupied by a player.
+
+        Returns:
+            bool -- True if occupied, else False
+        &#39;&#39;&#39;
+        return self.piece != None
+
+    def get_piece(self) -&gt; Piece or None:
+        &#39;&#39;&#39;Gets the piece at this node.
+
+        Returns:
+            Piece or None -- The piece at the node if there is a piece at the node, otherwise returns None
+        &#39;&#39;&#39;
+        return self.piece
+
+    def occupying_player(self) -&gt; Player or None:
+        &#39;&#39;&#39;Gets the player occupying this node.
+
+        Returns:
+            Player or None -- If a player occupies this node, return that player, else return None
+        &#39;&#39;&#39;
+        if self.piece == None:
+            return None
+        return self.piece.owner</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="gameplatform.gamemodel.Node.node_id"><code class="name">var <span class="ident">node_id</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="gameplatform.gamemodel.Node.piece"><code class="name">var <span class="ident">piece</span> : <a title="gameplatform.gamemodel.Piece" href="#gameplatform.gamemodel.Piece">Piece</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="gameplatform.gamemodel.Node.get_piece"><code class="name flex">
+<span>def <span class="ident">get_piece</span></span>(<span>self) ‑> <a title="gameplatform.gamemodel.Piece" href="#gameplatform.gamemodel.Piece">Piece</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the piece at this node.</p>
+<h2 id="returns">Returns</h2>
+<p>Piece or None &ndash; The piece at the node if there is a piece at the node, otherwise returns None</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_piece(self) -&gt; Piece or None:
+    &#39;&#39;&#39;Gets the piece at this node.
+
+    Returns:
+        Piece or None -- The piece at the node if there is a piece at the node, otherwise returns None
+    &#39;&#39;&#39;
+    return self.piece</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Node.is_occupied"><code class="name flex">
+<span>def <span class="ident">is_occupied</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Check if this node is occupied by a player.</p>
+<h2 id="returns">Returns</h2>
+<p>bool &ndash; True if occupied, else False</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_occupied(self) -&gt; bool:
+    &#39;&#39;&#39;Check if this node is occupied by a player.
+
+    Returns:
+        bool -- True if occupied, else False
+    &#39;&#39;&#39;
+    return self.piece != None</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Node.occupying_player"><code class="name flex">
+<span>def <span class="ident">occupying_player</span></span>(<span>self) ‑> <a title="gameplatform.gamemodel.Player" href="#gameplatform.gamemodel.Player">Player</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the player occupying this node.</p>
+<h2 id="returns">Returns</h2>
+<p>Player or None &ndash; If a player occupies this node, return that player, else return None</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def occupying_player(self) -&gt; Player or None:
+    &#39;&#39;&#39;Gets the player occupying this node.
+
+    Returns:
+        Player or None -- If a player occupies this node, return that player, else return None
+    &#39;&#39;&#39;
+    if self.piece == None:
+        return None
+    return self.piece.owner</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="gameplatform.gamemodel.Piece"><code class="flex name class">
+<span>class <span class="ident">Piece</span></span>
+<span>(</span><span>owner: <a title="gameplatform.gamemodel.Player" href="#gameplatform.gamemodel.Player">Player</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents the state of a piece.</p>
+<h2 id="parameters">Parameters</h2>
+<p>owner {Player} &ndash; The player owner of this piece.</p>
+<h2 id="attributes">Attributes</h2>
+<p>owner {Player} &ndash; The player owner of this piece.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Piece():
+    &#34;&#34;&#34;
+    Represents the state of a piece.
+
+    Parameters:
+        owner {Player} -- The player owner of this piece.
+
+    Attributes:
+        owner {Player} -- The player owner of this piece.
+    &#34;&#34;&#34;
+    owner : Player
+
+    def __init__(self, owner : Player):
+        self.owner = owner
+
+    def __eq__(self, other):
+        if other == None:
+            return False
+        return self.owner is other.owner</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="gameplatform.gamemodel.Piece.owner"><code class="name">var <span class="ident">owner</span> : <a title="gameplatform.gamemodel.Player" href="#gameplatform.gamemodel.Player">Player</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+</dd>
+<dt id="gameplatform.gamemodel.Player"><code class="flex name class">
+<span>class <span class="ident">Player</span></span>
+<span>(</span><span>color: <a title="gameplatform.gamemodel.Color" href="#gameplatform.gamemodel.Color">Color</a>, name: str = '', is_ai: bool = False, ai_difficulty=none)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Represents the state of a player.</p>
+<h2 id="parameters">Parameters</h2>
+<p>color {Color} &ndash; The color that the player should have.</p>
+<h2 id="attributes">Attributes</h2>
+<p>color {Color} &ndash; The player's color.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Player(StateObservable):
+    &#34;&#34;&#34;
+    Represents the state of a player.
+
+    Parameters:
+        color {Color} -- The color that the player should have.
+
+    Attributes:
+        color {Color} -- The player&#39;s color.
+    &#34;&#34;&#34;
+    color : Color
+    __phase = 1
+    __active_pieces : int # the total amount of pieces remaining in the game for this player
+    __pieces_to_place : int # the amount of pieces the player has left to place on the board
+    __max_pieces : int = GameConfig.MAX_PIECES # maximum amount of pieces that the player can have in the game
+    __name : str
+    __is_ai : bool # might need a reference to an ai controller object instead
+    __ai_difficulty : AiDifficulty
+
+    def __init__(self, color : Color, name : str = &#34;&#34;, is_ai : bool = False, ai_difficulty = AiDifficulty.NONE):
+        super().__init__()
+        self.color = color
+        self.__active_pieces = self.__max_pieces
+        self.__pieces_to_place = self.__max_pieces
+        self.__name = name
+        self.__is_ai = is_ai
+        self.__ai_difficulty = ai_difficulty
+
+    def is_ai(self) -&gt; bool:
+        &#34;&#34;&#34;Returns whether or not this player is controlled by an AI.
+
+        Returns:
+            bool -- True if this player is controlled by an AI. Otherwise False.
+        &#34;&#34;&#34;        
+        return self.__is_ai
+    
+    def enable_ai(self, ai_difficulty : AiDifficulty = AiDifficulty.EASY):  
+        &#34;&#34;&#34;Enables AI for this player.
+
+        Keyword Arguments:
+            ai_difficulty {AiDifficulty} -- the difficulty of this AI player (default: {AiDifficulty.EASY})
+        &#34;&#34;&#34;           
+        self.__is_ai = True
+        self.__ai_difficulty = ai_difficulty
+    
+    def disable_ai(self):
+        &#34;&#34;&#34;Disables AI for this player.
+        &#34;&#34;&#34;        
+        self.__is_ai = False
+        self.__ai_difficulty = AiDifficulty.NONE
+    
+    def set_ai_difficulty(self, new_difficulty : AiDifficulty):
+        &#34;&#34;&#34;Sets the AI difficulty for this player. This has no effect if the player is not an AI player.
+
+        Arguments:
+            new_difficulty {AiDifficulty} -- the new ai difficulty
+        &#34;&#34;&#34;
+        if not self.is_ai(): return
+
+        self.__ai_difficulty = new_difficulty
+
+    def get_ai_difficulty(self) -&gt; AiDifficulty:
+        &#34;&#34;&#34;Gets the AI difficulty of this player.
+
+        Returns:
+            AiDifficulty -- the ai difficulty of this player
+        &#34;&#34;&#34;        
+        return self.__ai_difficulty
+
+    def get_name(self) -&gt; str:
+        &#34;&#34;&#34;Gets the name of the player.
+
+        Returns:
+            str -- the name of the player
+        &#34;&#34;&#34;        
+        return self.__name
+    
+    def set_name(self, new_name : str):
+        &#34;&#34;&#34;Sets a new name for this player.
+
+        Arguments:
+            new_name {str} -- the new name of the player
+        &#34;&#34;&#34;        
+        self.__name = new_name
+        self.trigger_state_event()
+
+    def get_max_pieces(self) -&gt; int:
+        &#34;&#34;&#34;Gets the maximum number of pieces that this player can have on the board.
+
+        Returns:
+            int -- the maximum number of pieces for this player
+        &#34;&#34;&#34;        
+        return self.__max_pieces
+
+    def reset(self):
+        &#34;&#34;&#34;Resets the player state to its starting state.
+
+        This is equivalent to creating a new player object without changing its color.
+        &#34;&#34;&#34;
+        self.__phase = 1
+        self.__active_pieces = GameConfig.MAX_PIECES
+        self.__pieces_to_place = GameConfig.MAX_PIECES
+
+    def has_pieces_to_place(self) -&gt; bool:
+        &#34;&#34;&#34;Returns whether or not the player has pieces left to place.
+
+        Returns:
+            bool -- True if the player has pieces left to place. Otherwise False.
+        &#34;&#34;&#34;
+        return self.__pieces_to_place &gt; 0
+
+    def get_pieces_to_place(self) -&gt; int:
+        &#34;&#34;&#34;Gets the number of pieces that the player has left to place.
+
+        Returns:
+            int -- The amount of pieces left to place for this player.
+        &#34;&#34;&#34;
+        return self.__pieces_to_place
+
+    def set_pieces_to_place(self, nr_of_pieces : int):
+        &#34;&#34;&#34;Sets the number of pieces that this player is able to place onto the board.
+
+        Arguments:
+            nr_of_pieces {int} -- the number of pieces
+        &#34;&#34;&#34;
+        self.__pieces_to_place = nr_of_pieces
+        self.trigger_state_event()
+
+    def get_active_pieces(self) -&gt; int:
+        &#34;&#34;&#34;Returns the number of active pieces that this player has in the game.
+        This is the total number of pieces that the player still has active in the game.
+        This also includes pieces that the player has yet to place on the board.
+
+        Returns:
+            int -- The amount of active pieces.
+        &#34;&#34;&#34;
+        return self.__active_pieces
+
+    def set_active_pieces(self, nr_of_pieces : int):
+        &#34;&#34;&#34;Sets the number of pieces that this player has left in the game.
+        This is the total number of pieces that the player still has active in the game.
+        This also includes pieces that the player has yet to place on the board.
+
+        Arguments:
+            nr_of_pieces {int} -- the number of active pieces
+        &#34;&#34;&#34;
+        self.__active_pieces = nr_of_pieces
+        self.trigger_state_event()
+
+    def decrement_pieces_to_place(self):
+        &#34;&#34;&#34;Decrements the amount of pieces that the player can place.
+        &#34;&#34;&#34;
+        self.set_pieces_to_place(self.get_pieces_to_place()-1)
+
+    def decrement_active_pieces(self):
+        &#34;&#34;&#34;Decrements the total amount of pieces that the player has left in the game.
+        This also includes pieces that the player has yet to place on the board
+        &#34;&#34;&#34;
+        self.set_active_pieces(self.get_active_pieces()-1)
+
+    def get_phase(self) -&gt; int:
+        &#34;&#34;&#34;Gets the current phase that the player is in.
+
+        Returns:
+            int -- The current phase.
+        &#34;&#34;&#34;
+        return self.__phase
+
+    def set_phase(self, new_phase : int) -&gt; None:
+        &#34;&#34;&#34;Sets the current phase of the player.
+
+        Arguments:
+            new_phase {int} -- the new phase for the player
+        &#34;&#34;&#34;
+        self.__phase = new_phase
+        self.trigger_state_event()</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>utils.StateObservable</li>
+<li>abc.ABC</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="gameplatform.gamemodel.Player.color"><code class="name">var <span class="ident">color</span> : <a title="gameplatform.gamemodel.Color" href="#gameplatform.gamemodel.Color">Color</a></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="gameplatform.gamemodel.Player.decrement_active_pieces"><code class="name flex">
+<span>def <span class="ident">decrement_active_pieces</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Decrements the total amount of pieces that the player has left in the game.
+This also includes pieces that the player has yet to place on the board</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def decrement_active_pieces(self):
+    &#34;&#34;&#34;Decrements the total amount of pieces that the player has left in the game.
+    This also includes pieces that the player has yet to place on the board
+    &#34;&#34;&#34;
+    self.set_active_pieces(self.get_active_pieces()-1)</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.decrement_pieces_to_place"><code class="name flex">
+<span>def <span class="ident">decrement_pieces_to_place</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Decrements the amount of pieces that the player can place.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def decrement_pieces_to_place(self):
+    &#34;&#34;&#34;Decrements the amount of pieces that the player can place.
+    &#34;&#34;&#34;
+    self.set_pieces_to_place(self.get_pieces_to_place()-1)</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.disable_ai"><code class="name flex">
+<span>def <span class="ident">disable_ai</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Disables AI for this player.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def disable_ai(self):
+    &#34;&#34;&#34;Disables AI for this player.
+    &#34;&#34;&#34;        
+    self.__is_ai = False
+    self.__ai_difficulty = AiDifficulty.NONE</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.enable_ai"><code class="name flex">
+<span>def <span class="ident">enable_ai</span></span>(<span>self, ai_difficulty: <a title="gameplatform.gamemodel.AiDifficulty" href="#gameplatform.gamemodel.AiDifficulty">AiDifficulty</a> = easy)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Enables AI for this player.</p>
+<p>Keyword Arguments:
+ai_difficulty {AiDifficulty} &ndash; the difficulty of this AI player (default: {AiDifficulty.EASY})</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def enable_ai(self, ai_difficulty : AiDifficulty = AiDifficulty.EASY):  
+    &#34;&#34;&#34;Enables AI for this player.
+
+    Keyword Arguments:
+        ai_difficulty {AiDifficulty} -- the difficulty of this AI player (default: {AiDifficulty.EASY})
+    &#34;&#34;&#34;           
+    self.__is_ai = True
+    self.__ai_difficulty = ai_difficulty</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.get_active_pieces"><code class="name flex">
+<span>def <span class="ident">get_active_pieces</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the number of active pieces that this player has in the game.
+This is the total number of pieces that the player still has active in the game.
+This also includes pieces that the player has yet to place on the board.</p>
+<h2 id="returns">Returns</h2>
+<p>int &ndash; The amount of active pieces.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_active_pieces(self) -&gt; int:
+    &#34;&#34;&#34;Returns the number of active pieces that this player has in the game.
+    This is the total number of pieces that the player still has active in the game.
+    This also includes pieces that the player has yet to place on the board.
+
+    Returns:
+        int -- The amount of active pieces.
+    &#34;&#34;&#34;
+    return self.__active_pieces</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.get_ai_difficulty"><code class="name flex">
+<span>def <span class="ident">get_ai_difficulty</span></span>(<span>self) ‑> <a title="gameplatform.gamemodel.AiDifficulty" href="#gameplatform.gamemodel.AiDifficulty">AiDifficulty</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the AI difficulty of this player.</p>
+<h2 id="returns">Returns</h2>
+<p>AiDifficulty &ndash; the ai difficulty of this player</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_ai_difficulty(self) -&gt; AiDifficulty:
+    &#34;&#34;&#34;Gets the AI difficulty of this player.
+
+    Returns:
+        AiDifficulty -- the ai difficulty of this player
+    &#34;&#34;&#34;        
+    return self.__ai_difficulty</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.get_max_pieces"><code class="name flex">
+<span>def <span class="ident">get_max_pieces</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the maximum number of pieces that this player can have on the board.</p>
+<h2 id="returns">Returns</h2>
+<p>int &ndash; the maximum number of pieces for this player</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_max_pieces(self) -&gt; int:
+    &#34;&#34;&#34;Gets the maximum number of pieces that this player can have on the board.
+
+    Returns:
+        int -- the maximum number of pieces for this player
+    &#34;&#34;&#34;        
+    return self.__max_pieces</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.get_name"><code class="name flex">
+<span>def <span class="ident">get_name</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the name of the player.</p>
+<h2 id="returns">Returns</h2>
+<p>str &ndash; the name of the player</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_name(self) -&gt; str:
+    &#34;&#34;&#34;Gets the name of the player.
+
+    Returns:
+        str -- the name of the player
+    &#34;&#34;&#34;        
+    return self.__name</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.get_phase"><code class="name flex">
+<span>def <span class="ident">get_phase</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the current phase that the player is in.</p>
+<h2 id="returns">Returns</h2>
+<p>int &ndash; The current phase.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_phase(self) -&gt; int:
+    &#34;&#34;&#34;Gets the current phase that the player is in.
+
+    Returns:
+        int -- The current phase.
+    &#34;&#34;&#34;
+    return self.__phase</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.get_pieces_to_place"><code class="name flex">
+<span>def <span class="ident">get_pieces_to_place</span></span>(<span>self) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Gets the number of pieces that the player has left to place.</p>
+<h2 id="returns">Returns</h2>
+<p>int &ndash; The amount of pieces left to place for this player.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_pieces_to_place(self) -&gt; int:
+    &#34;&#34;&#34;Gets the number of pieces that the player has left to place.
+
+    Returns:
+        int -- The amount of pieces left to place for this player.
+    &#34;&#34;&#34;
+    return self.__pieces_to_place</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.has_pieces_to_place"><code class="name flex">
+<span>def <span class="ident">has_pieces_to_place</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns whether or not the player has pieces left to place.</p>
+<h2 id="returns">Returns</h2>
+<p>bool &ndash; True if the player has pieces left to place. Otherwise False.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_pieces_to_place(self) -&gt; bool:
+    &#34;&#34;&#34;Returns whether or not the player has pieces left to place.
+
+    Returns:
+        bool -- True if the player has pieces left to place. Otherwise False.
+    &#34;&#34;&#34;
+    return self.__pieces_to_place &gt; 0</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.is_ai"><code class="name flex">
+<span>def <span class="ident">is_ai</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns whether or not this player is controlled by an AI.</p>
+<h2 id="returns">Returns</h2>
+<p>bool &ndash; True if this player is controlled by an AI. Otherwise False.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def is_ai(self) -&gt; bool:
+    &#34;&#34;&#34;Returns whether or not this player is controlled by an AI.
+
+    Returns:
+        bool -- True if this player is controlled by an AI. Otherwise False.
+    &#34;&#34;&#34;        
+    return self.__is_ai</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.reset"><code class="name flex">
+<span>def <span class="ident">reset</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Resets the player state to its starting state.</p>
+<p>This is equivalent to creating a new player object without changing its color.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reset(self):
+    &#34;&#34;&#34;Resets the player state to its starting state.
+
+    This is equivalent to creating a new player object without changing its color.
+    &#34;&#34;&#34;
+    self.__phase = 1
+    self.__active_pieces = GameConfig.MAX_PIECES
+    self.__pieces_to_place = GameConfig.MAX_PIECES</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.set_active_pieces"><code class="name flex">
+<span>def <span class="ident">set_active_pieces</span></span>(<span>self, nr_of_pieces: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the number of pieces that this player has left in the game.
+This is the total number of pieces that the player still has active in the game.
+This also includes pieces that the player has yet to place on the board.</p>
+<h2 id="arguments">Arguments</h2>
+<p>nr_of_pieces {int} &ndash; the number of active pieces</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_active_pieces(self, nr_of_pieces : int):
+    &#34;&#34;&#34;Sets the number of pieces that this player has left in the game.
+    This is the total number of pieces that the player still has active in the game.
+    This also includes pieces that the player has yet to place on the board.
+
+    Arguments:
+        nr_of_pieces {int} -- the number of active pieces
+    &#34;&#34;&#34;
+    self.__active_pieces = nr_of_pieces
+    self.trigger_state_event()</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.set_ai_difficulty"><code class="name flex">
+<span>def <span class="ident">set_ai_difficulty</span></span>(<span>self, new_difficulty: <a title="gameplatform.gamemodel.AiDifficulty" href="#gameplatform.gamemodel.AiDifficulty">AiDifficulty</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the AI difficulty for this player. This has no effect if the player is not an AI player.</p>
+<h2 id="arguments">Arguments</h2>
+<p>new_difficulty {AiDifficulty} &ndash; the new ai difficulty</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_ai_difficulty(self, new_difficulty : AiDifficulty):
+    &#34;&#34;&#34;Sets the AI difficulty for this player. This has no effect if the player is not an AI player.
+
+    Arguments:
+        new_difficulty {AiDifficulty} -- the new ai difficulty
+    &#34;&#34;&#34;
+    if not self.is_ai(): return
+
+    self.__ai_difficulty = new_difficulty</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.set_name"><code class="name flex">
+<span>def <span class="ident">set_name</span></span>(<span>self, new_name: str)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets a new name for this player.</p>
+<h2 id="arguments">Arguments</h2>
+<p>new_name {str} &ndash; the new name of the player</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_name(self, new_name : str):
+    &#34;&#34;&#34;Sets a new name for this player.
+
+    Arguments:
+        new_name {str} -- the new name of the player
+    &#34;&#34;&#34;        
+    self.__name = new_name
+    self.trigger_state_event()</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.set_phase"><code class="name flex">
+<span>def <span class="ident">set_phase</span></span>(<span>self, new_phase: int) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the current phase of the player.</p>
+<h2 id="arguments">Arguments</h2>
+<p>new_phase {int} &ndash; the new phase for the player</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_phase(self, new_phase : int) -&gt; None:
+    &#34;&#34;&#34;Sets the current phase of the player.
+
+    Arguments:
+        new_phase {int} -- the new phase for the player
+    &#34;&#34;&#34;
+    self.__phase = new_phase
+    self.trigger_state_event()</code></pre>
+</details>
+</dd>
+<dt id="gameplatform.gamemodel.Player.set_pieces_to_place"><code class="name flex">
+<span>def <span class="ident">set_pieces_to_place</span></span>(<span>self, nr_of_pieces: int)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Sets the number of pieces that this player is able to place onto the board.</p>
+<h2 id="arguments">Arguments</h2>
+<p>nr_of_pieces {int} &ndash; the number of pieces</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def set_pieces_to_place(self, nr_of_pieces : int):
+    &#34;&#34;&#34;Sets the number of pieces that this player is able to place onto the board.
+
+    Arguments:
+        nr_of_pieces {int} -- the number of pieces
+    &#34;&#34;&#34;
+    self.__pieces_to_place = nr_of_pieces
+    self.trigger_state_event()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="gameplatform" href="index.html">gameplatform</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="gameplatform.gamemodel.main" href="#gameplatform.gamemodel.main">main</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="gameplatform.gamemodel.AiDifficulty" href="#gameplatform.gamemodel.AiDifficulty">AiDifficulty</a></code></h4>
+<ul class="">
+<li><code><a title="gameplatform.gamemodel.AiDifficulty.EASY" href="#gameplatform.gamemodel.AiDifficulty.EASY">EASY</a></code></li>
+<li><code><a title="gameplatform.gamemodel.AiDifficulty.HARD" href="#gameplatform.gamemodel.AiDifficulty.HARD">HARD</a></code></li>
+<li><code><a title="gameplatform.gamemodel.AiDifficulty.MODERATE" href="#gameplatform.gamemodel.AiDifficulty.MODERATE">MODERATE</a></code></li>
+<li><code><a title="gameplatform.gamemodel.AiDifficulty.NONE" href="#gameplatform.gamemodel.AiDifficulty.NONE">NONE</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="gameplatform.gamemodel.Board" href="#gameplatform.gamemodel.Board">Board</a></code></h4>
+<ul class="">
+<li><code><a title="gameplatform.gamemodel.Board.get_neighbors" href="#gameplatform.gamemodel.Board.get_neighbors">get_neighbors</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Board.get_node" href="#gameplatform.gamemodel.Board.get_node">get_node</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Board.get_nodes" href="#gameplatform.gamemodel.Board.get_nodes">get_nodes</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Board.get_occupied_nodes" href="#gameplatform.gamemodel.Board.get_occupied_nodes">get_occupied_nodes</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Board.is_adjacent" href="#gameplatform.gamemodel.Board.is_adjacent">is_adjacent</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Board.is_mill_at" href="#gameplatform.gamemodel.Board.is_mill_at">is_mill_at</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Board.is_occupied" href="#gameplatform.gamemodel.Board.is_occupied">is_occupied</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Board.is_valid_node" href="#gameplatform.gamemodel.Board.is_valid_node">is_valid_node</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Board.move_piece_to" href="#gameplatform.gamemodel.Board.move_piece_to">move_piece_to</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Board.nodes_occupied_by_player" href="#gameplatform.gamemodel.Board.nodes_occupied_by_player">nodes_occupied_by_player</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Board.piece_can_move_to_neighbors" href="#gameplatform.gamemodel.Board.piece_can_move_to_neighbors">piece_can_move_to_neighbors</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Board.remove_piece" href="#gameplatform.gamemodel.Board.remove_piece">remove_piece</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Board.set_piece" href="#gameplatform.gamemodel.Board.set_piece">set_piece</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="gameplatform.gamemodel.Color" href="#gameplatform.gamemodel.Color">Color</a></code></h4>
+<ul class="">
+<li><code><a title="gameplatform.gamemodel.Color.BLACK" href="#gameplatform.gamemodel.Color.BLACK">BLACK</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Color.NONE" href="#gameplatform.gamemodel.Color.NONE">NONE</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Color.WHITE" href="#gameplatform.gamemodel.Color.WHITE">WHITE</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="gameplatform.gamemodel.Direction" href="#gameplatform.gamemodel.Direction">Direction</a></code></h4>
+<ul class="two-column">
+<li><code><a title="gameplatform.gamemodel.Direction.EAST" href="#gameplatform.gamemodel.Direction.EAST">EAST</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Direction.NORTH" href="#gameplatform.gamemodel.Direction.NORTH">NORTH</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Direction.NORTH_EAST" href="#gameplatform.gamemodel.Direction.NORTH_EAST">NORTH_EAST</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Direction.NORTH_WEST" href="#gameplatform.gamemodel.Direction.NORTH_WEST">NORTH_WEST</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Direction.SOUTH" href="#gameplatform.gamemodel.Direction.SOUTH">SOUTH</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Direction.SOUTH_EAST" href="#gameplatform.gamemodel.Direction.SOUTH_EAST">SOUTH_EAST</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Direction.SOUTH_WEST" href="#gameplatform.gamemodel.Direction.SOUTH_WEST">SOUTH_WEST</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Direction.WEST" href="#gameplatform.gamemodel.Direction.WEST">WEST</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="gameplatform.gamemodel.GameModel" href="#gameplatform.gamemodel.GameModel">GameModel</a></code></h4>
+<ul class="two-column">
+<li><code><a title="gameplatform.gamemodel.GameModel.board" href="#gameplatform.gamemodel.GameModel.board">board</a></code></li>
+<li><code><a title="gameplatform.gamemodel.GameModel.get_all_players" href="#gameplatform.gamemodel.GameModel.get_all_players">get_all_players</a></code></li>
+<li><code><a title="gameplatform.gamemodel.GameModel.get_current_player" href="#gameplatform.gamemodel.GameModel.get_current_player">get_current_player</a></code></li>
+<li><code><a title="gameplatform.gamemodel.GameModel.get_player_by_color" href="#gameplatform.gamemodel.GameModel.get_player_by_color">get_player_by_color</a></code></li>
+<li><code><a title="gameplatform.gamemodel.GameModel.get_turn_count" href="#gameplatform.gamemodel.GameModel.get_turn_count">get_turn_count</a></code></li>
+<li><code><a title="gameplatform.gamemodel.GameModel.load_ai_output" href="#gameplatform.gamemodel.GameModel.load_ai_output">load_ai_output</a></code></li>
+<li><code><a title="gameplatform.gamemodel.GameModel.next_player" href="#gameplatform.gamemodel.GameModel.next_player">next_player</a></code></li>
+<li><code><a title="gameplatform.gamemodel.GameModel.set_ai_player" href="#gameplatform.gamemodel.GameModel.set_ai_player">set_ai_player</a></code></li>
+<li><code><a title="gameplatform.gamemodel.GameModel.set_player_name" href="#gameplatform.gamemodel.GameModel.set_player_name">set_player_name</a></code></li>
+<li><code><a title="gameplatform.gamemodel.GameModel.set_turn_count" href="#gameplatform.gamemodel.GameModel.set_turn_count">set_turn_count</a></code></li>
+<li><code><a title="gameplatform.gamemodel.GameModel.to_ai_input" href="#gameplatform.gamemodel.GameModel.to_ai_input">to_ai_input</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="gameplatform.gamemodel.Node" href="#gameplatform.gamemodel.Node">Node</a></code></h4>
+<ul class="">
+<li><code><a title="gameplatform.gamemodel.Node.get_piece" href="#gameplatform.gamemodel.Node.get_piece">get_piece</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Node.is_occupied" href="#gameplatform.gamemodel.Node.is_occupied">is_occupied</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Node.node_id" href="#gameplatform.gamemodel.Node.node_id">node_id</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Node.occupying_player" href="#gameplatform.gamemodel.Node.occupying_player">occupying_player</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Node.piece" href="#gameplatform.gamemodel.Node.piece">piece</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="gameplatform.gamemodel.Piece" href="#gameplatform.gamemodel.Piece">Piece</a></code></h4>
+<ul class="">
+<li><code><a title="gameplatform.gamemodel.Piece.owner" href="#gameplatform.gamemodel.Piece.owner">owner</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="gameplatform.gamemodel.Player" href="#gameplatform.gamemodel.Player">Player</a></code></h4>
+<ul class="">
+<li><code><a title="gameplatform.gamemodel.Player.color" href="#gameplatform.gamemodel.Player.color">color</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.decrement_active_pieces" href="#gameplatform.gamemodel.Player.decrement_active_pieces">decrement_active_pieces</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.decrement_pieces_to_place" href="#gameplatform.gamemodel.Player.decrement_pieces_to_place">decrement_pieces_to_place</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.disable_ai" href="#gameplatform.gamemodel.Player.disable_ai">disable_ai</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.enable_ai" href="#gameplatform.gamemodel.Player.enable_ai">enable_ai</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.get_active_pieces" href="#gameplatform.gamemodel.Player.get_active_pieces">get_active_pieces</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.get_ai_difficulty" href="#gameplatform.gamemodel.Player.get_ai_difficulty">get_ai_difficulty</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.get_max_pieces" href="#gameplatform.gamemodel.Player.get_max_pieces">get_max_pieces</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.get_name" href="#gameplatform.gamemodel.Player.get_name">get_name</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.get_phase" href="#gameplatform.gamemodel.Player.get_phase">get_phase</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.get_pieces_to_place" href="#gameplatform.gamemodel.Player.get_pieces_to_place">get_pieces_to_place</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.has_pieces_to_place" href="#gameplatform.gamemodel.Player.has_pieces_to_place">has_pieces_to_place</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.is_ai" href="#gameplatform.gamemodel.Player.is_ai">is_ai</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.reset" href="#gameplatform.gamemodel.Player.reset">reset</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.set_active_pieces" href="#gameplatform.gamemodel.Player.set_active_pieces">set_active_pieces</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.set_ai_difficulty" href="#gameplatform.gamemodel.Player.set_ai_difficulty">set_ai_difficulty</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.set_name" href="#gameplatform.gamemodel.Player.set_name">set_name</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.set_phase" href="#gameplatform.gamemodel.Player.set_phase">set_phase</a></code></li>
+<li><code><a title="gameplatform.gamemodel.Player.set_pieces_to_place" href="#gameplatform.gamemodel.Player.set_pieces_to_place">set_pieces_to_place</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
