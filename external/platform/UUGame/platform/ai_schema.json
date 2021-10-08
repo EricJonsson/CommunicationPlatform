@@ -1,0 +1,102 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$ref": "#/$defs/GameFile",
+    "$defs": {
+        "GameFile": {
+            "type": "object",
+            "description": "JSON file format for the communication with the Game Engine (AI player)",
+            "additionalProperties": false,
+            "properties": {
+                "version": {
+                    "const": 2,
+                    "description": "Version of this JSON file format"
+                },
+                "state": {
+                    "$ref": "#/$defs/State",
+                    "description": "Representation of the current game state in the UUgame"
+                },
+                "ai_difficulty": {
+                    "enum": [ "easy", "medium", "hard" ],
+                    "description": "Difficulty level of the AI player.\n- easy: AI performs a random move\n- medium: player should be able to win in ~50% of the games\n- hard: AI should be unbeatable"
+                }
+            },
+            "required": [
+                "ai_difficulty",
+                "state",
+                "version"
+            ],
+            "title": "GameFile"
+        },
+        "State": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "turns_left": {
+                    "type": "integer",
+                    "description": "Total amount of turns left in the game. This is the sum of the remaining turns of the player and the AI.",
+                    "examples": [
+                        400,
+                        199,
+                        1
+                    ]
+                },
+                "they": {
+                    "$ref": "#/$defs/Player",
+                    "description": "The opponent of the AI (most probably a human player)"
+                },
+                "we": {
+                    "$ref": "#/$defs/Player",
+                    "description": "The AI itself"
+                }
+            },
+            "required": [
+                "turns_left",
+                "they",
+                "we"
+            ],
+            "title": "State"
+        },
+        "Player": {
+            "type": "object",
+            "description": "Information about a human or AI player in the UUgame",
+            "additionalProperties": false,
+            "properties": {
+                "pieces_onboard": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    },
+                    "examples": [
+                        [
+                            0,
+                            1,
+                            2,
+                            13
+                        ],
+                        [],
+                        [
+                            23,
+                            4,
+                            15
+                        ]
+                    ],
+                    "description": "Array of indexes referring to the points on the game board on which the player currently has pieces."
+                },
+                "pieces_offboard": {
+                    "type": "integer",
+                    "description": "Amount of pieces the player has still outside of the board. This does not include pieces that were taken off the board by the opponent during the game.",
+                    "examples": [
+                        9,
+                        2,
+                        0
+                    ]
+                }
+            },
+            "required": [
+                "pieces_onboard",
+                "pieces_offboard"
+            ],
+            "title": "Player"
+        }
+    }
+}
