@@ -1,6 +1,7 @@
 ###### Requirements without Version Specifiers ######
 Flask
 python-socketio
+requests
 
 # Testing
 pytest
