@@ -3,38 +3,70 @@ from .gamecontroller import GameController
 from .gameview import GameView
 from .utils import clear_screen
 from typing import Tuple
+from src import server, client
+
+global Hosting
+global NetworkPlayer
+Hosting = False
+NetworkPlayer = None
 
 def mainmenu():
     is_running = True
-
+    global Hosting
+    
     while is_running:
         clear_screen()
         print_main_menu()
         choice = get_numeric_choice()
-        if choice == 1:
-            play_menu()
-        elif choice == 2:
-            tournament_menu()
-        elif choice == 3:
-            join_tournament()
-        elif choice == 4:
-            is_running = False
+        
+        if Hosting:
+            if choice == 1:
+                play_menu()
+            elif choice == 2:
+                join_menu()
+            elif choice == 3:
+                is_running = False
+        else: 
+            if choice == 1:
+                play_menu()
+            elif choice == 2:
+                host_menu()
+            elif choice == 3:
+                join_menu()
+            elif choice == 4:
+                is_running = False
     
     input("Exiting. \nPress Enter to continue...")
 
 
 def print_main_menu():
-    print(" ---------------- UU-Game ---------------- ")
-    print("")
-    print("")
-    print("1) Play Game")
-    print("2) Start Tournament")
-    print("3) Join Tournament")
-    print("4) Quit")
+    if Hosting:
+        print(" ---------------- UU-Game ---------------- ")
+        print("")
+        print("")
+        print("1) Play Local Game")
+        print("2) Join Network Game")
+        print("3) Quit")
+        print("")
+        print(" ***** Hosting Game on port: 5000 *****    ")
 
+    else:
+        print(" ---------------- UU-Game ---------------- ")
+        print("")
+        print("")
+        print("1) Play Local Game")
+        print("2) Host Network Game")
+        print("3) Join Network Game")
+        print("4) Quit")
+        
 def print_play_menu():
-    print("1) Player vs Player")
-    print("2) Player vs Computer")
+    global NetworkPlayer
+    if NetworkPlayer == None:
+        print("1) Player vs Player")
+        print("2) Player vs Computer")
+    else:
+        print("1) Ready!")
+        print("2) Logout")
 
 def print_ai_difficulty_menu():
     print("AI Difficulty")
@@ -50,12 +82,25 @@ def play_menu():
         print_play_menu()
         
         choice = get_numeric_choice()
-        if choice == 1:
-            invalid_choice = False
-            play_local()
-        elif choice == 2:
-            invalid_choice = False
-            ai_difficulty_menu()
+
+        global NetworkPlayer
+
+        if NetworkPlayer == None:
+            if choice == 1:
+                invalid_choice = False
+                play_local()
+            elif choice == 2:
+                invalid_choice = False
+                ai_difficulty_menu()
+        else:
+            if choice == 1:
+                response = NetworkPlayer.Ready()
+                invalid_choice = False
+            elif choice == 2:
+                response = NetworkPlayer.Disconnect()
+                invalid_choice = False
+                NetworkPlayer = None
+
 
 def get_numeric_choice() -> int or None:
     choice = input()
@@ -77,12 +122,20 @@ def ai_difficulty_menu():
             invalid_choice = False
             play_local(ai_opponent = True, ai_difficulty = AiDifficulty(choice))
 
-def tournament_menu():
-    pass
-
-def join_tournament():
-    pass
-
+def host_menu():
+    host = server.CommunicationServer()
+    host.CreateServer()
+    global Hosting
+    Hosting = True
+def join_menu():
+    global NetworkPlayer
+    NetworkPlayer = client.Player()
+    response = NetworkPlayer.ConnectToServer('127.0.0.1', 5000)
+    if response == 0:
+        play_menu()
+    else:
+        input('Failed to Connect to server... \nPress any key to continue...')
+    
 def get_player_names() -> Tuple[str, str]:
     clear_screen()
     print("Player Black's name: ")
@@ -92,6 +145,28 @@ def get_player_names() -> Tuple[str, str]:
     return (black_player_name, white_player_name)
 
 def play_local(ai_opponent = False, ai_difficulty = AiDifficulty.NONE):
+    should_restart = True
+    (black_player_name, white_player_name) = get_player_names()
+
+    while should_restart:
+        game_model = GameModel()
+        game_view = GameView(game_model)
+        game_controller = GameController(game_model, game_view)
+
+        if(ai_opponent):
+            game_model.set_ai_player(Color.WHITE, ai_difficulty)
+
+        game_model.set_player_name(Color.BLACK, black_player_name)
+        game_model.set_player_name(Color.WHITE, white_player_name)
+
+        winner = game_controller.start_game()        
+        should_restart = False
+        if winner is None: # game was a draw
+            should_restart = query_rematch_choice()
+
+        input("Press Enter to continue...")
+
+def play_network(ai_opponent = False, ai_difficulty = AiDifficulty.NONE):
     should_restart = True
     (black_player_name, white_player_name) = get_player_names()
 

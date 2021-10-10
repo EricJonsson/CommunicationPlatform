@@ -11,7 +11,6 @@ import socketio #Need this for exceptions
 from loggers import server_logger as logger
 from common import JsonServer as Server
 import threading
-
 #from socketio.server import Server
 
 
@@ -262,6 +261,9 @@ class CommunicationServer():  # External
   def _InternalCreateServer(self,ip,port):
     self.app = Flask(__name__)
     self.app.wsgi_app = socketio.WSGIApp(self.sio, self.app.wsgi_app)
+    import logging
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.ERROR)
     self.__callbacks()
     self.app.run(ip, port)
 
