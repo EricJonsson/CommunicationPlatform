@@ -171,7 +171,7 @@ class CommunicationServer():  # External
           playerData = client.PlayerInfo
 
       if playerData is not None:
-        logger.debug('sending')
+        logger.debug(playerData.__dict__)
         self.sio.emit('player_info', data=playerData.__dict__, to=sid)
 
     @self.sio.event

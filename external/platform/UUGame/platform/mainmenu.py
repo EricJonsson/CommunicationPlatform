@@ -35,6 +35,8 @@ def mainmenu():
             elif choice == 3:
                 join_menu()
             elif choice == 4:
+                if NetworkPlayer != None:
+                    NetworkPlayer.Disconnect()
                 is_running = False
     
     input("Exiting. \nPress Enter to continue...")
@@ -96,14 +98,20 @@ def play_menu():
                 ai_difficulty_menu()
         else:
             if choice == 1:
-                response = NetworkPlayer.Ready()
+                try:
+                    response = NetworkPlayer.Ready()
+                except:
+                    print('Unable to Ready up!')
                 if response == 0:
                     play_network()
                 else:
                     input('Failed to Ready up... \nPress any key to continue...')
                 invalid_choice = False
             elif choice == 2:
-                response = NetworkPlayer.Disconnect()
+                try:
+                    response = NetworkPlayer.Disconnect()
+                except:
+                    print('Unable to disconnect!')
                 if response == 0:
                     pass
                 else:
@@ -117,10 +125,11 @@ def play_menu():
 def display_statistics():
     playerinfo = NetworkPlayer.GetPlayerInfo()
     try:
-        input('Games Won: ', str(playerinfo.NumberOfWins),
-              '\nGames Played: ', str(playerinfo.GamesPlayed),
-              '\nGames Lost: ', str(playerinfo.GamesPlayed - playerinfo.NumberOfWins),
-              '\n\nPress Any Key to Continue...')
+        g_wins = playerinfo['NumberOfWins']
+        g_played = playerinfo['GamesPlayed']
+        g_lost = g_played - g_wins
+        stats = '*** Statistics *** \n\nGames Won:    {}\nGames Played: {}\nGames Lost:   {}\n\nPress Any Key to Continue...'.format(g_wins,g_played,g_lost)
+        input(stats)
     except:
         input('Unable to get statistics... \nPress any key to continue...')
 
@@ -230,6 +239,10 @@ def play_network():
         game_model.set_player_name(Color.WHITE, white_player_name)
         
         winner = game_controller.start_game()
+
+        if winner.color != opponentcolor:
+            NetworkPlayer.SignalVictory()
+        
         should_restart = False
         if winner is None: # game was a draw
             should_restart = query_rematch_choice()
