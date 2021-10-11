@@ -77,6 +77,7 @@ class Player(StateObservable):
     __name : str
     __is_ai : bool # might need a reference to an ai controller object instead
     __ai_difficulty : AiDifficulty
+    __is_networkplayer : bool
 
     def __init__(self, color : Color, name : str = ""):
         super().__init__()
@@ -665,6 +666,17 @@ class GameModel(StateObservable):
         
         player.enable_ai(ai_difficulty)
 
+    def set_network_player(self, color : Color):
+        player = self.get_player_by_color(color)
+        if player is None: 
+            return
+
+        #if ai_difficulty == AiDifficulty.NONE:
+        #    player.disable_ai()
+        
+        #player.enable_ai(ai_difficulty)
+        player.__isnetworkplayer = True
+        
     def set_turn_count(self, turn_count : int):
         '''Sets current turn number.
 

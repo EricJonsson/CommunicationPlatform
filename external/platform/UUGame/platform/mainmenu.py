@@ -202,17 +202,19 @@ def play_network():
     print('Matchup, Player: ', NetworkPlayer.CurrentOpponent['id'], '\nColor: ',NetworkPlayer.CurrentOpponent['color'])
     input('Match found!\n\nPress Any Key to Continue...')
 
+    black_player_name = NetworkPlayer.Name
+    white_player_name = NetworkPlayer.CurrentOpponent['id']
+    
     should_restart = True
-    (black_player_name, white_player_name) = get_player_names()
+    #(black_player_name, white_player_name) = get_player_names()
 
     while should_restart:
         game_model = GameModel()
         game_view = GameView(game_model)
         game_controller = GameController(game_model, game_view)
         
-        if(ai_opponent):
-            game_model.set_ai_player(Color.WHITE, ai_difficulty)
-
+        game_model.set_network_player(Color.WHITE)
+            
         game_model.set_player_name(Color.BLACK, black_player_name)
         game_model.set_player_name(Color.WHITE, white_player_name)
 
