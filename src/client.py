@@ -21,6 +21,7 @@ class Player:
     self.DisconnectReturn = None
     self.SetNameReturn = None
     self.sio = Client(logger=logger)
+    self.CurrentOpponent = None
     self.__callbacks()
 
   def __callbacks(self):
@@ -37,7 +38,10 @@ class Player:
 
     @self.sio.json_event(logging=True)
     def game_info(data):
-      pass #TODO when integrating handle game info
+      self.CurrentOpponent = data['opponent']
+      #self.CurrentOpponent = {'id':data['opponentid'],'color':data['opponentcolor']}
+      
+      #pass #TODO when integrating handle game info
       #Call function here
 
     @self.sio.json_event(logging=True)

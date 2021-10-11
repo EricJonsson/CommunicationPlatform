@@ -99,6 +99,7 @@ class CommunicationServer():  # External
         raise socketio.exceptions.ConnectionRefusedError('Server is full')
       else:
         new_client = Client(sid)
+        new_client.Name = sid
         self.Clients.append(new_client)
         logger.debug('Clients connected: {}'.format(len(self.Clients))) # Ugly print
 
@@ -208,8 +209,7 @@ class CommunicationServer():  # External
 
           # announce to everyone in the tournament that the tournament is over
           for client in self.Clients:
-            self.sio.emit('game_info', {"code": 1, "data": "The tournament is over."}, to=client.get_id())
-
+            self.sio.emit('game_info', {"code": 1, "data": "The tournament is over.",'opponent':None}, to=client.get_id())
       else:
         self.sio.emit('gameover', {"code": -1}, to=sid)
         logger.debug(f'ERROR: Event sent by inactive player `{sid}`.')
@@ -283,13 +283,18 @@ class CommunicationServer():  # External
       self.ActiveGames.append(game)
       logger.debug(game)
       logger.debug('Started Game: ' + str(game.PlayerA) + ' vs ' + str(game.PlayerB) + '.')
+      self.sio.emit('game_info', {'opponent':{'id': game.PlayerA.Name, 'color':'white'}
+      }, to=game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
+      self.sio.emit('game_info', {'opponent':{'id': game.PlayerB.Name, 'color':'black'}
+      }, to=game.PlayerB.get_id()) # vice-versa
+      '''
       self.sio.emit('game_info', {
           'data': f'you are now in a game vs {game.PlayerB}'
       }, to=game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
       self.sio.emit('game_info', {
           'data': f'you are now in a game vs {game.PlayerA}'
       }, to=game.PlayerB.get_id()) # vice-versa
-
+'''
 
     if len(self.Clients) > 2:
       # tournament

@@ -4,6 +4,7 @@ from .gameview import GameView
 from .utils import clear_screen
 from typing import Tuple
 from src import server, client
+import time
 
 global Hosting
 global NetworkPlayer
@@ -188,6 +189,14 @@ def play_local(ai_opponent = False, ai_difficulty = AiDifficulty.NONE):
         input("Press Enter to continue...")
 
 def play_network():
+
+    # Get Opponent From Server ( Blocking )
+    # Return: Opponent Name / Color
+
+    while NetworkPlayer.CurrentOpponent == None:
+        time.sleep(1)
+    print('Matchup, Player: ', NetworkPlayer.CurrentOpponent['id'], '\nColor: ',NetworkPlayer.CurrentOpponent['color'])
+    input('Match found!\n\nPress Any Key to Continue...')
 
     should_restart = True
     (black_player_name, white_player_name) = get_player_names()
