@@ -94,12 +94,11 @@ class GameController():
         # send and get new game state from AI
         #json_data = self.__model.to_ai_input(self.__current_player)
 
-
         print('Waiting for opponents move...')
 
         ExitLoop = False
         while True:
-            Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 10)            
+            Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 10)
             for message in Messages:
                 if 'Gamestate' in message['data']:
                     GameState = message['data']['Gamestate']
@@ -144,11 +143,18 @@ class GameController():
         return None
 
 
+    def __sendgamestate(self):
+        state = self.__model.to_ai_input(self.__current_player)
+        if self.NetworkPlayer != None:
+            self.NetworkPlayer.SendInformationToOpponent({'Gamestate':state})
+
+    
     def __handle_phase_one(self):
         self.__handle_placement()
-
+        self.__sendgamestate()
     def __handle_phase_two(self):
         if not self.__player_can_move(self.__current_player):
+            self.__sendgamestate()
             return
 
         has_completed_move = False
@@ -156,6 +162,7 @@ class GameController():
             selected_node_id = self.__handle_select()
             self.__handle_move(selected_node_id)
             has_completed_move = True
+            self.__sendgamestate()
 
     def __handle_phase_three(self):
         has_completed_move = False
@@ -163,6 +170,7 @@ class GameController():
             selected_node_id = self.__handle_select()
             self.__handle_move(selected_node_id, ignore_adjacent=True)
             has_completed_move = True
+            self.__sendgamestate()
 
     def __handle_placement(self):
         successful = False
@@ -315,8 +323,6 @@ class GameController():
     def __advance_turn(self) -> Player:
         self.__total_turns += 1
         self.__model.set_turn_count(self.__total_turns // 2)
-        state = self.__model.to_ai_input(self.__current_player)
-        self.NetworkPlayer.SendInformationToOpponent({'Gamestate':state})
         return self.__model.next_player()
 
     def __read_input(self) -> str:
