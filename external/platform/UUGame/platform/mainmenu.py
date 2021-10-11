@@ -67,6 +67,7 @@ def print_play_menu():
     else:
         print("1) Ready!")
         print("2) Logout")
+        print("3) Statistics")
 
 def print_ai_difficulty_menu():
     print("AI Difficulty")
@@ -80,7 +81,7 @@ def play_menu():
     while invalid_choice:
         clear_screen()
         print_play_menu()
-        
+      
         choice = get_numeric_choice()
 
         global NetworkPlayer
@@ -95,12 +96,32 @@ def play_menu():
         else:
             if choice == 1:
                 response = NetworkPlayer.Ready()
+                if response == 0:
+                    play_network()
+                else:
+                    input('Failed to Ready up... \nPress any key to continue...')
                 invalid_choice = False
             elif choice == 2:
                 response = NetworkPlayer.Disconnect()
+                if response == 0:
+                    pass
+                else:
+                    input('Failed to disconnect... \nPress any key to continue...')
                 invalid_choice = False
                 NetworkPlayer = None
+            elif choice == 3:
+                display_statistics()
+#                invalid_choice = False
 
+def display_statistics():
+    playerinfo = NetworkPlayer.GetPlayerInfo()
+    try:
+        input('Games Won: ', str(playerinfo.NumberOfWins),
+              '\nGames Played: ', str(playerinfo.GamesPlayed),
+              '\nGames Lost: ', str(playerinfo.GamesPlayed - playerinfo.NumberOfWins),
+              '\n\nPress Any Key to Continue...')
+    except:
+        input('Unable to get statistics... \nPress any key to continue...')
 
 def get_numeric_choice() -> int or None:
     choice = input()
@@ -166,7 +187,8 @@ def play_local(ai_opponent = False, ai_difficulty = AiDifficulty.NONE):
 
         input("Press Enter to continue...")
 
-def play_network(ai_opponent = False, ai_difficulty = AiDifficulty.NONE):
+def play_network():
+
     should_restart = True
     (black_player_name, white_player_name) = get_player_names()
 
@@ -174,14 +196,14 @@ def play_network(ai_opponent = False, ai_difficulty = AiDifficulty.NONE):
         game_model = GameModel()
         game_view = GameView(game_model)
         game_controller = GameController(game_model, game_view)
-
+        
         if(ai_opponent):
             game_model.set_ai_player(Color.WHITE, ai_difficulty)
 
         game_model.set_player_name(Color.BLACK, black_player_name)
         game_model.set_player_name(Color.WHITE, white_player_name)
 
-        winner = game_controller.start_game()        
+        winner = game_controller.start_game()
         should_restart = False
         if winner is None: # game was a draw
             should_restart = query_rematch_choice()
