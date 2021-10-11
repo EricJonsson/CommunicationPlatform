@@ -106,7 +106,6 @@ def play_menu():
                     play_network()
                 else:
                     input('Failed to Ready up... \nPress any key to continue...')
-                invalid_choice = False
             elif choice == 2:
                 try:
                     response = NetworkPlayer.Disconnect()
