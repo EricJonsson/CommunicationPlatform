@@ -202,9 +202,14 @@ def play_network():
     print('Matchup, Player: ', NetworkPlayer.CurrentOpponent['id'], '\nColor: ',NetworkPlayer.CurrentOpponent['color'])
     input('Match found!\n\nPress Any Key to Continue...')
 
-    black_player_name = NetworkPlayer.Name
-    white_player_name = NetworkPlayer.CurrentOpponent['id']
-    
+    opponentcolor = NetworkPlayer.CurrentOpponent['color']
+    if opponentcolor == 'white':
+        black_player_name = NetworkPlayer.Name
+        white_player_name = NetworkPlayer.CurrentOpponent['id']
+    elif opponentcolor == 'black':
+        black_player_name = NetworkPlayer.CurrentOpponent['id']
+        white_player_name = NetworkPlayer.Name
+        
     should_restart = True
     #(black_player_name, white_player_name) = get_player_names()
 
@@ -212,12 +217,16 @@ def play_network():
         game_model = GameModel()
         game_view = GameView(game_model)
         game_controller = GameController(game_model, game_view)
+
+        if opponentcolor == 'white':
+            game_model.set_network_player(Color.WHITE)
         
-        game_model.set_network_player(Color.WHITE)
-            
+        elif opponentcolor == 'black':
+            game_model.set_network_player(Color.BLACK)
+        
         game_model.set_player_name(Color.BLACK, black_player_name)
         game_model.set_player_name(Color.WHITE, white_player_name)
-
+        
         winner = game_controller.start_game()
         should_restart = False
         if winner is None: # game was a draw
