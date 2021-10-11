@@ -218,13 +218,14 @@ def play_network():
         game_view = GameView(game_model)
         game_controller = GameController(game_model, game_view)
         game_controller.NetworkPlayer = NetworkPlayer
-        
+
+
         if opponentcolor == 'white':
             game_model.set_network_player(Color.WHITE)
         
         elif opponentcolor == 'black':
             game_model.set_network_player(Color.BLACK)
-            
+        
         game_model.set_player_name(Color.BLACK, black_player_name)
         game_model.set_player_name(Color.WHITE, white_player_name)
         

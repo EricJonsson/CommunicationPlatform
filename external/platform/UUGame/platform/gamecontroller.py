@@ -64,12 +64,12 @@ class GameController():
             self.__current_player = self.__model.get_current_player()
             self.__view.set_action_prompt("It is currently " + self.__current_player.get_name() + "'s turn")
             current_phase = self.__current_player.get_phase()
-
+            
             if (self.__total_turns // 2) >= GameConfig.MAX_TURNS:
                 self.__view.print_draw_message()
                 self.__is_running = False
             elif self.__current_player.is_networkplayer():
-                self.__handle_networkturn_turn()
+                self.__handle_network_turn()
             elif self.__current_player.is_ai():
                 self.__handle_ai_turn()
             elif current_phase == 1:
@@ -94,6 +94,9 @@ class GameController():
         # send and get new game state from AI
         #json_data = self.__model.to_ai_input(self.__current_player)
 
+
+        print('Waiting for opponents move...')
+        
         while True:
             Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 10)
             for message in Messages:
@@ -309,7 +312,8 @@ class GameController():
     def __advance_turn(self) -> Player:
         self.__total_turns += 1
         self.__model.set_turn_count(self.__total_turns // 2)
-        self.NetworkPlayer.SendInformationToOpponent({'Gamestate':{self.__model.to_ai_input(self.__current_player)}})
+        state = self.__model.to_ai_input(self.__current_player)
+        self.NetworkPlayer.SendInformationToOpponent({'Gamestate':state})
         return self.__model.next_player()
 
     def __read_input(self) -> str:

@@ -99,6 +99,9 @@ class Player(StateObservable):
         """        
         return self.__is_ai
     
+    def setnetworkplayer(self):
+        self.__is_networkplayer = True
+
     def enable_ai(self, ai_difficulty : AiDifficulty = AiDifficulty.EASY):  
         """Enables AI for this player.
 
@@ -671,6 +674,7 @@ class GameModel(StateObservable):
 
     def set_network_player(self, color : Color):
         player = self.get_player_by_color(color)
+
         if player is None: 
             return
 
@@ -678,7 +682,7 @@ class GameModel(StateObservable):
         #    player.disable_ai()
         
         #player.enable_ai(ai_difficulty)
-        player.__isnetworkplayer = True
+        player.setnetworkplayer()
         
     def set_turn_count(self, turn_count : int):
         '''Sets current turn number.
