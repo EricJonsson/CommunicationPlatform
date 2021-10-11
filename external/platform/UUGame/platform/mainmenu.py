@@ -190,9 +190,9 @@ def play_local(ai_opponent = False, ai_difficulty = AiDifficulty.NONE):
 
 def play_network():
 
-    # Get Opponent From Server ( Blocking )
-    # Return: Opponent Name / Color
-
+    if NetworkPlayer.Name == None:
+        NetworkPlayer.Name = input('Please Specify your name: ')
+    
     index = 1
     while NetworkPlayer.CurrentOpponent == None:
         clear_screen()
@@ -217,13 +217,14 @@ def play_network():
         game_model = GameModel()
         game_view = GameView(game_model)
         game_controller = GameController(game_model, game_view)
-
+        game_controller.NetworkPlayer = NetworkPlayer
+        
         if opponentcolor == 'white':
             game_model.set_network_player(Color.WHITE)
         
         elif opponentcolor == 'black':
             game_model.set_network_player(Color.BLACK)
-        
+            
         game_model.set_player_name(Color.BLACK, black_player_name)
         game_model.set_player_name(Color.WHITE, white_player_name)
         

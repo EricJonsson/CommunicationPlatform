@@ -35,7 +35,8 @@ class GameController():
         self.__valid_node_range = range(0, len(self.__model.board.get_nodes()))
         self.__winning_player = None
         self.__current_player = None
-
+        self.NetworkPlayer = None
+        
     def start_game(self) -> Player or None:
         """Starts the game. This is a blocking call.
 
@@ -67,6 +68,8 @@ class GameController():
             if (self.__total_turns // 2) >= GameConfig.MAX_TURNS:
                 self.__view.print_draw_message()
                 self.__is_running = False
+            elif self.__current_player.is_networkplayer():
+                self.__handle_networkturn_turn()
             elif self.__current_player.is_ai():
                 self.__handle_ai_turn()
             elif current_phase == 1:
@@ -86,7 +89,29 @@ class GameController():
             if winner is not None:
                 self.__winning_player = winner
                 self.__is_running = False
-    
+
+    def __handle_network_turn(self):
+        # send and get new game state from AI
+        #json_data = self.__model.to_ai_input(self.__current_player)
+
+        while True:
+            Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 10)
+            for message in Messages:
+                if 'Gamestate' in message:
+                    GameState = message['Gamestate']
+                    
+
+        #next_state = AI.next_move(game_file)
+        #if next_state is None:
+        #    exit(-1)
+        #game_file.state = next_state
+
+        #new_json_data : Dict = json.loads(GameFileAdapter.serialize(game_file))
+
+        # load into gamemodel
+        self.__model.load_network_output(self.__current_player, GameState)
+
+                
     def __handle_ai_turn(self):
         # send and get new game state from AI
         json_data = self.__model.to_ai_input(self.__current_player)
@@ -153,7 +178,7 @@ class GameController():
                 self.__view.set_notification_info(self.__current_player.get_name() + " has formed a mill!")
                 self.__handle_remove()
 
-            successful = True
+            successful = True        
         self.__view.set_notification_info("")
 
     def __handle_phase_transition(self):
@@ -284,6 +309,7 @@ class GameController():
     def __advance_turn(self) -> Player:
         self.__total_turns += 1
         self.__model.set_turn_count(self.__total_turns // 2)
+        self.NetworkPlayer.SendInformationToOpponent({'Gamestate':{self.__model.to_ai_input(self.__current_player)}})
         return self.__model.next_player()
 
     def __read_input(self) -> str:
