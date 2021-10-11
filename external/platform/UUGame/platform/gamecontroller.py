@@ -96,14 +96,17 @@ class GameController():
 
 
         print('Waiting for opponents move...')
-        
-        while True:
-            Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 10)
-            for message in Messages:
-                if 'Gamestate' in message:
-                    GameState = message['Gamestate']
-                    
 
+        ExitLoop = False
+        while True:
+            Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 10)            
+            for message in Messages:
+                if 'Gamestate' in message['data']:
+                    GameState = message['data']['Gamestate']
+                    ExitLoop = True
+                    break
+            if ExitLoop:
+                break
         #next_state = AI.next_move(game_file)
         #if next_state is None:
         #    exit(-1)
