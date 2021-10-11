@@ -193,7 +193,11 @@ def play_network():
     # Get Opponent From Server ( Blocking )
     # Return: Opponent Name / Color
 
+    index = 1
     while NetworkPlayer.CurrentOpponent == None:
+        clear_screen()
+        print('Matchmaking...\n\nWaiting: ',index)
+        index += 1
         time.sleep(1)
     print('Matchup, Player: ', NetworkPlayer.CurrentOpponent['id'], '\nColor: ',NetworkPlayer.CurrentOpponent['color'])
     input('Match found!\n\nPress Any Key to Continue...')
