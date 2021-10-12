@@ -98,11 +98,13 @@ class GameController():
 
         ExitLoop = False
         while not ExitLoop:
-            Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 10)
             if not self.NetworkPlayer.inGame:
               print('Opponent Disconnected. You win!')
               self.__is_running = False
               ExitLoop = True
+              break
+
+            Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 10)
 
             for message in Messages:
                 if 'Gamestate' in message['data']:
