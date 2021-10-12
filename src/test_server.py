@@ -227,7 +227,6 @@ def test_ClientMessaging(ClientInstances, NoClients):
     # Fetch Data and assert that timeout did not occur
     timeout = time.time() + 30
     data_2 = Client_2.GetMessageFromOpponent(blocking = True, timeout = 60)
-<<<<<<< HEAD
     assert time.time() < timeout
     data_1 = Client_1.GetMessageFromOpponent(blocking = False)
 
@@ -286,15 +285,6 @@ def test_ClientMessaging(ClientInstances, NoClients):
     # Test many messages in quick succession
     for i in range(20):
         Client_2.SendInformationToOpponent({'packet':i})
-=======
-
-    thread.join()
-    #assert len(data_1) == 0
-    assert len(data_2) > 0
-
-    #assert data['Data'] == 'Message'
-    #assert data['Error'] == None
->>>>>>> origin/GroupD
 
     time.sleep(1)
     
