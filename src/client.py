@@ -23,6 +23,7 @@ class Player:
     self.sio = Client(logger=logger)
     self.CurrentOpponent = None
     self.__callbacks()
+    self.inGame = False
 
   def __callbacks(self):
 
@@ -39,6 +40,7 @@ class Player:
     @self.sio.json_event(logging=True)
     def game_info(data):
       self.CurrentOpponent = data['opponent']
+      self.inGame = True
       #self.CurrentOpponent = {'id':data['opponentid'],'color':data['opponentcolor']}
       
       #pass #TODO when integrating handle game info
@@ -47,6 +49,7 @@ class Player:
     @self.sio.json_event(logging=True)
     def gameover(data):
       self.SignalVictoryReturn = int(data['code'])
+      self.inGame = False
       #TODO can be extended for the Player not calling SignalVictory
       #Call function here
 

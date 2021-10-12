@@ -206,7 +206,6 @@ class CommunicationServer():  # External
     @self.sio.event
     def gameover(sid):
       if game := self.FindActiveGameBySid(sid):
-        self.sio.emit('gameover', {"code": 0}, to=sid)
         self._concludeGame(game, winner=sid)
 
         if len(self.ActiveGames) == 0 and len(self.TournamentGames) == 0 and self.TournamentMode: # all games for the tournament are complete!
