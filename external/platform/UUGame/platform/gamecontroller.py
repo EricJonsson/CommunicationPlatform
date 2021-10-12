@@ -99,7 +99,6 @@ class GameController():
 
         ExitLoop = False
         while not ExitLoop:
-            print(self.NetworkPlayer.inGame)
             if self.NetworkPlayer.inGame == False:
               print('Opponent Disconnected. You win!')
               input('Press any key to continue...')
