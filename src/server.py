@@ -44,14 +44,20 @@ class CommunicationServer():  # External
         self.ActiveGames.append(t_game)
         if not t_game.PlayerA.isAI:
           self.sio.emit('game_info', {
-            'opponent': str(t_game.PlayerB.Name),
+            'opponent':
+            {'id': str(t_game.PlayerB.Name),
+              'color': 'white'
+            },
             'AI': t_game.PlayerB.isAI,
             'difficulty': t_game.PlayerB.difficulty
           }, to=t_game.PlayerA.get_id())  # msg PlayerA that they are playing vs PlayerB
 
         if not t_game.PlayerB.isAI:
           self.sio.emit('game_info', {
-            'opponent': str(t_game.PlayerA.Name),
+            'opponent': 
+            {'id': str(t_game.PlayerA.Name),
+              'color': 'black'
+            },
             'AI': t_game.PlayerA.isAI,
             'difficulty': t_game.PlayerA.difficulty
           }, to=t_game.PlayerB.get_id()) # vice-versa

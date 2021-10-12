@@ -99,6 +99,9 @@ def play_menu():
         else:
             if choice == 1:
                 try:
+                    if NetworkPlayer.Name == None:
+                      NetworkPlayer.Name = input('Please Specify your name: ')
+                    NetworkPlayer.SetName(NetworkPlayer.Name) 
                     response = NetworkPlayer.Ready()
                 except:
                     print('Unable to Ready up!')
@@ -197,10 +200,6 @@ def play_local(ai_opponent = False, ai_difficulty = AiDifficulty.NONE):
         input("Press Enter to continue...")
 
 def play_network():
-
-    if NetworkPlayer.Name == None:
-        NetworkPlayer.Name = input('Please Specify your name: ')
-    
     index = 1
     while NetworkPlayer.CurrentOpponent == None:
         clear_screen()
