@@ -112,7 +112,7 @@ class CommunicationServer():  # External
     def connect(sid, environ, auth):
       if len(self.Clients) >= self.MaxConcurrentClients:
         raise socketio.exceptions.ConnectionRefusedError('Server is full')
-      elif self.TournamentStarted:
+      elif self.TournamentMode:
         raise socketio.exceptions.ConnectionRefusedError('Tournament already started.')
       else:
         new_client = Client(sid)

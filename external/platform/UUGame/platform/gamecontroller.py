@@ -45,6 +45,7 @@ class GameController():
         """
         self.__is_running = True
         self.__view.draw_board()
+        self.NetworkPlayer.inGame = True
 
         try:
             self.__update()
@@ -98,10 +99,11 @@ class GameController():
 
         ExitLoop = False
         while not ExitLoop:
-            if not self.NetworkPlayer.inGame:
+            print(self.NetworkPlayer.inGame)
+            if self.NetworkPlayer.inGame == False:
               print('Opponent Disconnected. You win!')
+              input('Press any key to continue...')
               self.__is_running = False
-              ExitLoop = True
               break
 
             Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 10)
