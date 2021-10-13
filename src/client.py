@@ -24,11 +24,11 @@ class Player:
     self.CurrentOpponent = None
     self.__callbacks()
     self.inGame = False
+    self.scoreBoard= None
 
   def __callbacks(self):
 
-    @self.sio.json_event(logging=True)
-    def game_reset(data):
+    def game_reset():
       pass #TODO when integrating Handle game reset
       #Call function here
 
@@ -40,6 +40,9 @@ class Player:
     @self.sio.json_event(logging=True)
     def game_info(data):
       self.CurrentOpponent = data['opponent']
+      print(data['score'])
+      self.scoreBoard= data['score']
+
       #self.CurrentOpponent = {'id':data['opponentid'],'color':data['opponentcolor']}
       
       #pass #TODO when integrating handle game info
@@ -48,6 +51,7 @@ class Player:
     @self.sio.json_event(logging=True)
     def gameover(data):
       self.SignalVictoryReturn = int(data['code'])
+      self.CurrentOpponent = None
       self.inGame = False
       #TODO can be extended for the Player not calling SignalVictory
       #Call function here
@@ -143,9 +147,9 @@ class Player:
     self.ReadyReturn = None
     return ret
 
-  def SignalVictory(self):
+  def SignalVictory(self, winner):
     logger.debug("Game over")
-    self.sio.call('gameover')
+    self.sio.call('gameover', data={'winner': winner})
     ret = self.SignalVictoryReturn
     self.SignalVictoryReturn = None
     return ret

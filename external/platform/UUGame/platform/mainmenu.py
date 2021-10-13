@@ -68,6 +68,7 @@ def print_play_menu():
         print("1) Player vs Player")
         print("2) Player vs Computer")
     else:
+        print(" ---------------- Ready up for your next game! ---------------- ")
         print("1) Ready!")
         print("2) Logout")
         print("3) Statistics")
@@ -101,7 +102,8 @@ def play_menu():
                 try:
                     if NetworkPlayer.Name == None:
                       NetworkPlayer.Name = input('Please Specify your name: ')
-                    NetworkPlayer.SetName(NetworkPlayer.Name) 
+                      NetworkPlayer.SetName(NetworkPlayer.Name) 
+
                     response = NetworkPlayer.Ready()
                 except:
                     print('Unable to Ready up!')
@@ -130,7 +132,7 @@ def display_statistics():
         g_wins = playerinfo['NumberOfWins']
         g_played = playerinfo['GamesPlayed']
         g_lost = g_played - g_wins
-        stats = '*** Statistics *** \n\nGames Won:    {}\nGames Played: {}\nGames Lost:   {}\n\nPress Any Key to Continue...'.format(g_wins,g_played,g_lost)
+        stats = '*** Statistics *** \n\nGames Won:    {}\nGames Played: {} (includes skipped games)\nGames Lost:   {}\n\nPress Any Key to Continue...'.format(g_wins,g_played,g_lost)
         input(stats)
     except:
         input('Unable to get statistics... \nPress any key to continue...')
@@ -206,40 +208,60 @@ def play_network():
         print('Matchmaking...\n\nWaiting: ',index)
         index += 1
         time.sleep(1)
-    print('Matchup, Player: ', NetworkPlayer.CurrentOpponent['id'], '\nColor: ',NetworkPlayer.CurrentOpponent['color'])
+
+    if NetworkPlayer.scoreBoard is not None:
+      print('TOURNAMENT HAS ENDED')
+      print('------FINAL RESULT--------')
+      print(NetworkPlayer.scoreBoard)
+
+      input('Returning to lobby, all stats will be reset\n\nPress any key to continue..')
+      NetworkPlayer.CurrentOpponent = None
+      NetworkPlayer.scoreboard  = None
+      return
+
+    if NetworkPlayer.CurrentOpponent['none'] == 1:
+      NetworkPlayer.CurrentOpponent = None
+      print('Couldn\'t find a game this round..')
+      input('Returning to lobby\n\nPress any key to continue..')
+      return
+
+    
+    playerColor = ''
+    opponentcolor = NetworkPlayer.CurrentOpponent['color']
+    if opponentcolor == 'white':
+      playerColor = 'Black'
+    else:
+      playerColor = 'White'
+
+    print('Matchup, Player: ', NetworkPlayer.CurrentOpponent['id'], '\nYou\'ll be playing: ', playerColor)
     input('Match found!\n\nPress Any Key to Continue...')
 
-    while NetworkPlayer.CurrentOpponent:
-        opponentcolor = NetworkPlayer.CurrentOpponent['color']
-        if opponentcolor == 'white':
-            black_player_name = NetworkPlayer.Name
-            white_player_name = NetworkPlayer.CurrentOpponent['id']
-        elif opponentcolor == 'black':
-            black_player_name = NetworkPlayer.CurrentOpponent['id']
-            white_player_name = NetworkPlayer.Name
-            
-        #(black_player_name, white_player_name) = get_player_names()
+    game_model = GameModel()
+    game_view = GameView(game_model)
+    game_controller = GameController(game_model, game_view)
+    game_controller.NetworkPlayer = NetworkPlayer
 
-        game_model = GameModel()
-        game_view = GameView(game_model)
-        game_controller = GameController(game_model, game_view)
-        game_controller.NetworkPlayer = NetworkPlayer
+    if opponentcolor == 'white':
+        game_model.set_network_player(Color.WHITE)
+    elif opponentcolor == 'black':
+        game_model.set_network_player(Color.BLACK)
 
-        if opponentcolor == 'white':
-            game_model.set_network_player(Color.WHITE)
+    if opponentcolor == 'white':
+        black_player_name = NetworkPlayer.Name
+        white_player_name = NetworkPlayer.CurrentOpponent['id']
+    elif opponentcolor == 'black':
+        black_player_name = NetworkPlayer.CurrentOpponent['id']
+        white_player_name = NetworkPlayer.Name
         
-        elif opponentcolor == 'black':
-            game_model.set_network_player(Color.BLACK)
-        
-        game_model.set_player_name(Color.BLACK, black_player_name)
-        game_model.set_player_name(Color.WHITE, white_player_name)
-        
-        winner = game_controller.start_game()
+    game_model.set_player_name(Color.BLACK, black_player_name)
+    game_model.set_player_name(Color.WHITE, white_player_name)
 
-        if winner is not None and winner.color != opponentcolor:
-            NetworkPlayer.SignalVictory()
+    winner = game_controller.start_game()
 
-        input("Press Enter to continue...")
+    if winner is not None:
+        NetworkPlayer.SignalVictory(winner.color)
+
+    input("Press Enter to continue...")
 
 
 def query_rematch_choice() -> bool:

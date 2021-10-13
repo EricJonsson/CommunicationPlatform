@@ -17,15 +17,6 @@ class GameController():
         model {GameModel} -- The model associated with this GameController\n
         view {GameView} -- The view associated with this GameController
     """
-    __is_running : bool
-    __model : GameModel
-    __board : Board
-    __view : GameView
-    __valid_node_range : List[int]
-    __current_player : Player
-    __total_turns = 0
-    __winning_player = None
-
     def __init__(self, model : GameModel, view : GameView):
         self.__is_running = False
         self.__total_turns = 0 # sum of all turns taken by all players
@@ -52,8 +43,6 @@ class GameController():
         except GameAborted as e:
             self.__winning_player = e.winning_player
             self.__view.print_surrender_message(e.aborting_player, self.__winning_player)
-            if not self.NetworkPlayer.inGame:
-              self.__winning_player = None
         else:
             if self.__winning_player is None:
                 self.__view.print_draw_message()
@@ -102,12 +91,9 @@ class GameController():
         ExitLoop = False
         while not ExitLoop:
             if self.NetworkPlayer.inGame == False:
-              print('Opponent Disconnected')
-              input('Press any key to continue...')
               next_player = self.__model.next_player()
               self.__is_running = False
               raise GameAborted(next_player, self.__current_player)
-              break
 
             Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 10)
 
@@ -364,7 +350,6 @@ class GameController():
 
 # ugly, but python doesn't have 'great' support for breaking nested loops
 class GameAborted(BaseException):
-    
     def __init__(self, winning_player : Player or None, aborting_player : Player) -> None:
         super().__init__(winning_player, aborting_player)
         self.winning_player = winning_player
