@@ -34,16 +34,16 @@ class Player:
 
     @self.sio.json_event(logging=True)
     def server_message(data):
-      pass #TODO when integrating handle server_message 
+      pass #TODO when integrating handle server_message
       #Call function here
 
     @self.sio.json_event(logging=True)
     def game_info(data):
       self.CurrentOpponent = data['opponent']
-      self.scoreBoard= data['score']
+      self.scoreBoard = data.get('score')
       #print(data['score'])
       #self.CurrentOpponent = {'id':data['opponentid'],'color':data['opponentcolor']}
-      
+
       #pass #TODO when integrating handle game info
       #Call function here
 
@@ -62,7 +62,7 @@ class Player:
     @self.sio.json_event(logging=True)
     def msg_from_opponent(data):
       self.MessageQue.append(data)
-   
+
     @self.sio.json_event(logging=True)
     def player_info(data):
       self.PlayerInfo = data

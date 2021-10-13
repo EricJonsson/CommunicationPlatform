@@ -14,12 +14,12 @@ NetworkPlayer = None
 def mainmenu():
     is_running = True
     global Hosting
-    
+
     while is_running:
         clear_screen()
         print_main_menu()
         choice = get_numeric_choice()
-        
+
         if Hosting:
             if choice == 1:
                 play_menu()
@@ -27,7 +27,7 @@ def mainmenu():
                 join_menu()
             elif choice == 3:
                 is_running = False
-        else: 
+        else:
             if choice == 1:
                 play_menu()
             elif choice == 2:
@@ -38,7 +38,7 @@ def mainmenu():
                 if NetworkPlayer != None:
                     NetworkPlayer.Disconnect()
                 is_running = False
-    
+
     input("Exiting. \nPress Enter to continue...")
 
 
@@ -61,7 +61,7 @@ def print_main_menu():
         print("2) Host Network Game")
         print("3) Join Network Game")
         print("4) Quit")
-        
+
 def print_play_menu():
     global NetworkPlayer
     if NetworkPlayer == None:
@@ -85,7 +85,7 @@ def play_menu():
     while invalid_choice:
         clear_screen()
         print_play_menu()
-      
+
         choice = get_numeric_choice()
 
         global NetworkPlayer
@@ -102,15 +102,16 @@ def play_menu():
                 try:
                     if NetworkPlayer.Name == None:
                       NetworkPlayer.Name = input('Please Specify your name: ')
-                      NetworkPlayer.SetName(NetworkPlayer.Name) 
+                      NetworkPlayer.SetName(NetworkPlayer.Name)
 
                     response = NetworkPlayer.Ready()
                 except:
                     print('Unable to Ready up!')
-                if response == 0:
-                    play_network()
                 else:
-                    input('Failed to Ready up... \nPress any key to continue...')
+                    if response == 0:
+                        play_network()
+                    else:
+                        input('Failed to Ready up... \nPress any key to continue...')
             elif choice == 2:
                 try:
                     response = NetworkPlayer.Disconnect()
@@ -150,7 +151,7 @@ def ai_difficulty_menu():
         clear_screen()
         print_ai_difficulty_menu()
         choice = get_numeric_choice()
-        if choice is None: 
+        if choice is None:
             continue
 
         if 1 <= choice <= 3:
@@ -170,7 +171,7 @@ def join_menu():
         play_menu()
     else:
         input('Failed to Connect to server... \nPress any key to continue...')
-    
+
 def get_player_names() -> Tuple[str, str]:
     clear_screen()
     print("Player Black's name: ")
@@ -194,7 +195,7 @@ def play_local(ai_opponent = False, ai_difficulty = AiDifficulty.NONE):
         game_model.set_player_name(Color.BLACK, black_player_name)
         game_model.set_player_name(Color.WHITE, white_player_name)
 
-        winner = game_controller.start_game()        
+        winner = game_controller.start_game()
         should_restart = False
         if winner is None: # game was a draw
             should_restart = query_rematch_choice()
@@ -225,7 +226,7 @@ def play_network():
       input('Returning to lobby\n\nPress any key to continue..')
       return
 
-    
+
     playerColor = ''
     opponentcolor = NetworkPlayer.CurrentOpponent['color']
     if opponentcolor == 'white':
@@ -252,7 +253,7 @@ def play_network():
     elif opponentcolor == 'black':
         black_player_name = NetworkPlayer.CurrentOpponent['id']
         white_player_name = NetworkPlayer.Name
-        
+
     game_model.set_player_name(Color.BLACK, black_player_name)
     game_model.set_player_name(Color.WHITE, white_player_name)
 
