@@ -209,23 +209,21 @@ def play_network():
     print('Matchup, Player: ', NetworkPlayer.CurrentOpponent['id'], '\nColor: ',NetworkPlayer.CurrentOpponent['color'])
     input('Match found!\n\nPress Any Key to Continue...')
 
-    opponentcolor = NetworkPlayer.CurrentOpponent['color']
-    if opponentcolor == 'white':
-        black_player_name = NetworkPlayer.Name
-        white_player_name = NetworkPlayer.CurrentOpponent['id']
-    elif opponentcolor == 'black':
-        black_player_name = NetworkPlayer.CurrentOpponent['id']
-        white_player_name = NetworkPlayer.Name
-        
-    should_restart = True
-    #(black_player_name, white_player_name) = get_player_names()
+    while NetworkPlayer.CurrentOpponent:
+        opponentcolor = NetworkPlayer.CurrentOpponent['color']
+        if opponentcolor == 'white':
+            black_player_name = NetworkPlayer.Name
+            white_player_name = NetworkPlayer.CurrentOpponent['id']
+        elif opponentcolor == 'black':
+            black_player_name = NetworkPlayer.CurrentOpponent['id']
+            white_player_name = NetworkPlayer.Name
+            
+        #(black_player_name, white_player_name) = get_player_names()
 
-    while should_restart:
         game_model = GameModel()
         game_view = GameView(game_model)
         game_controller = GameController(game_model, game_view)
         game_controller.NetworkPlayer = NetworkPlayer
-
 
         if opponentcolor == 'white':
             game_model.set_network_player(Color.WHITE)
@@ -238,12 +236,8 @@ def play_network():
         
         winner = game_controller.start_game()
 
-        if winner.color != opponentcolor:
+        if winner is not None and winner.color != opponentcolor:
             NetworkPlayer.SignalVictory()
-        
-        should_restart = False
-        if winner is None: # game was a draw
-            should_restart = query_rematch_choice()
 
         input("Press Enter to continue...")
 

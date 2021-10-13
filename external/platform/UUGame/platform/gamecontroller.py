@@ -52,6 +52,8 @@ class GameController():
         except GameAborted as e:
             self.__winning_player = e.winning_player
             self.__view.print_surrender_message(e.aborting_player, self.__winning_player)
+            if not self.NetworkPlayer.inGame:
+              self.__winning_player = None
         else:
             if self.__winning_player is None:
                 self.__view.print_draw_message()
@@ -100,9 +102,11 @@ class GameController():
         ExitLoop = False
         while not ExitLoop:
             if self.NetworkPlayer.inGame == False:
-              print('Opponent Disconnected. You win!')
+              print('Opponent Disconnected')
               input('Press any key to continue...')
+              next_player = self.__model.next_player()
               self.__is_running = False
+              raise GameAborted(next_player, self.__current_player)
               break
 
             Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 10)
@@ -120,7 +124,8 @@ class GameController():
         #new_json_data : Dict = json.loads(GameFileAdapter.serialize(game_file))
 
         # load into gamemodel
-        self.__model.load_network_output(self.__current_player, GameState)
+        if self.NetworkPlayer.inGame:
+            self.__model.load_network_output(self.__current_player, GameState)
 
                 
     def __handle_ai_turn(self):
