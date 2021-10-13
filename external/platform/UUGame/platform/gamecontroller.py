@@ -95,7 +95,7 @@ class GameController():
               self.__is_running = False
               raise GameAborted(next_player, self.__current_player)
 
-            Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 10)
+            Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 1)
 
             for message in Messages:
                 if 'Gamestate' in message['data']:

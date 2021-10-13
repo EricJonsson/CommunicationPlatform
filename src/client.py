@@ -40,9 +40,8 @@ class Player:
     @self.sio.json_event(logging=True)
     def game_info(data):
       self.CurrentOpponent = data['opponent']
-      print(data['score'])
-      self.scoreBoard= data['score']
-
+      #print(data['score'])
+      #self.scoreBoard= data['score']
       #self.CurrentOpponent = {'id':data['opponentid'],'color':data['opponentcolor']}
       
       #pass #TODO when integrating handle game info
