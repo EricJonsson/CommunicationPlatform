@@ -41,11 +41,7 @@ Class used to run a server / host games. This class is instantiated once, and wi
 
 * GetTournamentData()
   - Description: Fetches data about an ongoing tournament
-  - Returns: A List of Dicts with the following fields:
-        Name: The name of the player
-        Wins: The number of wins of the player
-        ID: The internal unique ID of the player
-        AI: True/False - If the player is an AI or not
+  - Returns: A formatted String listing all current players and their number of wins in order of most to least.
 
   
 * SendToPlayer()
@@ -121,8 +117,11 @@ Class used to run a server / host games. This class is instantiated once, and wi
         timeout: The maximum amount of time the method should wait for new messages if blocking = True.
 
 * SignalVictory
-  - Description: Signal the server that a game has concluded and declare the caller as the winner.
+  - Description: Signal the server that a game has concluded and declare the caller as the winner. Optionally pass a parameter with the color of the winning player.
   - Returns: 0 (Success) / -1 (Failure)
+  - Parameters: | int |
+
+        winner: The color winning player black = 1, white = 2 (optional).
 
 * GetPlayerInfo 
   - Description: Retrieves `Playerinfo` about the calling player from the server.

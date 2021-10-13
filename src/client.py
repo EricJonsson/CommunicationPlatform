@@ -147,7 +147,7 @@ class Player:
     self.ReadyReturn = None
     return ret
 
-  def SignalVictory(self, winner):
+  def SignalVictory(self, winner=None):
     logger.debug("Game over")
     self.sio.call('gameover', data={'winner': winner})
     ret = self.SignalVictoryReturn
