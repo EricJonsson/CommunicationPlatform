@@ -233,9 +233,9 @@ class CommunicationServer():  # External
           logger.debug('The tournament is over.')
 
           # announce to everyone in the tournament that the tournament is over
+          score = self.GetTournamentData()
           for client in self.Clients:
-            data = self.GetTournamentData()
-            self.sio.emit('game_info', {"code": 1, 'score': data,'opponent':{'id': 'none', 'none':1}}, to=client.get_id())
+            self.sio.emit('game_info', {"code": 1, 'score': score,'opponent':{'id': 'none', 'none':1}}, to=client.get_id())
 
             self.ResetTournament()
         else:
