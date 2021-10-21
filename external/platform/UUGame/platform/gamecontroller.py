@@ -196,7 +196,7 @@ class GameController():
             if self.NetworkPlayer.inGame == False:
               next_player = self.__model.next_player()
               self.__is_running = False
-              if self.NetworkPlayer.winner == next_player.get_name():
+              if self.NetworkPlayer.winner == self.__current_player.get_name():
                 raise GameAborted(self.__current_player, next_player)
               else:
                 raise GameAborted(next_player, self.__current_player)

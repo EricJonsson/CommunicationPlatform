@@ -103,7 +103,7 @@ class GameView():
         iter_nodes = iter(map(lambda x: self.node_to_str(x), nodes))
 
         for i in range(0, self.__top_padding): print("")
-        print("     ---------------------------------------- TITLE GOES HERE ----------------------------------------")
+        print("     ---------------------------------------- The UU-GAME----------------------------------------")
         print(" "*self.__left_padding,"   0                 1                  2                                                ")
         print(" "*(self.__left_padding+1),next(iter_nodes),"───────────────",next(iter_nodes),"────────────────",next(iter_nodes))
         print(" "*self.__left_padding," │                 │                  │")
