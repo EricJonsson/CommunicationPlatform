@@ -326,9 +326,9 @@ class CommunicationServer():  # External
       self.ActiveGames.append(game)
       logger.debug(game)
       logger.debug('Started Game: ' + str(game.PlayerA) + ' vs ' + str(game.PlayerB) + '.')
-      self.sio.emit('game_info', {'opponent':{'id': game.PlayerA.Name, 'none': 0, 'color':'white'}
-      }, to=game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
       self.sio.emit('game_info', {'opponent':{'id': game.PlayerB.Name, 'none': 0, 'color':'black'}
+      }, to=game.PlayerA.get_id()) # msg PlayerA that they are playing vs PlayerB
+      self.sio.emit('game_info', {'opponent':{'id': game.PlayerA.Name, 'none': 0, 'color':'white'}
       }, to=game.PlayerB.get_id()) # vice-versa
 
     if len(self.Clients) > 2 or self.TournamentMode:
