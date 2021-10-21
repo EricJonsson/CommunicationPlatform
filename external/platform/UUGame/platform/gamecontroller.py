@@ -230,7 +230,6 @@ class GameController():
         black_pieces_off_board = json_data['state']['they']['pieces_offboard']
         black_pieces_on_board = json_data['state']['they']['pieces_onboard']
         board_size = 24
-
         
         lines = [[{"xy":[1,1], "owner": "none"},{"xy":[1,4], "owner":"none"},{"xy":[1,7], "owner":"none"}],
                  [{"xy":[2,2], "owner": "none"},{"xy":[2,4], "owner":"none"},{"xy": [2,6], "owner": "none"}],
@@ -260,10 +259,10 @@ class GameController():
             AI_diff = "medium"
         if ai_difficulty == "hard":
             AI_diff = "high"
-
+        
         current_board = board.Board(AI_diff, turn_number, 'white', white_pieces_off_board,black_pieces_off_board,white_pieces_off_board,black_pieces_off_board,24,lines)
         GEngine = game_engine.Engine()
-
+        
         # Place White Pieces
         for piece in json_data['state']['we']['pieces_onboard']:
             node = node_lookup(piece)
@@ -272,13 +271,22 @@ class GameController():
         for piece in json_data['state']['they']['pieces_onboard']:
             node = node_lookup(piece)
             GEngine.place_piece(node,'black',current_board)
-
+#        print('Board Before: ')
+#        print(current_board)
+#        input()
         if  ai_difficulty == "easy":
             new_board = GEngine.easy_mode(current_board)
         if ai_difficulty == "medium":
-            mew_board = GEngine.medium_mode(current_board)
+            new_board = GEngine.medium_mode(current_board)
         if ai_difficulty == "hard":
             new_board = GEngine.hard_mode(current_board)
+#        print('Board After: ')
+#        print(new_board)
+#        input()
+
+        print('White Piece Before: ')
+        print(json_data['state']['we']['pieces_onboard'])
+        print(' ************* ')
 
         # Gamestate from Board
         black_on_board_updated = []
@@ -295,6 +303,10 @@ class GameController():
                     if not node in white_on_board_updated:
                         white_on_board_updated.append(node)
 
+#        print('White Piece After: ')
+#        print(white_on_board_updated)
+#        print(' ************* ')
+#        input()
         new_json_data = {}
         new_json_data['version'] = 2
         new_json_data['ai_difficulty'] = json_data['ai_difficulty']

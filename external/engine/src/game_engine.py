@@ -424,7 +424,7 @@ class Engine(object):
         return board_new
 
     def medium_mode(self, board):
-        depth = 4
+        depth = 3
         player = board.get_player_turn()
         self.minimax(depth, player, True, board, float('-inf'),float('inf'))
         board_new = self.get_best_board(player)
@@ -436,7 +436,7 @@ class Engine(object):
         return board_new
     
     def hard_mode(self, board):
-        depth = 6
+        depth = 4
         player = board.get_player_turn()
         self.minimax(depth, player, True, board, float('-inf'),float('inf'))
         board_new = self.get_best_board(player)
