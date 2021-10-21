@@ -25,6 +25,7 @@ class Player:
     self.__callbacks()
     self.inGame = False
     self.scoreBoard= None
+    self.winner = ""
 
   def __callbacks(self):
 
@@ -41,6 +42,7 @@ class Player:
     def game_info(data):
       self.CurrentOpponent = data['opponent']
       self.scoreBoard = data.get('score')
+      self.winner = ""
       #print(data['score'])
       #self.CurrentOpponent = {'id':data['opponentid'],'color':data['opponentcolor']}
 
@@ -51,6 +53,7 @@ class Player:
     def gameover(data):
       self.SignalVictoryReturn = int(data['code'])
       self.CurrentOpponent = None
+      self.winner = data['winner']
       self.inGame = False
       #TODO can be extended for the Player not calling SignalVictory
       #Call function here

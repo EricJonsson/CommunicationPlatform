@@ -1,5 +1,7 @@
 from typing import Tuple, List, Dict
 
+from external.platform.UUGame.platform.mainmenu import NetworkPlayer
+
 from .utils import clear_screen
 from .gamemodel import AiDifficulty, GameModel, Board, Player, Color
 from .gameview import GameView
@@ -145,7 +147,7 @@ class GameController():
             self.__update()
         except GameAborted as e:
             self.__winning_player = e.winning_player
-            self.__view.print_surrender_message(e.aborting_player, self.__winning_player)
+            self.__view.print_win_message(self.__winning_player)
         else:
             if self.__winning_player is None:
                 self.__view.print_draw_message()
@@ -196,7 +198,10 @@ class GameController():
             if self.NetworkPlayer.inGame == False:
               next_player = self.__model.next_player()
               self.__is_running = False
-              raise GameAborted(next_player, self.__current_player)
+              if NetworkPlayer.winner == next_player.get_name():
+                raise GameAborted(self.__current_player, next_player)
+              else:
+                raise GameAborted(next_player, self.__current_player)
 
             Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 1)
 
