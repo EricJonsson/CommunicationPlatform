@@ -254,7 +254,7 @@ class CommunicationServer():  # External
         else:
           self._concludeGame(game, winner=sid)
       else:
-        self.sio.emit('gameover', {"code": -1}, to=sid)
+        self.sio.emit('gameover', {"code": -1, 'winner': ''}, to=sid)
         logger.debug(f'ERROR: Event sent by inactive player `{sid}`.')
 
   def FindActiveGameBySid(self, sid: str) -> Optional[TypeVar("Game")]:
@@ -283,8 +283,8 @@ class CommunicationServer():  # External
     #Remove active game
     self.ActiveGames.remove(game)
 
-    self.sio.emit('gameover', {"code": 1, "winner": winner}, to=game.PlayerA.get_id())
-    self.sio.emit('gameover', {"code": 1, "winner": winner}, to=game.PlayerB.get_id())
+    self.sio.emit('gameover', {"code": 1, "winner": str(winner)}, to=game.PlayerA.get_id())
+    self.sio.emit('gameover', {"code": 1, "winner": str(winner)}, to=game.PlayerB.get_id())
 
     #if len(self.ActiveGames) == 0 and len(self.TournamentGames) > 0: #there's an ongoing tournament, since a game is over we can try to start new games! 
       #code = self.generateRound()
