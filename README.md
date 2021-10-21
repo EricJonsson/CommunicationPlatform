@@ -1,3 +1,8 @@
+# UU Game
+Run the application by running the __main__.py | Requires python version 3.9 or greater. 
+# External Libraries
+The UU Game integrates the _GameEngine_ (Created by group: B) and _GamePlatform_ (Created by Group: D). Documentation and files can be found in the external folder, inside their respective folders. 
+
 # CommunicationPlatform
 Communications Platform, Group C, Course Software Engineering. 
 

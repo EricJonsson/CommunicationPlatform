@@ -1,0 +1,33 @@
+{
+    "difficulty": "low",
+    "turn_number": 0,
+    "player_turn": "white",
+    "white_pieces_in_hand": 9,
+    "black_pieces_in_hand": 9,
+    "white_pieces_left": 9,
+    "black_pieces_left": 9,
+    "board_size": 24,
+    "lines": [[{"xy":[1,1], "owner": "none"},{"xy":[1,4], "owner":"none"},{"xy":[1,7], "owner":"none"}],
+              [{"xy":[2,2], "owner": "none"},{"xy":[2,4], "owner":"none"},{"xy": [2,6], "owner": "none"}],
+              [{"xy":[3,3], "owner": "none"},{"xy":[3,4], "owner":"none"},{"xy": [3,5], "owner": "none"}],
+              [{"xy":[4,1], "owner": "none"},{"xy":[4,2], "owner":"none"},{"xy": [4,3], "owner": "none"}],
+              [{"xy":[4,5], "owner": "none"},{"xy":[4,6], "owner":"none"},{"xy": [4,7], "owner": "none"}],
+              [{"xy":[5,3], "owner": "none"},{"xy":[5,4], "owner":"none"},{"xy": [5,5], "owner": "none"}],
+              [{"xy":[6,2], "owner": "none"},{"xy":[6,4], "owner":"none"},{"xy": [6,6], "owner": "none"}],
+              [{"xy":[7,1], "owner": "none"},{"xy":[7,4], "owner":"none"},{"xy": [7,7], "owner": "none"}],
+              [{"xy":[1,1], "owner": "none"},{"xy":[4,1], "owner":"none"},{"xy": [7,1], "owner": "none"}],
+              [{"xy":[2,2], "owner": "none"},{"xy":[4,2], "owner":"none"},{"xy": [6,2], "owner": "none"}],
+              [{"xy":[3,3], "owner": "none"},{"xy":[4,3], "owner":"none"},{"xy": [5,3], "owner": "none"}],
+              [{"xy":[1,4], "owner": "none"},{"xy":[2,4], "owner":"none"},{"xy": [3,4], "owner": "none"}],
+              [{"xy":[5,4], "owner": "none"},{"xy":[6,4], "owner":"none"},{"xy": [7,4], "owner": "none"}],
+              [{"xy":[3,5], "owner": "none"},{"xy":[4,5], "owner":"none"},{"xy": [5,5], "owner": "none"}],
+              [{"xy":[2,6], "owner": "none"},{"xy":[4,6], "owner":"none"},{"xy": [6,6], "owner": "none"}],
+              [{"xy":[1,7], "owner": "none"},{"xy":[4,7], "owner":"none"},{"xy": [7,7], "owner": "none"}],
+	      [{"xy":[1,1], "owner": "none"},{"xy":[2,2], "owner":"none"},{"xy": [3,3], "owner": "none"}],
+	      [{"xy":[1,7], "owner": "none"},{"xy":[2,6], "owner":"none"},{"xy": [3,5], "owner": "none"}],
+	      [{"xy":[7,1], "owner": "none"},{"xy":[6,2], "owner":"none"},{"xy": [5,3], "owner": "none"}],
+	      [{"xy":[7,7], "owner": "none"},{"xy":[6,6], "owner":"none"},{"xy": [5,5], "owner": "none"}]
+
+	      
+        ]
+}

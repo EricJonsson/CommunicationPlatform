@@ -182,7 +182,11 @@ def get_player_names() -> Tuple[str, str]:
 
 def play_local(ai_opponent = False, ai_difficulty = AiDifficulty.NONE):
     should_restart = True
-    (black_player_name, white_player_name) = get_player_names()
+    if ai_opponent:
+        black_player_name = input('Select Name: ')
+        white_player_name = 'AI - ' + str(ai_difficulty)
+    else:
+        (black_player_name, white_player_name) = get_player_names()
 
     while should_restart:
         game_model = GameModel()
@@ -257,7 +261,7 @@ def play_network():
     game_model.set_player_name(Color.BLACK, black_player_name)
     game_model.set_player_name(Color.WHITE, white_player_name)
 
-    winner = game_controller.start_game()
+    winner = game_controller.start_game(NetworkedGame=True)
 
     if winner is not None:
         NetworkPlayer.SignalVictory(winner.color)
