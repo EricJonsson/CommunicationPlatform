@@ -21,28 +21,37 @@ class Player:
     self.DisconnectReturn = None
     self.SetNameReturn = None
     self.sio = Client(logger=logger)
+    self.CurrentOpponent = None
     self.__callbacks()
+    self.inGame = False
+    self.scoreBoard= None
 
   def __callbacks(self):
 
-    @self.sio.json_event(logging=True)
-    def game_reset(data):
+    def game_reset():
       pass #TODO when integrating Handle game reset
       #Call function here
 
     @self.sio.json_event(logging=True)
     def server_message(data):
-      pass #TODO when integrating handle server_message 
+      pass #TODO when integrating handle server_message
       #Call function here
 
     @self.sio.json_event(logging=True)
     def game_info(data):
-      pass #TODO when integrating handle game info
+      self.CurrentOpponent = data['opponent']
+      self.scoreBoard = data.get('score')
+      #print(data['score'])
+      #self.CurrentOpponent = {'id':data['opponentid'],'color':data['opponentcolor']}
+
+      #pass #TODO when integrating handle game info
       #Call function here
 
     @self.sio.json_event(logging=True)
     def gameover(data):
       self.SignalVictoryReturn = int(data['code'])
+      self.CurrentOpponent = None
+      self.inGame = False
       #TODO can be extended for the Player not calling SignalVictory
       #Call function here
 
@@ -53,7 +62,7 @@ class Player:
     @self.sio.json_event(logging=True)
     def msg_from_opponent(data):
       self.MessageQue.append(data)
-   
+
     @self.sio.json_event(logging=True)
     def player_info(data):
       self.PlayerInfo = data
@@ -74,10 +83,6 @@ class Player:
     @self.sio.json_event(logging=True)
     def ready(data):
       self.ReadyReturn = int(data['code'])
-
-    @self.sio.json_event(logging=True)
-    def gameover(data):
-      self.SignalVictoryReturn = int(data['code'])
 
     @self.sio.json_event(logging=True)
     def set_name(data):
@@ -141,9 +146,9 @@ class Player:
     self.ReadyReturn = None
     return ret
 
-  def SignalVictory(self):
+  def SignalVictory(self, winner=None):
     logger.debug("Game over")
-    self.sio.call('gameover')
+    self.sio.call('gameover', data={'winner': winner})
     ret = self.SignalVictoryReturn
     self.SignalVictoryReturn = None
     return ret

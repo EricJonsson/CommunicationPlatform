@@ -1,11 +1,12 @@
 # Test Server / Client Communication
 
 import pytest, time, threading, socket
+import socketio
 from socketio.client import Client
 from socketio.server import Server
 
 import server, client
-from server import Client as cs_client 
+from server import Client as cs_client
 
 ##### Variables and global Server object #####
 HOST = '127.0.0.1'
@@ -38,6 +39,7 @@ def clean_server():
   SERVER.ActiveGames = []
   SERVER.TournamentGames = []
   SERVER.ConcludedGames = []
+  SERVER.TournamentStarted = False
 
 
 ##### TESTS #####
@@ -152,7 +154,7 @@ def test_Tournament_logic(ClientInstances, NoClients):
   assert client0_playerinfo.GamesLeft == 6
   assert client0_playerinfo.GamesPlayed == 1
   assert client0_playerinfo.NumberOfWins == 1
-  
+
 
   #Check that game concluded and moved to ConcludedGames
   assert len(SERVER.ActiveGames) == 3
@@ -191,8 +193,8 @@ def test_Tournament_logic(ClientInstances, NoClients):
   assert playerinfo['NumberOfWins'] == 2
 
   #Check if new round started when last game concluded
-  assert len(SERVER.TournamentGames) == 20
-  assert len(SERVER.ActiveGames) == 4
+  assert len(SERVER.TournamentGames) == 15 # requirements from Group D
+  assert len(SERVER.ActiveGames) == 3
 
   for client in ClientInstances:
         client.Disconnect()
@@ -295,7 +297,7 @@ def test_ClientMessaging(ClientInstances, NoClients):
     
     for client in ClientInstances:
         client.Disconnect()
-    
+
 # Test Client Connections and Server Capacity
 @pytest.mark.parametrize('NoClients', [16])
 def test_ClientConnect(ClientInstances, NoClients):
@@ -360,3 +362,30 @@ def test_ClientConnect(ClientInstances, NoClients):
         client.Disconnect()
     # Final Sleep to allow disconnections to finalize
     time.sleep(0.1)
+
+
+@pytest.mark.parametrize('NoClients', [8])
+def test__concludePlayerGames(ClientInstances, NoClients):
+    clean_server()
+    order = [0, 3, 5, 2, 1, 4, 7, 6]
+    wins = dict(zip(order, range(len(order))))
+    for client in ClientInstances:
+        client.ConnectToServer(HOST, PORT)
+    clients = [client for client in SERVER.Clients]
+    SERVER.StartGame()
+    for idx in order:
+        ClientInstances[idx].Disconnect()
+    for idx, client in enumerate(clients):
+        assert client.PlayerInfo.GamesPlayed == len(order) - 1
+        assert client.PlayerInfo.NumberOfWins == wins[idx]
+
+
+@pytest.mark.parametrize('NoClients', [8])
+def test_join_server_after_tournament(ClientInstances, NoClients):
+    clean_server()
+    for client in ClientInstances[:-1]:
+        client.ConnectToServer(HOST, PORT)
+    SERVER.StartGame()
+    assert ClientInstances[-1].ConnectToServer(HOST, PORT) == -1
+    for client in ClientInstances[:-1]:
+        client.Disconnect()

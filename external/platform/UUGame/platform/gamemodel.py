@@ -77,6 +77,7 @@ class Player(StateObservable):
     __name : str
     __is_ai : bool # might need a reference to an ai controller object instead
     __ai_difficulty : AiDifficulty
+    __is_networkplayer : bool
 
     def __init__(self, color : Color, name : str = ""):
         super().__init__()
@@ -86,7 +87,10 @@ class Player(StateObservable):
         self.__name = name
         self.__is_ai = False
         self.__ai_difficulty = AiDifficulty.NONE
-
+        self.__is_networkplayer = False
+        
+    def is_networkplayer(self) -> bool:
+        return self.__is_networkplayer
     def is_ai(self) -> bool:
         """Returns whether or not this player is controlled by an AI.
 
@@ -95,6 +99,9 @@ class Player(StateObservable):
         """        
         return self.__is_ai
     
+    def setnetworkplayer(self):
+        self.__is_networkplayer = True
+
     def enable_ai(self, ai_difficulty : AiDifficulty = AiDifficulty.EASY):  
         """Enables AI for this player.
 
@@ -665,6 +672,18 @@ class GameModel(StateObservable):
         
         player.enable_ai(ai_difficulty)
 
+    def set_network_player(self, color : Color):
+        player = self.get_player_by_color(color)
+
+        if player is None: 
+            return
+
+        #if ai_difficulty == AiDifficulty.NONE:
+        #    player.disable_ai()
+        
+        #player.enable_ai(ai_difficulty)
+        player.setnetworkplayer()
+        
     def set_turn_count(self, turn_count : int):
         '''Sets current turn number.
 
@@ -709,6 +728,7 @@ class GameModel(StateObservable):
         Returns:
             Player -- Current Player
         '''
+        
         return self.__players[self.__current_player]
 
     def to_ai_input(self, which_player : Player) -> Dict:
@@ -736,6 +756,20 @@ class GameModel(StateObservable):
         data["state"]["we"]["pieces_onboard"] = self.board.nodes_occupied_by_player(which_player)
         data["state"]["we"]["pieces_offboard"] = which_player.get_pieces_to_place()
         return data
+
+    def load_network_output(self, which_player : Player, data : Dict):
+
+        new_state = data["state"]
+        new_state["we"]["pieces_onboard"]
+        which_player.set_pieces_to_place(new_state["we"]["pieces_offboard"])
+        self.__load_nodes(which_player, new_state["we"]["pieces_onboard"])
+
+        opponent = self.__players[(self.__players.index(which_player) + 1) % len(self.__players)] # next player, needs to be rewritten for more than 2 players
+        self.__load_nodes(opponent, new_state["they"]["pieces_onboard"])
+        opponent.set_pieces_to_place(new_state["they"]["pieces_offboard"])
+
+        which_player.set_active_pieces(len(self.board.nodes_occupied_by_player(which_player)) + which_player.get_pieces_to_place())
+        opponent.set_active_pieces(len(self.board.nodes_occupied_by_player(opponent)) + opponent.get_pieces_to_place())
     
     def load_ai_output(self, which_player : Player, data : Dict):
 

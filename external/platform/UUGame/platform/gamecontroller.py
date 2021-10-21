@@ -17,15 +17,6 @@ class GameController():
         model {GameModel} -- The model associated with this GameController\n
         view {GameView} -- The view associated with this GameController
     """
-    __is_running : bool
-    __model : GameModel
-    __board : Board
-    __view : GameView
-    __valid_node_range : List[int]
-    __current_player : Player
-    __total_turns = 0
-    __winning_player = None
-
     def __init__(self, model : GameModel, view : GameView):
         self.__is_running = False
         self.__total_turns = 0 # sum of all turns taken by all players
@@ -35,7 +26,8 @@ class GameController():
         self.__valid_node_range = range(0, len(self.__model.board.get_nodes()))
         self.__winning_player = None
         self.__current_player = None
-
+        self.NetworkPlayer = None
+        
     def start_game(self) -> Player or None:
         """Starts the game. This is a blocking call.
 
@@ -44,6 +36,7 @@ class GameController():
         """
         self.__is_running = True
         self.__view.draw_board()
+        self.NetworkPlayer.inGame = True
 
         try:
             self.__update()
@@ -63,10 +56,12 @@ class GameController():
             self.__current_player = self.__model.get_current_player()
             self.__view.set_action_prompt("It is currently " + self.__current_player.get_name() + "'s turn")
             current_phase = self.__current_player.get_phase()
-
+            
             if (self.__total_turns // 2) >= GameConfig.MAX_TURNS:
                 self.__view.print_draw_message()
                 self.__is_running = False
+            elif self.__current_player.is_networkplayer():
+                self.__handle_network_turn()
             elif self.__current_player.is_ai():
                 self.__handle_ai_turn()
             elif current_phase == 1:
@@ -86,7 +81,39 @@ class GameController():
             if winner is not None:
                 self.__winning_player = winner
                 self.__is_running = False
-    
+
+    def __handle_network_turn(self):
+        # send and get new game state from AI
+        #json_data = self.__model.to_ai_input(self.__current_player)
+
+        print('Waiting for opponents move...')
+
+        ExitLoop = False
+        while not ExitLoop:
+            if self.NetworkPlayer.inGame == False:
+              next_player = self.__model.next_player()
+              self.__is_running = False
+              raise GameAborted(next_player, self.__current_player)
+
+            Messages = self.NetworkPlayer.GetMessageFromOpponent(blocking = True, timeout = 1)
+
+            for message in Messages:
+                if 'Gamestate' in message['data']:
+                    GameState = message['data']['Gamestate']
+                    ExitLoop = True
+                    break
+        #next_state = AI.next_move(game_file)
+        #if next_state is None:
+        #    exit(-1)
+        #game_file.state = next_state
+
+        #new_json_data : Dict = json.loads(GameFileAdapter.serialize(game_file))
+
+        # load into gamemodel
+        if self.NetworkPlayer.inGame:
+            self.__model.load_network_output(self.__current_player, GameState)
+
+                
     def __handle_ai_turn(self):
         # send and get new game state from AI
         json_data = self.__model.to_ai_input(self.__current_player)
@@ -113,11 +140,18 @@ class GameController():
         return None
 
 
+    def __sendgamestate(self):
+        state = self.__model.to_ai_input(self.__current_player)
+        if self.NetworkPlayer != None:
+            self.NetworkPlayer.SendInformationToOpponent({'Gamestate':state})
+
+    
     def __handle_phase_one(self):
         self.__handle_placement()
-
+        self.__sendgamestate()
     def __handle_phase_two(self):
         if not self.__player_can_move(self.__current_player):
+            self.__sendgamestate()
             return
 
         has_completed_move = False
@@ -125,6 +159,7 @@ class GameController():
             selected_node_id = self.__handle_select()
             self.__handle_move(selected_node_id)
             has_completed_move = True
+            self.__sendgamestate()
 
     def __handle_phase_three(self):
         has_completed_move = False
@@ -132,6 +167,7 @@ class GameController():
             selected_node_id = self.__handle_select()
             self.__handle_move(selected_node_id, ignore_adjacent=True)
             has_completed_move = True
+            self.__sendgamestate()
 
     def __handle_placement(self):
         successful = False
@@ -153,7 +189,7 @@ class GameController():
                 self.__view.set_notification_info(self.__current_player.get_name() + " has formed a mill!")
                 self.__handle_remove()
 
-            successful = True
+            successful = True        
         self.__view.set_notification_info("")
 
     def __handle_phase_transition(self):
@@ -314,7 +350,6 @@ class GameController():
 
 # ugly, but python doesn't have 'great' support for breaking nested loops
 class GameAborted(BaseException):
-    
     def __init__(self, winning_player : Player or None, aborting_player : Player) -> None:
         super().__init__(winning_player, aborting_player)
         self.winning_player = winning_player
