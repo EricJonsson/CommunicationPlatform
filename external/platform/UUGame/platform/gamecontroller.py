@@ -7,6 +7,109 @@ from . import gameconfiguration as GameConfig
 import json
 #from UUgame.engine.core.ai import AI
 #from UUgame.engine.api.game_file_adapter import GameFileAdapter
+from external.engine.src import game_engine, board
+
+def node_lookup(lineid):
+    if lineid == [1,1]:
+        return 0
+    if lineid == [1,4]:
+        return 1
+    if lineid == [1,7]:
+        return 2
+    if lineid == [2,2]:
+        return 3
+    if lineid == [2,4]:
+        return 4
+    if lineid == [2,6]:
+        return 5
+    if lineid == [3,3]:
+        return 6
+    if lineid == [3,4]:
+        return 7
+    if lineid == [3,5]:
+        return 8
+    if lineid == [4,1]:
+        return 9
+    if lineid == [4,2]:
+        return 10
+    if lineid == [4,3]:
+        return 11
+    if lineid == [4,5]:
+        return 12
+    if lineid == [4,6]:
+        return 13
+    if lineid == [4,7]:
+        return 14
+    if lineid == [5,3]:
+        return 15
+    if lineid == [5,4]:
+        return 16
+    if lineid == [5,5]:
+        return 17
+    if lineid == [6,2]:
+        return 18
+    if lineid == [6,4]:
+        return 19
+    if lineid == [6,6]:
+        return 20
+    if lineid == [7,1]:
+        return 21
+    if lineid == [7,4]:
+        return 22
+    if lineid == [7,7]:
+        return 23
+    # Node to Line
+    if lineid == 0:
+        return [1,1]
+    if lineid == 1:
+        return [1,4]
+    if lineid == 2:
+        return [1,7]
+    if lineid == 3:
+        return [2,2]
+    if lineid == 4:
+        return [2,4]
+    if lineid == 5:
+        return [2,6]
+    if lineid == 6:
+        return [3,3]
+    if lineid == 7:
+        return [3,4]
+    if lineid == 8:
+        return [3,5]
+    if lineid == 9:
+        return [4,1]
+    if lineid == 10:
+        return [4,2]
+    if lineid == 11:
+        return [4,3]
+    if lineid == 12:
+        return [4,5]
+    if lineid == 13:
+        return [4,6]
+    if lineid == 14:
+        return [4,7]
+    if lineid == 15:
+        return [5,3]
+    if lineid == 16:
+        return [5,4]
+    if lineid == 17:
+        return [5,5]
+    if lineid == 18:
+        return [6,2]
+    if lineid == 19:
+        return [6,4]
+    if lineid == 20:
+        return [6,6]
+    if lineid == 21:
+        return [7,1]
+    if lineid == 22:
+        return [7,4]
+    if lineid == 23:
+        return [7,7]
+
+    return False
+
 
 
 class GameController():
@@ -27,8 +130,7 @@ class GameController():
         self.__winning_player = None
         self.__current_player = None
         self.NetworkPlayer = None
-        
-    def start_game(self) -> Player or None:
+    def start_game(self, NetworkedGame=False) -> Player or None:
         """Starts the game. This is a blocking call.
 
         Returns:
@@ -36,7 +138,8 @@ class GameController():
         """
         self.__is_running = True
         self.__view.draw_board()
-        self.NetworkPlayer.inGame = True
+        if NetworkedGame:
+            self.NetworkPlayer.inGame = True
 
         try:
             self.__update()
@@ -118,17 +221,109 @@ class GameController():
         # send and get new game state from AI
         json_data = self.__model.to_ai_input(self.__current_player)
 
-        #game_file = GameFileAdapter.deserialize(json.dumps(json_data))
+        # Placeholder attributes
+        ai_difficulty = json_data['ai_difficulty']
+        turn_number = 150 - json_data['state']['turns_left']+1
+        player_turn = True
+        white_pieces_off_board = json_data['state']['we']['pieces_offboard']
+        white_pieces_on_board = json_data['state']['we']['pieces_onboard']
+        black_pieces_off_board = json_data['state']['they']['pieces_offboard']
+        black_pieces_on_board = json_data['state']['they']['pieces_onboard']
+        board_size = 24
+        
+        lines = [[{"xy":[1,1], "owner": "none"},{"xy":[1,4], "owner":"none"},{"xy":[1,7], "owner":"none"}],
+                 [{"xy":[2,2], "owner": "none"},{"xy":[2,4], "owner":"none"},{"xy": [2,6], "owner": "none"}],
+                 [{"xy":[3,3], "owner": "none"},{"xy":[3,4], "owner":"none"},{"xy": [3,5], "owner": "none"}],
+                 [{"xy":[4,1], "owner": "none"},{"xy":[4,2], "owner":"none"},{"xy": [4,3], "owner": "none"}],
+                 [{"xy":[4,5], "owner": "none"},{"xy":[4,6], "owner":"none"},{"xy": [4,7], "owner": "none"}],
+                 [{"xy":[5,3], "owner": "none"},{"xy":[5,4], "owner":"none"},{"xy": [5,5], "owner": "none"}],
+                 [{"xy":[6,2], "owner": "none"},{"xy":[6,4], "owner":"none"},{"xy": [6,6], "owner": "none"}],
+                 [{"xy":[7,1], "owner": "none"},{"xy":[7,4], "owner":"none"},{"xy": [7,7], "owner": "none"}],
+                 [{"xy":[1,1], "owner": "none"},{"xy":[4,1], "owner":"none"},{"xy": [7,1], "owner": "none"}],
+                 [{"xy":[2,2], "owner": "none"},{"xy":[4,2], "owner":"none"},{"xy": [6,2], "owner": "none"}],
+                 [{"xy":[3,3], "owner": "none"},{"xy":[4,3], "owner":"none"},{"xy": [5,3], "owner": "none"}],
+                 [{"xy":[1,4], "owner": "none"},{"xy":[2,4], "owner":"none"},{"xy": [3,4], "owner": "none"}],
+                 [{"xy":[5,4], "owner": "none"},{"xy":[6,4], "owner":"none"},{"xy": [7,4], "owner": "none"}],
+                 [{"xy":[3,5], "owner": "none"},{"xy":[4,5], "owner":"none"},{"xy": [5,5], "owner": "none"}],
+                 [{"xy":[2,6], "owner": "none"},{"xy":[4,6], "owner":"none"},{"xy": [6,6], "owner": "none"}],
+                 [{"xy":[1,7], "owner": "none"},{"xy":[4,7], "owner":"none"},{"xy": [7,7], "owner": "none"}]
+                 #[{"xy":[1,1], "owner": "none"},{"xy":[2,2], "owner":"none"},{"xy": [3,3], "owner": "none"}],
+#	         [{"xy":[1,7], "owner": "none"},{"xy":[2,6], "owner":"none"},{"xy": [3,5], "owner": "none"}],
+#	         [{"xy":[7,1], "owner": "none"},{"xy":[6,2], "owner":"none"},{"xy": [5,3], "owner": "none"}],
+#	         [{"xy":[7,7], "owner": "none"},{"xy":[6,6], "owner":"none"},{"xy": [5,5], "owner": "none"}]
+        ]
 
-        #next_state = AI.next_move(game_file)
-        #if next_state is None:
-        #    exit(-1)
-        #game_file.state = next_state
+        if ai_difficulty == "easy":
+            AI_diff = "low"
+        if ai_difficulty == "medium":
+            AI_diff = "medium"
+        if ai_difficulty == "hard":
+            AI_diff = "high"
+        
+        current_board = board.Board(AI_diff, turn_number, 'white', white_pieces_off_board,black_pieces_off_board,white_pieces_off_board,black_pieces_off_board,24,lines)
+        GEngine = game_engine.Engine()
+        
+        # Place White Pieces
+        for piece in json_data['state']['we']['pieces_onboard']:
+            node = node_lookup(piece)
+            GEngine.place_piece(node,'white',current_board)
+        # Place Black Pieces
+        for piece in json_data['state']['they']['pieces_onboard']:
+            node = node_lookup(piece)
+            GEngine.place_piece(node,'black',current_board)
+#        print('Board Before: ')
+#        print(current_board)
+#        input()
+        if  ai_difficulty == "easy":
+            new_board = GEngine.easy_mode(current_board)
+        if ai_difficulty == "medium":
+            new_board = GEngine.medium_mode(current_board)
+        if ai_difficulty == "hard":
+            new_board = GEngine.hard_mode(current_board)
+#        print('Board After: ')
+#        print(new_board)
+#        input()
 
-        #new_json_data : Dict = json.loads(GameFileAdapter.serialize(game_file))
+        print('White Piece Before: ')
+        print(json_data['state']['we']['pieces_onboard'])
+        print(' ************* ')
 
+        # Gamestate from Board
+        black_on_board_updated = []
+        white_on_board_updated = []
+        for line in new_board.get_lines():
+            for item in line:
+                #node_keys[str(item['xy'])] = node_lookup(item['xy'])
+                if item['owner'] == 'black':
+                    node = node_lookup(item['xy'])
+                    if not node in black_on_board_updated:
+                        black_on_board_updated.append(node)
+                if item['owner'] == 'white':
+                    node = node_lookup(item['xy'])
+                    if not node in white_on_board_updated:
+                        white_on_board_updated.append(node)
+
+#        print('White Piece After: ')
+#        print(white_on_board_updated)
+#        print(' ************* ')
+#        input()
+        new_json_data = {}
+        new_json_data['version'] = 2
+        new_json_data['ai_difficulty'] = json_data['ai_difficulty']
+        new_json_data['state'] = {}
+        new_json_data['state']['turns_left'] = json_data['state']['turns_left'] - 1
+        new_json_data['state']['they'] = {}
+        new_json_data['state']['they']['pieces_onboard'] = black_on_board_updated
+        new_json_data['state']['they']['pieces_offboard'] = black_pieces_off_board
+        new_json_data['state']['we'] = {}
+        new_json_data['state']['we']['pieces_onboard'] = white_on_board_updated
+        if white_pieces_off_board > 0:
+            new_json_data['state']['we']['pieces_offboard'] = white_pieces_off_board-1
+        else:
+            new_json_data['state']['we']['pieces_offboard'] = white_pieces_off_board
+        
         # load into gamemodel
-        #self.__model.load_ai_output(self.__current_player, new_json_data)
+        self.__model.load_ai_output(self.__current_player, new_json_data)
     
     def __check_winning_player(self) -> Player or None:
         players = self.__model.get_all_players()
