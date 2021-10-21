@@ -246,11 +246,11 @@ class GameController():
                  [{"xy":[5,4], "owner": "none"},{"xy":[6,4], "owner":"none"},{"xy": [7,4], "owner": "none"}],
                  [{"xy":[3,5], "owner": "none"},{"xy":[4,5], "owner":"none"},{"xy": [5,5], "owner": "none"}],
                  [{"xy":[2,6], "owner": "none"},{"xy":[4,6], "owner":"none"},{"xy": [6,6], "owner": "none"}],
-                 [{"xy":[1,7], "owner": "none"},{"xy":[4,7], "owner":"none"},{"xy": [7,7], "owner": "none"}],
-	         [{"xy":[1,1], "owner": "none"},{"xy":[2,2], "owner":"none"},{"xy": [3,3], "owner": "none"}],
-	         [{"xy":[1,7], "owner": "none"},{"xy":[2,6], "owner":"none"},{"xy": [3,5], "owner": "none"}],
-	         [{"xy":[7,1], "owner": "none"},{"xy":[6,2], "owner":"none"},{"xy": [5,3], "owner": "none"}],
-	         [{"xy":[7,7], "owner": "none"},{"xy":[6,6], "owner":"none"},{"xy": [5,5], "owner": "none"}]
+                 [{"xy":[1,7], "owner": "none"},{"xy":[4,7], "owner":"none"},{"xy": [7,7], "owner": "none"}]
+                 #[{"xy":[1,1], "owner": "none"},{"xy":[2,2], "owner":"none"},{"xy": [3,3], "owner": "none"}],
+#	         [{"xy":[1,7], "owner": "none"},{"xy":[2,6], "owner":"none"},{"xy": [3,5], "owner": "none"}],
+#	         [{"xy":[7,1], "owner": "none"},{"xy":[6,2], "owner":"none"},{"xy": [5,3], "owner": "none"}],
+#	         [{"xy":[7,7], "owner": "none"},{"xy":[6,6], "owner":"none"},{"xy": [5,5], "owner": "none"}]
         ]
 
         if ai_difficulty == "easy":
